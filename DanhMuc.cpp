@@ -3,14 +3,14 @@
 #include <string>
 using namespace std;
 
-struct LNData
+struct Sach
 {
 	int maSach;
 	int trangThai;
 	string viTri;
 };
 
-int compareData(LNData *a, LNData *b)
+int compareData(Sach *a, Sach *b)
 {
 	int cmpMSSV = a->maSach - b->maSach;
 	if (cmpMSSV != 0)
@@ -28,57 +28,69 @@ int compareData(LNData *a, LNData *b)
 	}
 }
 
-struct ListNode
+struct DMSach
 {
-	LNData *data = NULL;
-	ListNode *next = NULL;
+	Sach *data = NULL;
+	DMSach *next = NULL;
 };
 
 struct PairNode
 {
-	ListNode *before = NULL;
-	ListNode *value = NULL;
+	DMSach *before = NULL;
+	DMSach *value = NULL;
 };
 
-void swapNodeData(ListNode *&a, ListNode *&b)
+typedef void (*CallBackDMSach)(DMSach *node);
+
+void foreach (DMSach *first, CallBackDMSach callBack)
 {
-	LNData *c = a->data;
+	DMSach *p = first;
+	while (p != NULL)
+	{
+		callBack(p);
+		p = p->next;
+	}
+}
+
+void swapNodeData(DMSach *&a, DMSach *&b)
+{
+	Sach *c = a->data;
 	a->data = b->data;
 	b->data = c;
 }
 
-void addFirst(ListNode *&first, LNData *info)
+void addFirst(DMSach *&first, Sach *info)
 {
 	if (first == NULL)
 	{
-		first = new ListNode;
+		first = new DMSach;
 		first->data = info;
 		return;
 	}
-	ListNode *p = new ListNode;
+	DMSach *p = new DMSach;
 	p->data = info;
 	p->next = first;
 }
 
-void addLast(ListNode *&first, LNData *info)
+void addLast(DMSach *&first, Sach *info)
 {
 	if (first == NULL)
 	{
-		first = new ListNode;
+		first = new DMSach;
 		first->data = info;
 		return;
 	}
-	ListNode *p = first;
+	DMSach *p = first;
 	while (p->next)
 		p = p->next;
-	ListNode *q = new ListNode;
+	DMSach *q = new DMSach;
 	q->data = info;
 	p->next = q;
 }
 
-int countAll(ListNode *first)
+int countAll(DMSach *first)
 {
-	ListNode *p = first;
+	DMSach *p = first;
 	int count = 0;
 	while (p != NULL)
 	{
@@ -88,15 +100,15 @@ int countAll(ListNode *first)
 	return count;
 }
 
-PairNode findBySinhVien(ListNode *first, LNData key)
+PairNode findByMaSach(DMSach *first, int key)
 {
-	ListNode *p = first;
-	ListNode *pBefore = NULL;
-	ListNode *kq = NULL;
+	DMSach *p = first;
+	DMSach *pBefore = NULL;
+	DMSach *kq = NULL;
 	while (p != NULL)
 	{
-		LNData *info = p->data;
-		if (info->maSach == key.maSach || info->trangThai == key.trangThai || info->viTri.compare(key.viTri) == 0)
+		Sach *info = p->data;
+		if (info->maSach == key)
 		{
 			kq = p;
 			break;
@@ -110,39 +122,42 @@ PairNode findBySinhVien(ListNode *first, LNData key)
 	return pair;
 }
 
-void deleteAll(ListNode *&first)
+void deleteAll(DMSach *&first)
 {
-	ListNode *p = first;
+	DMSach *p = first;
 	first = NULL;
 	while (p != NULL)
 	{
-		ListNode *x = p;
+		DMSach *x = p;
 		p = p->next;
 		delete x->data;
 		delete x;
 	}
 }
 
-bool deleteBySinhVien(ListNode *&first, LNData key)
+bool deleteByMaSach(DMSach *&first, int key)
 {
-	PairNode pn = findBySinhVien(first, key);
+	PairNode pn = findByMaSach(first, key);
 	if (pn.value == NULL)
 		return false;
-	else {
-		if(pn.before == NULL) first = pn.value->next;
-		else {
+	else
+	{
+		if (pn.before == NULL)
+			first = pn.value->next;
+		else
+		{
 			pn.before->next = pn.value->next;
 		}
+		return true;
 	}
 }
-void luuFile(ListNode *&first)
+void luuFile(DMSach *&first, ofstream &fout)
 {
-	ofstream fout;
-	fout.open("DanhMuc.data");
-	ListNode *p = first;
+	DMSach *p = first;
+	fout << countAll(first);
 	while (p != NULL && p->data != NULL)
 	{
-		LNData *data = p->data;
+		Sach *data = p->data;
 		fout << data->maSach << endl
 				 << data->trangThai << endl
 				 << data->viTri;
@@ -150,37 +165,51 @@ void luuFile(ListNode *&first)
 			fout << endl;
 		p = p->next;
 	}
-	fout.close();
 }
 
-void docFile(ListNode *&list)
+void docFile(DMSach *&list, ifstream &fin)
 {
-	deleteAll(list);
-	ifstream fin;
-	fin.open("DanhMuc.data");
-	while (!fin.eof())
+	int n;
+	fin >> n;
+	for (int i = 0; i < n; i++)
 	{
-		LNData *data = new LNData;
+		Sach *data = new Sach;
 		fin >> data->maSach >> data->trangThai >> data->viTri;
 		addLast(list, data);
 	}
-	fin.close();
 }
 
-void nhapDanhMuc(ListNode *&first)
+void sortByMS(DMSach *&first)
 {
-	while (true)
+	for (DMSach *i = first; i != NULL && i->next != NULL; i = i->next)
 	{
-		LNData *data = new LNData;
-		cout << "Nhap ma sv: ";
-		cin >> data->maSach;
-		if (data->maSach <= 0)
-			return;
-		fflush(stdin);
-		cout << "Nhap ho: ";
-		cin >> data->trangThai;
-		cout << "Nhap ten: ";
-		cin >> data->viTri;
-		addLast(first, data);
+		for (DMSach *j = i->next; j != NULL; j = j->next)
+		{
+			if (i->data->maSach > j->data->maSach)
+				swapNodeData(i, j);
+		}
+	}
+}
+
+int compareDataDanhMuc(Sach *a, Sach *b)
+{
+	int cmpTrangThai = a->trangThai - b->trangThai;
+	if (cmpTrangThai != 0)
+		return cmpTrangThai;
+	else
+	{
+		return a->viTri.compare(a->viTri);
+	}
+}
+
+void sortByTTVT(DMSach *&first)
+{
+	for (DMSach *i = first; i != NULL && i->next != NULL; i = i->next)
+	{
+		for (DMSach *j = i->next; j != NULL; j = j->next)
+		{
+			if (compareDataDanhMuc(i->data, j->data) > 0)
+				swapNodeData(i, j);
+		}
 	}
 }
