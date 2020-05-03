@@ -22,7 +22,6 @@ struct BookView
   int right;
   int pageSize = 20;
   int pageIndex = 0;
-  int index = 0;
   int allPage = 0;
 };
 
@@ -40,7 +39,7 @@ void drawBook(BookView book)
     {
       setSelectText();
     }
-    printLine(book.pageIndex + i + 1, book.lines[i]);
+    printLine(book.pageIndex * book.pageSize + i + 1, book.lines[i]);
     if (i == book.select % book.lineCount)
     {
       setNormalText();
@@ -98,18 +97,20 @@ void runBookView(BookView &book, DispathBookAction action, DispathBookReload rel
     case ARROW_RIGHT:
       if (book.allPage > 0)
       {
-        book.pageIndex = (book.pageIndex + 1) / book.allPage;
+        book.pageIndex = (book.pageIndex + 1) % book.allPage;
         reload(book);
       }
       clearBook(book);
+      drawBook(book);
       break;
     case ARROW_LEFT:
       if (book.allPage > 0)
       {
-        book.pageIndex = (book.pageIndex + book.allPage - 1) / book.allPage;
+        book.pageIndex = (book.pageIndex + book.allPage - 1) % book.allPage;
         reload(book);
       }
       clearBook(book);
+      drawBook(book);
       break;
     case ESC:
       ret = true;

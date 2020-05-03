@@ -28,6 +28,13 @@ void dauSachPageReload(BookView &book)
   }
 
   gotoxy(0, 50);
+  cout <<"startIndex" <<startIndex <<endl;
+  cout <<"endIndex" <<endIndex <<endl;
+  cout <<"allPage: " << book.allPage <<endl;
+  cout <<"lineCount: " << book.lineCount <<endl;
+  cout <<"pageSize: " << book.pageSize <<endl;
+  cout <<"pageIndex: " << book.pageIndex <<endl;
+  cout <<"select: " << book.select <<endl;
   for (int i = startIndex; i <= endIndex; i++)
   {
     cout << book.lines[i] << endl;
