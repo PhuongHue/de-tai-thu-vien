@@ -101,7 +101,7 @@ void runBookView(BookView &book, DispathBookAction action, DispathBookReload rel
         book.pageIndex = (book.pageIndex + 1) / book.allPage;
         reload(book);
       }
-      // TODO: not clear page
+      clearBook(book);
       break;
     case ARROW_LEFT:
       if (book.allPage > 0)
@@ -109,7 +109,7 @@ void runBookView(BookView &book, DispathBookAction action, DispathBookReload rel
         book.pageIndex = (book.pageIndex + book.allPage - 1) / book.allPage;
         reload(book);
       }
-      // TODO: not clear page
+      clearBook(book);
       break;
     case ESC:
       ret = true;

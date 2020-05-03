@@ -16,6 +16,7 @@ int testLength = 43;
 
 void dauSachPageReload(BookView &book)
 {
+  // TODO: bug here
   int startIndex = book.pageIndex * book.pageSize;
   int endIndex = startIndex + book.pageSize - 1;
   if (endIndex > testLength - 1)
@@ -24,6 +25,12 @@ void dauSachPageReload(BookView &book)
   for (int i = startIndex; i <= endIndex; i++)
   {
     book.lines[i] = test[i];
+  }
+
+  gotoxy(0, 50);
+  for (int i = startIndex; i <= endIndex; i++)
+  {
+    cout << book.lines[i] << endl;
   }
 }
 
