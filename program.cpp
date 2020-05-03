@@ -1,13 +1,10 @@
-#include <iostream>
-#include <fstream>
-#include <cstring>
-#include "DauSach.cpp"
-#include "TheDocGia.cpp"
+#include "GUI/MainPage.cpp"
 
 using namespace std;
 
 int main()
 {
-	loadDauSachLayout();
-	system("pause");
+	fullScreen();
+	initMainMenu();
+	runMainPage();
 }

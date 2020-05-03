@@ -1,2 +1,3 @@
-g++ -W -Wall -o program program.cpp
-START program
+rm program.exe
+g++ -o program program.cpp
+IF EXIST program.exe START program.exe

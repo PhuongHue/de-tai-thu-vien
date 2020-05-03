@@ -1,7 +1,10 @@
+#ifndef _DAUSACH_CPP_
+#define _DAUSACH_CPP_
+
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "DanhMuc.cpp"
+#include "DMSach.cpp"
 
 struct DauSach
 {
@@ -41,7 +44,7 @@ void addLast(ListDauSach &list, DauSach ds)
 void luuFile(ListDauSach &list)
 {
   ofstream fout;
-  fout.open("DauSach.data");
+  fout.open("data/DauSach.data");
   for (int i = 0; i < list.length; i++)
   {
     fout << list.data[i].ISBN << endl
@@ -57,7 +60,7 @@ void luuFile(ListDauSach &list)
 void docFileDauSach(ListDauSach &list)
 {
   ifstream fin;
-  fin.open("DauSach.data");
+  fin.open("data/DauSach.data");
   while (!fin.eof())
   {
     DauSach ds;
@@ -67,24 +70,4 @@ void docFileDauSach(ListDauSach &list)
   }
 }
 
-void loadDauSachLayout()
-{
-  ifstream fin("DauSach.layout");
-  while (!fin.eof())
-  {
-    string line;
-    getline(fin, line);
-    cout << line << endl;
-  }
-  fin.close();
-  // printf("╥");
-  // ofstream fout("DauSach.layout"); 
-  // fout <<(char)210;
-  // fout.close();
-}
-
-void saveDauSachLayout()
-{
-  wofstream wfout("DauSach.layout");
-  wfout << (char)201;
-}
+#endif

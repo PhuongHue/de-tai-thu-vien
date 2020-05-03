@@ -1,3 +1,6 @@
+#ifndef _THEDOCGIA_CPP_
+#define _THEDOCGIA_CPP_
+
 #include <iostream>
 #include <fstream>
 #include <cstring>
@@ -61,3 +64,5 @@ void insertTreeNode(TreeNode *&root, TNData *data)
     return;
   }
 }
+
+#endif
