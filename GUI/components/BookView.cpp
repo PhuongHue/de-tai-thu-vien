@@ -30,7 +30,7 @@ void printLine(int number, string line)
   cout << setw(3) << number << (char)179 << line;
 }
 
-void drawBook(BookView book)
+void drawBook(BookView &book)
 {
   for (int i = 0; i < book.lineCount; i++)
   {
@@ -66,17 +66,17 @@ void changeSelect(BookView &book, int select)
 {
   gotoxy(book.left, book.top + book.select);
   setNormalText();
-  printLine(book.select + 1, book.lines[book.select]);
+  printLine(book.pageIndex * book.pageSize + book.select + 1, book.lines[book.select]);
   gotoxy(book.left, book.top + select);
   setSelectText();
-  printLine(select + 1, book.lines[select]);
+  printLine(book.pageIndex * book.pageSize + select + 1, book.lines[select]);
   book.select = select;
 }
 
 typedef void (*DispathBookAction)(BookView &book, int keyPressed);
-typedef void (*DispathBookReload)(BookView &book);
+typedef void (*DispathBookLoad)(BookView &book);
 
-void runBookView(BookView &book, DispathBookAction action, DispathBookReload reload)
+void runBookView(BookView &book, DispathBookAction action, DispathBookLoad load)
 {
   drawBook(book);
   bool ret = false;
@@ -97,20 +97,20 @@ void runBookView(BookView &book, DispathBookAction action, DispathBookReload rel
     case ARROW_RIGHT:
       if (book.allPage > 0)
       {
+        clearBook(book);
         book.pageIndex = (book.pageIndex + 1) % book.allPage;
-        reload(book);
+        load(book);
+        drawBook(book);
       }
-      clearBook(book);
-      drawBook(book);
       break;
     case ARROW_LEFT:
       if (book.allPage > 0)
       {
+        clearBook(book);
         book.pageIndex = (book.pageIndex + book.allPage - 1) % book.allPage;
-        reload(book);
+        load(book);
+        drawBook(book);
       }
-      clearBook(book);
-      drawBook(book);
       break;
     case ESC:
       ret = true;
@@ -121,5 +121,5 @@ void runBookView(BookView &book, DispathBookAction action, DispathBookReload rel
   }
   clearBook(book);
 }
-
+// TODO: page info missing
 #endif
