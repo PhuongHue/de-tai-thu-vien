@@ -7,4 +7,4 @@ int main()
 	fullScreen();
 	initMainMenu();
 	runMainPage();
-}
+};

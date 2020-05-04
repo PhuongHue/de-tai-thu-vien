@@ -114,5 +114,5 @@ void runContentViewEditMode(
       }
     }
   }
-
+}
 #endif

@@ -27,7 +27,7 @@ struct ListDauSach
 
 typedef void (*CallBackDauSach)(DauSach &node);
 
-void foreach (ListDauSach list, CallBackDauSach callBack)
+void foreachListDauSach(ListDauSach &list, CallBackDauSach callBack)
 {
   for (int i = 0; i < list.length; i++)
   {
@@ -53,7 +53,7 @@ void luuFile(ListDauSach &list)
          << list.data[i].tacGia << endl
          << list.data[i].namXB << endl
          << list.data[i].theLoai << endl;
-    luuFile(list.data[i].dms, fout);
+    luuFile((list.data[i].dms), fout);
   }
 }
 

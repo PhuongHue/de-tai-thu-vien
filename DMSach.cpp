@@ -29,7 +29,7 @@ int compareData(Sach *a, Sach *b)
 			return cmpViTri;
 		}
 	}
-}
+};
 
 struct DMSach
 {
@@ -45,7 +45,7 @@ struct PairNode
 
 typedef void (*CallBackDMSach)(DMSach *node);
 
-void foreach (DMSach *first, CallBackDMSach callBack)
+void foreachDMSach(DMSach *first, CallBackDMSach callBack)
 {
 	DMSach *p = first;
 	while (p != NULL)

@@ -33,14 +33,6 @@ void mainPageAction(MenuView &menu, int keyPressed)
   {
   case 0:
     clearMenu(menu);
-    for (int i = 0; i < testLength; i++)
-    {
-      stringstream sst;
-      sst << "This is line " << i + 1;
-      string str;
-      getline(sst, str);
-      test[i] = str;
-    }
     initDauSachPage();
     runDauSachPage();
     break;
