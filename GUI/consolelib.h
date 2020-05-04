@@ -130,6 +130,15 @@ void loadLayout(string fileName)
     fin.close();
 }
 
+void setHeader(string header)
+{
+    string str(40, ' ');
+    gotoxy(1, 1);
+    cout << str;
+    gotoxy(1, 1);
+    cout << header;
+}
+
 void clearPage(int left, int top, int right, int bottom)
 {
     string str(right - left + 1, ' ');

@@ -66,7 +66,7 @@ void clearMenu(MenuView menu)
   }
 }
 
-void changeSelect(MenuView &menu, int select)
+void changeMenuSelect(MenuView &menu, int select)
 {
   gotoxy(menu.left, menu.top + menu.select);
   setNormalText();
@@ -92,10 +92,10 @@ void runMenu(MenuView &menu, DispathMenuAction action)
     switch (key)
     {
     case ARROW_DOWN:
-      changeSelect(menu, (menu.select + 1) % menu.count);
+      changeMenuSelect(menu, (menu.select + 1) % menu.count);
       break;
     case ARROW_UP:
-      changeSelect(menu, (menu.select + menu.count - 1) % menu.count);
+      changeMenuSelect(menu, (menu.select + menu.count - 1) % menu.count);
       break;
     case ESC:
       ret = true;

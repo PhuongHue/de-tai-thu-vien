@@ -33,7 +33,7 @@ void mainPageAction(MenuView &menu, int keyPressed)
   {
   case 0:
     clearMenu(menu);
-    for (int i = 0; i < 43; i++)
+    for (int i = 0; i < testLength; i++)
     {
       stringstream sst;
       sst << "This is line " << i + 1;
@@ -47,12 +47,14 @@ void mainPageAction(MenuView &menu, int keyPressed)
   default:
     break;
   }
+  setHeader("Quan ly thu vien");
   drawMenu(menu);
 }
 
 void runMainPage()
 {
   loadLayout("layout/Main.layout");
+  setHeader("Quan ly thu vien");
   runMenu(MainMenu, mainPageAction);
 }
 

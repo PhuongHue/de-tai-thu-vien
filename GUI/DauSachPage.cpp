@@ -11,8 +11,8 @@ using namespace std;
 
 BookView DauSachBook;
 
-string test[43];
-int testLength = 43;
+string test[97];
+int testLength = 97;
 
 void dauSachPageLoad(BookView &book)
 {
@@ -21,22 +21,18 @@ void dauSachPageLoad(BookView &book)
   if (endIndex > testLength - 1)
     endIndex = testLength - 1;
   book.lineCount = endIndex - startIndex + 1;
+  // load data trang moi
   for (int i = startIndex, j = 0; i <= endIndex; i++, j++)
   {
     book.lines[j] = test[i];
   }
-  // gotoxy(0, 50);
-  // cout << "startIndex" << startIndex << endl;
-  // cout << "endIndex" << endIndex << endl;
-  // cout << "allPage: " << book.allPage << endl;
-  // cout << "lineCount: " << book.lineCount << endl;
-  // cout << "pageSize: " << book.pageSize << endl;
-  // cout << "pageIndex: " << book.pageIndex << endl;
-  // cout << "select: " << book.select << endl;
-  // for (int i = 0; i <= book.lineCount; i++)
-  // {
-  //   cout << book.lines[i] << endl;
-  // }
+  // change select
+  if (book.select > book.lineCount - 1)
+    book.select = book.lineCount - 1;
+}
+
+void handleBookSelectChange(BookView &book)
+{
 }
 
 void dauSachPageAction(BookView &book, int keyPressed)
@@ -48,7 +44,8 @@ void initDauSachPage()
   DauSachBook.left = 1;
   DauSachBook.top = 3;
   DauSachBook.right = 40;
-  DauSachBook.pageSize = 10;
+  DauSachBook.bottom = 26;
+  DauSachBook.pageSize = 20;
   DauSachBook.lineCount = 10;
   DauSachBook.allPage = (int)ceil(testLength * 1.0 / DauSachBook.pageSize);
   dauSachPageLoad(DauSachBook);
@@ -57,7 +54,8 @@ void initDauSachPage()
 void runDauSachPage()
 {
   loadLayout("layout/DauSach.layout");
-  runBookView(DauSachBook, dauSachPageAction, dauSachPageLoad);
+  setHeader("Quan ly dau sach");
+  runBookView(DauSachBook, dauSachPageAction, dauSachPageLoad, handleBookSelectChange);
   clearPage(1, 3, 154, 26);
 }
 

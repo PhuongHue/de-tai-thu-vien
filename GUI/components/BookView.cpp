@@ -20,18 +20,34 @@ struct BookView
   int top;
   int left;
   int right;
+  int bottom;
   int pageSize = 20;
   int pageIndex = 0;
   int allPage = 0;
 };
 
-void printLine(int number, string line)
+void debugBook(BookView book)
 {
-  cout << setw(3) << number << (char)179 << line;
+  gotoxy(0, 50);
+  cout << "allPage: " << book.allPage << endl;
+  cout << "lineCount: " << book.lineCount << endl;
+  cout << "pageSize: " << book.pageSize << endl;
+  cout << "pageIndex: " << book.pageIndex << endl;
+  cout << "select: " << book.select << endl;
+  for (int i = 0; i <= book.lineCount; i++)
+  {
+    cout << book.lines[i] << endl;
+  }
 }
 
-void drawBook(BookView &book)
+void printLine(int number, string line)
 {
+  cout << setw(3) << number << (char)179 << " " << line;
+}
+
+void drawBookView(BookView &book)
+{
+  // draw book's lines
   for (int i = 0; i < book.lineCount; i++)
   {
     gotoxy(book.left, book.top + i);
@@ -45,24 +61,26 @@ void drawBook(BookView &book)
       setNormalText();
     }
   }
+  // draw
+  gotoxy(book.left, book.bottom);
+  cout << "Trang " << book.pageIndex + 1 << " / " << book.allPage;
   ShowConsoleCursor(false);
 }
 
-void clearBook(BookView book)
+void clearBookView(BookView book)
 {
-  int left = book.left;
-  int top = book.top;
-  int right = book.right;
-  string str(right - left, ' ');
+  string str(book.right - book.left, ' ');
   setNormalText();
   for (int i = 0; i < book.lineCount; i++)
   {
-    gotoxy(left, top + i);
+    gotoxy(book.left, book.top + i);
     cout << str;
   }
+  gotoxy(book.left, book.bottom);
+  cout << str;
 }
 
-void changeSelect(BookView &book, int select)
+void changeBookSelect(BookView &book, int select)
 {
   gotoxy(book.left, book.top + book.select);
   setNormalText();
@@ -73,12 +91,16 @@ void changeSelect(BookView &book, int select)
   book.select = select;
 }
 
-typedef void (*DispathBookAction)(BookView &book, int keyPressed);
-typedef void (*DispathBookLoad)(BookView &book);
+typedef void (*BookKeyPressedHandle)(BookView &book, int keyPressed);
+typedef void (*BookAction)(BookView &book);
 
-void runBookView(BookView &book, DispathBookAction action, DispathBookLoad load)
+void runBookView(
+    BookView &book,
+    BookKeyPressedHandle onPressed,
+    BookAction load,
+    BookAction onChange)
 {
-  drawBook(book);
+  drawBookView(book);
   bool ret = false;
   while (!ret)
   {
@@ -89,37 +111,39 @@ void runBookView(BookView &book, DispathBookAction action, DispathBookLoad load)
     switch (key)
     {
     case ARROW_DOWN:
-      changeSelect(book, (book.select + 1) % book.lineCount);
+      changeBookSelect(book, (book.select + 1) % book.lineCount);
       break;
     case ARROW_UP:
-      changeSelect(book, (book.select + book.lineCount - 1) % book.lineCount);
+      changeBookSelect(book, (book.select + book.lineCount - 1) % book.lineCount);
       break;
     case ARROW_RIGHT:
       if (book.allPage > 0)
       {
-        clearBook(book);
+        clearBookView(book);
         book.pageIndex = (book.pageIndex + 1) % book.allPage;
         load(book);
-        drawBook(book);
+        drawBookView(book);
       }
       break;
     case ARROW_LEFT:
       if (book.allPage > 0)
       {
-        clearBook(book);
+        clearBookView(book);
         book.pageIndex = (book.pageIndex + book.allPage - 1) % book.allPage;
         load(book);
-        drawBook(book);
+        drawBookView(book);
       }
       break;
     case ESC:
       ret = true;
       break;
     default:
-      action(book, key);
+      // nhan nhung phim con lai F1, F2, F3, F4
+      onPressed(book, key);
     }
+    onChange(book);
   }
-  clearBook(book);
+  clearBookView(book);
 }
 // TODO: page info missing
 #endif
