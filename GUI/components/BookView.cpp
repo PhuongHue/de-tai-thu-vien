@@ -111,10 +111,12 @@ void runBookView(
     switch (key)
     {
     case ARROW_DOWN:
-      changeBookSelect(book, (book.select + 1) % book.lineCount);
+      if (book.lineCount > 0)
+        changeBookSelect(book, (book.select + 1) % book.lineCount);
       break;
     case ARROW_UP:
-      changeBookSelect(book, (book.select + book.lineCount - 1) % book.lineCount);
+      if (book.lineCount > 0)
+        changeBookSelect(book, (book.select + book.lineCount - 1) % book.lineCount);
       break;
     case ARROW_RIGHT:
       if (book.allPage > 0)
