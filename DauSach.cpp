@@ -41,6 +41,12 @@ void foreachListDauSach(ListDauSach &list, CallBackDauSach callBack) {
   }
 }
 
+DauSach *findDauSachByISBN(ListDauSach &list, string ISBN) {
+  for (int i = 0; i < list.length; i++) {
+    if (list.data[i]->ISBN.compare(ISBN) == 0) return list.data[i];
+  }
+}
+
 void addLast(ListDauSach &list, DauSach *ds) {
   list.data[list.length] = ds;
   list.length++;
@@ -77,8 +83,10 @@ ListDauSach filterDauSach(ListDauSach list, DauSach key) {
     if (list.data[i]->ISBN.compare(key.ISBN) == 0 || list.data[i]->namXB == key.namXB ||
         list.data[i]->soTrang == key.soTrang || list.data[i]->tacGia.compare(key.tacGia) == 0 ||
         list.data[i]->ten.compare(key.ten) == 0 || list.data[i]->theLoai.compare(key.theLoai) == 0) {
+      addLast(temp, list.data[i]);
     }
   }
+  return temp;
 }
 
 #endif

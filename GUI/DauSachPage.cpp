@@ -27,12 +27,23 @@ void dauSachBookLoad(BookView &book) {
   // load data trang moi
   for (int i = startIndex, j = 0; i <= endIndex; i++, j++) {
     book.lines[j] = listDauSach.data[i]->ten;
+    book.keys[j] = listDauSach.data[i]->ISBN;
   }
   // change select
   if (book.select > book.lineCount - 1) book.select = book.lineCount - 1;
 }
 
-void handleBookSelectChange(BookView &book) {}
+void handleBookSelectChange(BookView &book) {
+  DauSach *ds = findDauSachByISBN(listDauSach, book.keys[book.select]);
+  DauSachContent.lines[0] = ds->ISBN;
+  // TODO: bug not show number
+  DauSachContent.lines[1] = ds->namXB;
+  DauSachContent.lines[2] = "" + ds->soTrang;
+  DauSachContent.lines[3] = ds->tacGia;
+  DauSachContent.lines[4] = ds->ten;
+  DauSachContent.lines[5] = ds->theLoai;
+  drawContentView(DauSachContent);
+}
 
 void searchDauSach() {
   gotoxy(11, 3);
@@ -89,6 +100,7 @@ void initDauSachPage() {
   DauSachContent.left = 72;
   DauSachContent.right = 154;
   DauSachContent.bottom = 26;
+  DauSachContent.lineCount = 6;
 }
 
 void runDauSachPage() {

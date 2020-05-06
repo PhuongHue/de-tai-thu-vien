@@ -15,6 +15,7 @@ using namespace std;
 
 struct BookView {
   string lines[MAX_BOOK_VIEW_LINE];
+  string keys[MAX_BOOK_VIEW_LINE];
   int lineCount = 0;
   int select = 0;
   int top;
@@ -123,5 +124,4 @@ void runBookView(BookView &book, BookKeyPressedHandle onPressed, BookAction load
   }
   clearBookView(book);
 }
-// TODO: page info missing
 #endif

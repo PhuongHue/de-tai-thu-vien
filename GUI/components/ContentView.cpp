@@ -23,6 +23,7 @@ struct ContentView {
 };
 
 void drawContentView(ContentView content) {
+  setNormalText();
   for (int i = 0; i < content.lineCount; i++) {
     gotoxy(content.left, content.top + i);
     cout << content.lines[i];
