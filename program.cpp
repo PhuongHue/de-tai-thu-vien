@@ -2,9 +2,8 @@
 
 using namespace std;
 
-int main()
-{
-	fullScreen();
-	initMainMenu();
-	runMainPage();
+int main() {
+  fullScreen();
+  initMainMenu();
+  runMainPage();
 };

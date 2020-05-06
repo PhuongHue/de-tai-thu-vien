@@ -1,63 +1,47 @@
 #ifndef _THEDOCGIA_CPP_
 #define _THEDOCGIA_CPP_
 
-#include <iostream>
-#include <fstream>
 #include <cstring>
+#include <fstream>
+#include <iostream>
 
 using namespace std;
 
-struct TNData
-{
+struct TNData {
   int key;
   int value;
 };
 
-int keyCmp(int a, int b)
-{
-  return a - b;
-}
+int keyCmp(int a, int b) { return a - b; }
 
-struct TreeNode
-{
+struct TreeNode {
   TNData *data = NULL;
   struct TreeNode *left = NULL;
   struct TreeNode *right = NULL;
   TreeNode() {}
-  TreeNode(TNData *data)
-  {
-    this->data = data;
-  }
+  TreeNode(TNData *data) { this->data = data; }
 };
 
-void insertTreeNode(TreeNode *&root, TNData *data)
-{
-  if (root == NULL)
-  {
+void insertTreeNode(TreeNode *&root, TNData *data) {
+  if (root == NULL) {
     TreeNode *p = new TreeNode(data);
     root->left = p;
   }
 
   int keyCmpRes = keyCmp(data->key, root->data->key);
-  if (keyCmpRes < 0)
-  {
+  if (keyCmpRes < 0) {
     if (root->left != NULL)
       insertTreeNode(root->left, data);
-    else
-    {
+    else {
       TreeNode *p = new TreeNode(data);
       root->left = p;
     }
     return;
   }
-  if (keyCmpRes > 0)
-  {
-    if (root->right != NULL)
-    {
+  if (keyCmpRes > 0) {
+    if (root->right != NULL) {
       insertTreeNode(root->right, data);
-    }
-    else
-    {
+    } else {
       TreeNode *p = new TreeNode(data);
       root->right = p;
     }

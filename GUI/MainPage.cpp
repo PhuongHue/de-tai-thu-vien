@@ -1,15 +1,14 @@
 #ifndef _MAINPAGE_CPP_
 #define _MAINPAGE_CPP_
 
-#include "components/Menu.cpp"
 #include "DauSachPage.cpp"
+#include "components/Menu.cpp"
 
 using namespace std;
 
 MenuView MainMenu;
 
-void initMainMenu()
-{
+void initMainMenu() {
   MainMenu.left = 1;
   MainMenu.top = 3;
   MainMenu.right = 40;
@@ -26,25 +25,21 @@ void initMainMenu()
   // MainMenu.options[9] = "";
 }
 
-void mainPageAction(MenuView &menu, int keyPressed)
-{
-
-  switch (menu.select)
-  {
-  case 0:
-    clearMenu(menu);
-    initDauSachPage();
-    runDauSachPage();
-    break;
-  default:
-    break;
+void mainPageAction(MenuView &menu, int keyPressed) {
+  switch (menu.select) {
+    case 0:
+      clearMenu(menu);
+      initDauSachPage();
+      runDauSachPage();
+      break;
+    default:
+      break;
   }
   setHeader("Quan ly thu vien");
   drawMenu(menu);
 }
 
-void runMainPage()
-{
+void runMainPage() {
   loadLayout("layout/Main.layout");
   setHeader("Quan ly thu vien");
   runMenu(MainMenu, mainPageAction);
