@@ -84,7 +84,7 @@ void searchDauSach() {
   } else {
     DauSach ds;
     ds.ISBN = ds.tacGia = ds.ten = ds.theLoai = _DauSachSearchString;
-    _ListDauSach = filterDauSach(_ListDauSach, ds);
+    _ListDauSach = filterDauSach(_ListDauSach_Root, ds);
     _DauSachSearchString = "";
     log(_ListDauSach);
   }
@@ -115,28 +115,30 @@ void initDauSachPage() {
   /* Copy data */
   _ListDauSach = _ListDauSach_Root;
 
-  /* init _defaultDauSachBookView, _DauSachBookView */
-  _defaultDauSachBookView.left = 1;
-  _defaultDauSachBookView.top = 5;
-  _defaultDauSachBookView.right = 40;
-  _defaultDauSachBookView.bottom = 26;
-  _defaultDauSachBookView.pageSize = 20;
-  _defaultDauSachBookView.lineCount = 20;
+  /* init _DauSachBookView, _DauSachBookView */
+  _DauSachBookView.left = 1;
+  _DauSachBookView.top = 5;
+  _DauSachBookView.right = 40;
+  _DauSachBookView.bottom = 26;
+  _DauSachBookView.pageSize = 20;
+  _DauSachBookView.lineCount = 20;
   // tinh so trang, dua page index ve 0
-  resetBookIndex(_defaultDauSachBookView, _ListDauSach.length);
+  resetBookIndex(_DauSachBookView, _ListDauSach.length);
   /* load _DauSachBookView */
-  loadDauSachBook(_defaultDauSachBookView);
-  _DauSachBookView = _defaultDauSachBookView;
+  loadDauSachBook(_DauSachBookView);
+  // backup
+  _defaultDauSachBookView = _DauSachBookView;
 
-  /* init _defaultDauSachContentView */
-  _defaultDauSachContentView.top = 3;
-  _defaultDauSachContentView.left = 72;
-  _defaultDauSachContentView.right = 154;
-  _defaultDauSachContentView.bottom = 26;
-  _defaultDauSachContentView.lineCount = 6;
+  /* init _DauSachContentView */
+  _DauSachContentView.top = 3;
+  _DauSachContentView.left = 72;
+  _DauSachContentView.right = 154;
+  _DauSachContentView.bottom = 26;
+  _DauSachContentView.lineCount = 6;
   /* load _DauSachBookView */
   loadDauSachContent(_DauSachBookView, _DauSachContentView);
-  _DauSachContentView = _defaultDauSachContentView;
+  // backup
+  _defaultDauSachContentView = _DauSachContentView;
 
   drawContentView(_DauSachContentView);
 }
