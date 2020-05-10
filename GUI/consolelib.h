@@ -8,6 +8,7 @@
 #include <windows.h>
 
 #include <string>
+#include <vector>
 
 #include "components/StaticDefine.cpp"
 
@@ -115,12 +116,19 @@ void loadLayout(string fileName) {
   fin.close();
 }
 
+struct Header {
+  int top = 1;
+  int left = 1;
+  int length = 0;
+} cacheHeader;
+
 void setHeader(string header) {
-  string str(40, ' ');
-  gotoxy(1, 1);
-  cout << str;
-  gotoxy(1, 1);
+  gotoxy(cacheHeader.left, cacheHeader.top);
   cout << header;
+  if (cacheHeader.length > header.length()) {
+    cout << string(cacheHeader.length - header.length(), ' ');
+  }
+  cacheHeader.length = header.length();
 }
 
 void clearPage(int left, int top, int right, int bottom) {
@@ -167,6 +175,25 @@ void customCin(int &a, int limit) {
       a += a * 10 + x;
     }
   }
+}
+
+struct Footer {
+  int left = 2;
+  int top = 28;
+  int length = 0;
+} cacheFooter;
+
+void setFooter(vector<string> cmds) {
+  gotoxy(cacheFooter.left, cacheFooter.top);
+  int maxLength = 0;
+  for (vector<string>::iterator i = cmds.begin(); i != cmds.end(); i++) {
+    cout << (*i) << " | ";
+    maxLength += (*i).length() + 3;
+  }
+  if (cacheFooter.length > maxLength) {
+    cout << string(cacheFooter.length - maxLength, ' ');
+  }
+  cacheFooter.length = maxLength;
 }
 
 #endif

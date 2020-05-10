@@ -4,6 +4,8 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+
+#include "GUI/consolelib.h"
 using namespace std;
 
 #define CHO_MUON_DUOC 0
@@ -136,21 +138,24 @@ bool deleteByMaSach(DMSach *&first, int key) {
 }
 void luuFile(DMSach *&first, ofstream &fout) {
   DMSach *p = first;
-  fout << countAll(first);
-  while (p != NULL && p->data != NULL) {
+  fout << countAll(first) << endl;
+  gotoxy(0, 50);
+  cout << countAll(first);
+  while (p != NULL) {
     Sach *data = p->data;
-    fout << data->maSach << endl << data->trangThai << endl << data->viTri;
-    if (p->next) fout << endl;
+    fout << data->maSach << endl << data->trangThai << endl << data->viTri << endl;
     p = p->next;
   }
 }
 
-void docFile(DMSach *&list, ifstream &fin) {
+void docFile(DMSach *&list, fstream &fin) {
   int n;
   fin >> n;
   for (int i = 0; i < n; i++) {
     Sach *data = new Sach;
-    fin >> data->maSach >> data->trangThai >> data->viTri;
+    fin >> data->maSach >> data->trangThai;
+    fin.ignore();
+    getline(fin, data->viTri);
     addLast(list, data);
   }
 }

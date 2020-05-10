@@ -20,7 +20,7 @@ struct ContentView {
   int left;
   int right;
   int bottom;
-};
+} defaultContentView;
 
 void drawContentView(ContentView content) {
   setNormalText();

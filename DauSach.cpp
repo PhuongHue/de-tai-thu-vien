@@ -18,12 +18,12 @@ struct DauSach {
 };
 
 void debugDauSach(DauSach *ds) {
-  cout << ds->ISBN << endl
-       << ds->namXB << endl
-       << ds->soTrang << endl
-       << ds->tacGia << endl
-       << ds->ten << endl
-       << ds->theLoai << endl;
+  cout << "ISBN: " << ds->ISBN << endl
+       << "namXB: " << ds->namXB << endl
+       << "soTrang: " << ds->soTrang << endl
+       << "tacGia: " << ds->tacGia << endl
+       << "ten: " << ds->ten << endl
+       << "theLoai: " << ds->theLoai << endl;
 }
 
 #define MAX_LIST 500
@@ -55,6 +55,7 @@ void addLast(ListDauSach &list, DauSach *ds) {
 void luuFile(ListDauSach &list) {
   ofstream fout;
   fout.open("data/DauSach.data");
+  fout << list.length << endl;
   for (int i = 0; i < list.length; i++) {
     fout << list.data[i]->ISBN << endl
          << list.data[i]->ten << endl
@@ -66,12 +67,21 @@ void luuFile(ListDauSach &list) {
   }
 }
 
-void docFileDauSach(ListDauSach &list) {
-  ifstream fin;
-  fin.open("data/DauSach.data");
-  while (!fin.eof()) {
+void docFile(ListDauSach &list, fstream &fin) {
+  int all;
+  fin >> all;
+  fin.ignore();
+  for (int i = 0; i < all; i++) {
     DauSach *ds = new DauSach;
-    fin >> ds->ISBN >> ds->ten >> ds->soTrang >> ds->tacGia >> ds->namXB >> ds->theLoai;
+    getline(fin, ds->ISBN);
+    getline(fin, ds->ten);
+    fin >> ds->soTrang;
+    fin.ignore();
+    getline(fin, ds->tacGia);
+    fin >> ds->namXB;
+    fin.ignore();
+    getline(fin, ds->theLoai);
+    // debugDauSach(ds);
     docFile(ds->dms, fin);
     addLast(list, ds);
   }

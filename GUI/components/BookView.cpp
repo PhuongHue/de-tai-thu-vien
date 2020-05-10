@@ -25,7 +25,7 @@ struct BookView {
   int pageSize = 20;
   int pageIndex = 0;
   int allPage = 0;
-};
+} defaultBookView;
 
 void debugBook(BookView book) {
   gotoxy(0, 50);

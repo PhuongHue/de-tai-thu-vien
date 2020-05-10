@@ -6,23 +6,24 @@
 
 using namespace std;
 
-MenuView MainMenu;
+MenuView _MainMenuView;
+vector<string> _MainMenuFooter = {"ESC: Thoat", "ENTER: Chon"};
 
 void initMainMenu() {
-  MainMenu.left = 1;
-  MainMenu.top = 3;
-  MainMenu.right = 40;
-  MainMenu.count = 1;
-  MainMenu.options[0] = "Quan ly dau sach.";
-  // MainMenu.options[1] = "";
-  // MainMenu.options[2] = "";
-  // MainMenu.options[3] = "";
-  // MainMenu.options[4] = "";
-  // MainMenu.options[5] = "";
-  // MainMenu.options[6] = "";
-  // MainMenu.options[7] = "";
-  // MainMenu.options[8] = "";
-  // MainMenu.options[9] = "";
+  _MainMenuView.left = 1;
+  _MainMenuView.top = 3;
+  _MainMenuView.right = 40;
+  _MainMenuView.count = 1;
+  _MainMenuView.options[0] = "Quan ly dau sach.";
+  // _MainMenuView.options[1] = "";
+  // _MainMenuView.options[2] = "";
+  // _MainMenuView.options[3] = "";
+  // _MainMenuView.options[4] = "";
+  // _MainMenuView.options[5] = "";
+  // _MainMenuView.options[6] = "";
+  // _MainMenuView.options[7] = "";
+  // _MainMenuView.options[8] = "";
+  // _MainMenuView.options[9] = "";
 }
 
 void mainPageAction(MenuView &menu, int keyPressed) {
@@ -36,13 +37,15 @@ void mainPageAction(MenuView &menu, int keyPressed) {
       break;
   }
   setHeader("Quan ly thu vien");
+  setFooter(_MainMenuFooter);
   drawMenu(menu);
 }
 
 void runMainPage() {
   loadLayout("layout/Main.layout");
   setHeader("Quan ly thu vien");
-  runMenu(MainMenu, mainPageAction);
+  setFooter(_MainMenuFooter);
+  runMenu(_MainMenuView, mainPageAction);
 }
 
 #endif
