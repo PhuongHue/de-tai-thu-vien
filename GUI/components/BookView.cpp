@@ -25,7 +25,7 @@ struct BookView {
   int pageSize = 20;
   int pageIndex = 0;
   int allPage = 0;
-} defaultBookView;
+};
 
 void debugBook(BookView book) {
   gotoxy(0, 50);
@@ -78,6 +78,12 @@ void changeBookSelect(BookView &book, int select) {
   setSelectText();
   printLine(book.pageIndex * book.pageSize + select + 1, book.lines[select]);
   book.select = select;
+}
+
+void resetBookIndex(BookView &book, int dataCount) {
+  book.pageIndex = 0;
+  book.allPage = (int)ceil(dataCount * 1.0 / book.pageSize);
+  if (book.allPage == 0) book.allPage = 1;
 }
 
 typedef void (*BookKeyPressedHandle)(BookView &book, int keyPressed);

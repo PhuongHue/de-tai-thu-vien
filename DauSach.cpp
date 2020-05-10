@@ -6,6 +6,7 @@
 #include <string>
 
 #include "DMSach.cpp"
+#include "StringLib.cpp"
 
 struct DauSach {
   string ISBN;
@@ -17,13 +18,26 @@ struct DauSach {
   DMSach *dms = NULL;
 };
 
-void debugDauSach(DauSach *ds) {
+void log(DauSach *&ds) {
+  gotoxy(0, _DebugLog.logX);
   cout << "ISBN: " << ds->ISBN << endl
        << "namXB: " << ds->namXB << endl
        << "soTrang: " << ds->soTrang << endl
        << "tacGia: " << ds->tacGia << endl
        << "ten: " << ds->ten << endl
        << "theLoai: " << ds->theLoai << endl;
+  _DebugLog.logX += 6;
+}
+
+void log(DauSach &ds) {
+  gotoxy(0, _DebugLog.logX);
+  cout << "ISBN: " << ds.ISBN << endl
+       << "namXB: " << ds.namXB << endl
+       << "soTrang: " << ds.soTrang << endl
+       << "tacGia: " << ds.tacGia << endl
+       << "ten: " << ds.ten << endl
+       << "theLoai: " << ds.theLoai << endl;
+  _DebugLog.logX += 6;
 }
 
 #define MAX_LIST 500
@@ -40,6 +54,8 @@ void foreachListDauSach(ListDauSach &list, CallBackDauSach callBack) {
     callBack(list.data[i]);
   }
 }
+
+void log(ListDauSach &lds) { foreachListDauSach(lds, log); }
 
 DauSach *findDauSachByISBN(ListDauSach &list, string ISBN) {
   for (int i = 0; i < list.length; i++) {
@@ -81,7 +97,7 @@ void docFile(ListDauSach &list, fstream &fin) {
     fin >> ds->namXB;
     fin.ignore();
     getline(fin, ds->theLoai);
-    // debugDauSach(ds);
+    // log(ds);
     docFile(ds->dms, fin);
     addLast(list, ds);
   }
@@ -90,9 +106,7 @@ void docFile(ListDauSach &list, fstream &fin) {
 ListDauSach filterDauSach(ListDauSach list, DauSach key) {
   ListDauSach temp;
   for (int i = 0; i < list.length; i++) {
-    if (list.data[i]->ISBN.compare(key.ISBN) == 0 || list.data[i]->namXB == key.namXB ||
-        list.data[i]->soTrang == key.soTrang || list.data[i]->tacGia.compare(key.tacGia) == 0 ||
-        list.data[i]->ten.compare(key.ten) == 0 || list.data[i]->theLoai.compare(key.theLoai) == 0) {
+    if (find(list.data[i]->ISBN, key.ISBN) >= 0) {
       addLast(temp, list.data[i]);
     }
   }

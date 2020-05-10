@@ -4,7 +4,7 @@ using namespace std;
 
 int main() {
   fstream fin("data/DauSach.data", fstream::in);
-  docFile(listDauSach, fin);
+  docFile(_ListDauSach_Root, fin);
   fin.close();
   system("pause");
   fullScreen();

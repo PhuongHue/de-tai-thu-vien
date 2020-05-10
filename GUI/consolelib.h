@@ -166,6 +166,7 @@ void customCin(string &str, int limit) {
     cout << spaceStr;
   }
 }
+
 void customCin(int &a, int limit) {
   if (limit > 10) limit = 10;
   char x;
@@ -194,6 +195,16 @@ void setFooter(vector<string> cmds) {
     cout << string(cacheFooter.length - maxLength, ' ');
   }
   cacheFooter.length = maxLength;
+}
+
+struct DebugLog {
+  int logX = 32;
+} _DebugLog;
+
+void log(string s) {
+  gotoxy(0, _DebugLog.logX);
+  cout << s << endl;
+  _DebugLog.logX++;
 }
 
 #endif

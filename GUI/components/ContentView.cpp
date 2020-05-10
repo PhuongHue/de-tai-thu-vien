@@ -9,10 +9,11 @@
 #include "../consolelib.h"
 #include "StaticDefine.cpp"
 
-#define MAX_CONTENT_VIEW_LINE 10
+#define MAX_CONTENT_VIEW_LINE 20
 
 struct ContentView {
   string lines[MAX_CONTENT_VIEW_LINE];
+  string labels[MAX_CONTENT_VIEW_LINE];
   int lineCount = 0;
   int select = 0;
   int cursor;
@@ -20,7 +21,7 @@ struct ContentView {
   int left;
   int right;
   int bottom;
-} defaultContentView;
+};
 
 void drawContentView(ContentView content) {
   setNormalText();

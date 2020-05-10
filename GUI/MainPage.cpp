@@ -8,6 +8,7 @@ using namespace std;
 
 MenuView _MainMenuView;
 vector<string> _MainMenuFooter = {"ESC: Thoat", "ENTER: Chon"};
+string _MainHeaderTitle = "Quan ly thu vien";
 
 void initMainMenu() {
   _MainMenuView.left = 1;
@@ -36,14 +37,14 @@ void mainPageAction(MenuView &menu, int keyPressed) {
     default:
       break;
   }
-  setHeader("Quan ly thu vien");
+  setHeader(_MainHeaderTitle);
   setFooter(_MainMenuFooter);
   drawMenu(menu);
 }
 
 void runMainPage() {
   loadLayout("layout/Main.layout");
-  setHeader("Quan ly thu vien");
+  setHeader(_MainHeaderTitle);
   setFooter(_MainMenuFooter);
   runMenu(_MainMenuView, mainPageAction);
 }
