@@ -146,8 +146,11 @@ void customCin(string &str, int limit) {
   int x;
   while (x != ENTER && x != ESC) {
     x = getch();
-    if (x == 0 || x == 224) x = getch();
-    if (temp.length() <= limit && (x >= '0' && x <= '9' || x >= 'A' && x <= 'Z' || x >= 'a' && x <= 'z')) {
+    if (x == 0 || x == 224) {
+      getch();
+      continue;
+    }
+    if (temp.length() <= limit && (x >= ' ' && x <= 'z')) {
       cout << (char)x;
       temp += x;
     } else if (x == 8) {
