@@ -40,7 +40,7 @@ void debugBook(BookView book) {
   }
 }
 
-void printLine(int number, string line) { cout << setw(3) << number << (char)179 << " " << line; }
+void printBookLine(int number, string line) { cout << right << setw(3) << number << (char)179 << " " << line; }
 
 void drawBookView(BookView &book) {
   // draw book's lines
@@ -49,7 +49,7 @@ void drawBookView(BookView &book) {
     if (i == book.select % book.lineCount) {
       setSelectText();
     }
-    printLine(book.pageIndex * book.pageSize + i + 1, book.lines[i]);
+    printBookLine(book.pageIndex * book.pageSize + i + 1, book.lines[i]);
     if (i == book.select % book.lineCount) {
       setNormalText();
     }
@@ -74,10 +74,10 @@ void clearBookView(BookView book) {
 void changeBookSelect(BookView &book, int select) {
   gotoxy(book.left, book.top + book.select);
   setNormalText();
-  printLine(book.pageIndex * book.pageSize + book.select + 1, book.lines[book.select]);
+  printBookLine(book.pageIndex * book.pageSize + book.select + 1, book.lines[book.select]);
   gotoxy(book.left, book.top + select);
   setSelectText();
-  printLine(book.pageIndex * book.pageSize + select + 1, book.lines[select]);
+  printBookLine(book.pageIndex * book.pageSize + select + 1, book.lines[select]);
   book.select = select;
 }
 

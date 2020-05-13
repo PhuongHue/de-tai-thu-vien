@@ -22,7 +22,7 @@ ContentView _DauSachContentView;
 ContentView _defaultDauSachContentView;
 string _DauSachSearchString;
 
-const vector<string> _DauSachBookFooter = {"ESC: Tro ve", "\xAE: Trang sau", "\xAF: Trang truoc", "F2: Luu"};
+const vector<string> _DauSachBookFooter = {"ESC: Tro ve", "\xAE: Trang sau", "\xAF: Trang truoc", "F1: Tim kiem", "F2: Luu"};
 const vector<string> _DauSachBookSearchFooter = {"ESC: Huy", "ENTER: Tim kiem"};
 
 /**
@@ -38,6 +38,8 @@ void loadDauSachContent(BookView &book, ContentView &content) {
   _DauSachContentView.lines[4] = ds->ten;
   _DauSachContentView.lines[5] = ds->theLoai;
 }
+
+void handleContentInsert(ContentView &content, int key) {}
 
 /**
  * _DauSachBookView functions
@@ -80,7 +82,7 @@ void searchDauSach() {
     _ListDauSach = _ListDauSach_Root;
     // reset view
     _DauSachBookView = _defaultDauSachBookView;
-    log("string empty");
+    consoleLog<string>("string empty");
   } else {
     DauSach ds;
     ds.ISBN = ds.tacGia = ds.ten = ds.theLoai = _DauSachSearchString;
@@ -103,6 +105,9 @@ void dauSachPageAction(BookView &book, int keyPressed) {
       break;
     case F2:
       luuFile(_ListDauSach_Root);
+      break;
+    case F3:
+      runContentViewEditMode(_DauSachContentView, NULL);
       break;
     default:
       break;
@@ -135,6 +140,19 @@ void initDauSachPage() {
   _DauSachContentView.right = 154;
   _DauSachContentView.bottom = 26;
   _DauSachContentView.lineCount = 6;
+  _DauSachContentView.labelColumnSize = 8;
+  _DauSachContentView.labels[0] = "ISBN";
+  _DauSachContentView.labels[1] = "Nam XB";
+  _DauSachContentView.labels[2] = "So trang";
+  _DauSachContentView.labels[3] = "Tac gia";
+  _DauSachContentView.labels[4] = "Ten";
+  _DauSachContentView.labels[5] = "The loai";
+  _DauSachContentView.isNumberType[0] = false;
+  _DauSachContentView.isNumberType[1] = true;
+  _DauSachContentView.isNumberType[2] = true;
+  _DauSachContentView.isNumberType[3] = false;
+  _DauSachContentView.isNumberType[4] = false;
+  _DauSachContentView.isNumberType[5] = false;
   /* load _DauSachBookView */
   loadDauSachContent(_DauSachBookView, _DauSachContentView);
   // backup

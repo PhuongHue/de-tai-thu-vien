@@ -14,6 +14,8 @@
 struct ContentView {
   string lines[MAX_CONTENT_VIEW_LINE];
   string labels[MAX_CONTENT_VIEW_LINE];
+  bool isNumberType[MAX_CONTENT_VIEW_LINE];
+  int labelColumnSize = 10;
   int lineCount = 0;
   int select = 0;
   int cursor;
@@ -23,11 +25,15 @@ struct ContentView {
   int bottom;
 };
 
+void printContentLine(string label, string line, int width = 5) {
+  cout << left << setw(width) << label << ": " << line;
+}
+
 void drawContentView(ContentView content) {
   setNormalText();
   for (int i = 0; i < content.lineCount; i++) {
     gotoxy(content.left, content.top + i);
-    cout << content.lines[i];
+    printContentLine(content.labels[i], content.lines[i], content.labelColumnSize);
   }
 }
 
@@ -42,7 +48,22 @@ void clearContentView(ContentView content) {
   cout << str;
 }
 
-void changeContentLineSelect(ContentView &content, int newSelectIndex) {}
+void editLine(ContentView &content, int key) {
+  if(content.isNumberType[content.select]){
+    
+  }
+}
+
+void _gotoSelect(ContentView &content) {
+  gotoxy(content.left + content.labelColumnSize + 2 + content.cursor,
+         content.top + content.select);
+}
+
+void changeContentLineSelect(ContentView &content, int newSelectIndex) {
+  content.select = newSelectIndex;
+  content.cursor = content.lines[content.select].length();
+  _gotoSelect(content);
+}
 
 void changeCursor(ContentView &content, int keyPressed) {
   if (keyPressed == ARROW_LEFT) {
@@ -54,12 +75,17 @@ void changeCursor(ContentView &content, int keyPressed) {
     if (content.cursor > content.lines[content.select].length())
       content.cursor = content.lines[content.select].length();
   }
+  _gotoSelect(content);
 }
 
 typedef void (*ContentAction)(ContentView &content, int key);
 
-void runContentViewEditMode(ContentView &content, ContentAction onInsert, ContentAction onAction) {
+void runContentViewEditMode(ContentView &content, ContentAction onAction) {
+  content.select = 0;
+  content.cursor = content.lines[0].length();
   drawContentView(content);
+  showConsoleCursor(true);
+  _gotoSelect(content);
   bool ret = false;
   while (!ret) {
     int padKey = -1;
@@ -68,7 +94,6 @@ void runContentViewEditMode(ContentView &content, ContentAction onInsert, Conten
       padKey = key;
       key = getch();
     }
-    showConsoleCursor(false);
     switch (key) {
       case ARROW_DOWN:
         changeContentLineSelect(content, (content.select + 1) % content.lineCount);
@@ -89,7 +114,7 @@ void runContentViewEditMode(ContentView &content, ContentAction onInsert, Conten
         switch (padKey) {
           case -1:
             // a-z A-Z 0-9 pressed
-            onInsert(content, key);
+            editLine(content, key);
             break;
           case 0:
             // F1 - f12 pressed
@@ -98,5 +123,6 @@ void runContentViewEditMode(ContentView &content, ContentAction onInsert, Conten
         }
     }
   }
+  showConsoleCursor(false);
 }
 #endif

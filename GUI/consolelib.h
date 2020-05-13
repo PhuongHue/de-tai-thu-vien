@@ -12,13 +12,6 @@
 
 #include "components/StaticDefine.cpp"
 
-void gotoxy(short x, short y) {
-  HANDLE hConsoleOutput;
-  COORD Cursor_an_Pos = {x, y};
-  hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
-  SetConsoleCursorPosition(hConsoleOutput, Cursor_an_Pos);
-}
-
 int wherex(void) {
   HANDLE hConsoleOutput;
   hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -34,6 +27,18 @@ int wherey(void) {
   GetConsoleScreenBufferInfo(hConsoleOutput, &screen_buffer_info);
   return screen_buffer_info.dwCursorPosition.Y;
 }
+
+void gotoxy(short x, short y) {
+  HANDLE hConsoleOutput;
+  COORD Cursor_an_Pos = {x, y};
+  hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+  SetConsoleCursorPosition(hConsoleOutput, Cursor_an_Pos);
+}
+
+void gotoLeft() { gotoxy(wherex() - 1, wherey()); }
+
+void gotoRight() { gotoxy(wherex() + 1, wherey()); }
+
 void clreol() {
   COORD coord;
   DWORD written;
@@ -97,6 +102,20 @@ void setNormalText() {
   SetBGColor(0);
 }
 
+struct DebugLog {
+  int logX = 32;
+} _DebugLog;
+
+template <class T>
+void consoleLog(T s) {
+  int cX = wherex();
+  int cY = wherey();
+  gotoxy(0, _DebugLog.logX);
+  cout << s << endl;
+  _DebugLog.logX++;
+  gotoxy(cX, cY);
+}
+
 void loadLayout(string fileName) {
   int y = 0;
   ifstream fin(fileName.data());
@@ -139,24 +158,56 @@ void clearPage(int left, int top, int right, int bottom) {
   }
 }
 
-void customCin(string &str, int limit) {
+void customCin(string &str, int limit, string initStr = "") {
   int cX = wherex();
   int cY = wherey();
-  string temp = "";
+  showConsoleCursor(true);
+  string temp = initStr;
+  int cursor = temp.length();
+  cout << temp;
   int x;
   while (x != ENTER && x != ESC) {
     x = getch();
     if (x == 0 || x == 224) {
-      getch();
+      x = getch();
+      switch (x) {
+        case ARROW_LEFT:
+          if (cursor > 0) {
+            gotoLeft();
+            cursor--;
+          }
+          break;
+        case ARROW_RIGHT:
+          if (cursor < temp.length()) {
+            gotoRight();
+            cursor++;
+          }
+          break;
+        default:
+          break;
+      }
       continue;
     }
     if (temp.length() <= limit && (x >= ' ' && x <= 'z')) {
-      cout << (char)x;
-      temp += x;
+      int cX = wherex() + 1;
+      int xY = wherey();
+      cout << (char)x << temp.substr(cursor);
+      gotoxy(cX, cY);
+      temp.insert(temp.begin() + cursor, (char)x);
+      cursor++;
     } else if (x == 8) {
       if (temp.length() > 0) {
-        temp.pop_back();
-        cout << (char)8 << ' ' << (char)8;
+        int cX = wherex() - 1;
+        int xY = wherey();
+        cout << string(temp.length() - cursor, ' ');
+        temp = temp.substr(0, cursor - 1);
+        if (cursor < temp.length()) {
+          string tempRight = temp.substr(cursor + 1);
+          temp += tempRight;
+          cout << tempRight;
+        }
+        gotoxy(cX, cY);
+        cursor--;
       } else
         cout << (char)7;  // keu thong bao
     }
@@ -198,16 +249,6 @@ void setFooter(vector<string> cmds) {
     cout << string(cacheFooter.length - maxLength, ' ');
   }
   cacheFooter.length = maxLength;
-}
-
-struct DebugLog {
-  int logX = 32;
-} _DebugLog;
-
-void log(string s) {
-  gotoxy(0, _DebugLog.logX);
-  cout << s << endl;
-  _DebugLog.logX++;
 }
 
 #endif
