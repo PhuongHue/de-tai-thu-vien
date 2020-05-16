@@ -26,6 +26,16 @@ struct ContentView {
   vector<string> footer = {"ESC: Cancel", "F2: Luu"};
 };
 
+ContentView getEmptyView(ContentView base)
+{
+  ContentView content = base;
+  content.cursor = 0;
+  for (int i = 0; i < content.lineCount; i++) {
+    content.lines[i] = "";
+  }
+  return content;
+}
+
 void printContentLine(string label, string line, int width = 5)
 {
   cout << left << setw(width) << label << setw(0) << ": " << line;
@@ -80,8 +90,8 @@ void _gotoSelect(ContentView &content)
 void editLine(ContentView &content, int key)
 {
   int select = content.select;
-  if (content.cursor == 0) return;
   if (key == BACKSPACE) {
+    if (content.cursor == 0) return;
     string right = "";
     if (content.cursor < content.lines[select].length()) {
       right = content.lines[select].substr(content.cursor);
@@ -126,7 +136,7 @@ void changeCursor(ContentView &content, int keyPressed)
   _gotoSelect(content);
 }
 
-typedef void (*ContentAction)(ContentView &content, int key);
+typedef void (*ContentAction)(ContentView &content, int key, bool &breaker);
 
 void runContentViewEditMode(ContentView &content, ContentAction onAction)
 {
@@ -168,7 +178,7 @@ void runContentViewEditMode(ContentView &content, ContentAction onAction)
         break;
       case 0:
         // F1 - f12 pressed
-        if (onAction) onAction(content, key);
+        if (onAction) onAction(content, key, ret);
         break;
       }
     }

@@ -20,7 +20,14 @@ BookView _defaultDauSachBookView;
 
 ContentView _DauSachContentView;
 ContentView _defaultDauSachContentView;
+
 string _DauSachSearchString;
+
+#define BOOK_NORMAL 0
+#define BOOK_CREATE 1
+#define BOOK_EDIT 2
+
+int BOOK_MODE = BOOK_NORMAL;
 
 const vector<string> _DauSachBookFooter = {
     "ESC: Tro ve",
@@ -28,7 +35,7 @@ const vector<string> _DauSachBookFooter = {
     "\xAF: Trang truoc",
     "F1: Tim kiem",
     "F2: Luu",
-    "F3: Sua"};
+    "F3: Sua", "F4: Them moi"};
 const vector<string> _DauSachBookSearchFooter = {"ESC: Huy", "ENTER: Tim kiem"};
 
 /**
@@ -46,14 +53,36 @@ void loadDauSachContent(BookView &book, ContentView &content)
   _DauSachContentView.lines[5] = ds->theLoai;
 }
 
-void handleContentEdit(ContentView &content, int key) {
-  switch (key)
-  {
+void updateContent(ContentView &content)
+{
+  int bookIndex = getIndex(_DauSachBookView);
+  consoleLog<int>(bookIndex);
+  DauSach *ds;
+  if (BOOK_MODE == BOOK_EDIT) {
+    ds = _ListDauSach.data[bookIndex];
+    _DauSachBookView.keys[_DauSachBookView.select] = content.lines[0];
+  }
+  if (BOOK_MODE == BOOK_CREATE) ds = new DauSach;
+
+  ds->ISBN = content.lines[0];
+  ds->namXB = stoi(content.lines[1]);
+  ds->soTrang = stoi(content.lines[2]);
+  ds->tacGia = content.lines[3];
+  ds->ten = content.lines[4];
+  ds->theLoai = content.lines[5];
+
+  if (BOOK_MODE == BOOK_CREATE) {
+    addLast(_ListDauSach_Root, ds);
+    _ListDauSach = _ListDauSach_Root;
+  }
+}
+
+void handleContentAction(ContentView &content, int key, bool &breaker)
+{
+  switch (key) {
   case F2:
-    /* code */
-    break;
-  
-  default:
+    updateContent(content);
+    breaker = true;
     break;
   }
 }
@@ -102,7 +131,6 @@ void searchDauSach()
     _ListDauSach = _ListDauSach_Root;
     // reset view
     _DauSachBookView = _defaultDauSachBookView;
-    consoleLog<string>("string empty");
   }
   else {
     DauSach ds;
@@ -129,9 +157,16 @@ void dauSachPageAction(BookView &book, int keyPressed)
     luuFile(_ListDauSach_Root);
     break;
   case F3:
-    runContentViewEditMode(_DauSachContentView, handleContentEdit);
+    BOOK_MODE = BOOK_EDIT;
+    runContentViewEditMode(_DauSachContentView, handleContentAction);
+    BOOK_MODE = BOOK_NORMAL;
     break;
-  default:
+  case F4:
+    BOOK_MODE = BOOK_CREATE;
+    clearContentView(_DauSachContentView);
+    ContentView cv = getEmptyView(_DauSachContentView);
+    runContentViewEditMode(cv, handleContentAction);
+    BOOK_MODE = BOOK_NORMAL;
     break;
   }
   setFooter(_DauSachBookFooter);

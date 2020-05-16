@@ -4,8 +4,8 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <string>
 #include <math.h>
+#include <string>
 
 #include "../consolelib.h"
 #include "StaticDefine.cpp"
@@ -28,7 +28,8 @@ struct BookView {
   int allPage = 0;
 };
 
-void debugBook(BookView book) {
+void debugBook(BookView book)
+{
   gotoxy(0, 50);
   cout << "allPage: " << book.allPage << endl;
   cout << "lineCount: " << book.lineCount << endl;
@@ -40,9 +41,15 @@ void debugBook(BookView book) {
   }
 }
 
+int getIndex(BookView book)
+{
+  return book.pageSize * book.pageIndex + book.select;
+}
+
 void printBookLine(int number, string line) { cout << right << setw(3) << number << setw(0) << (char)179 << " " << line; }
 
-void drawBookView(BookView &book) {
+void drawBookView(BookView &book)
+{
   // draw book's lines
   for (int i = 0; i < book.lineCount; i++) {
     gotoxy(book.left, book.top + i);
@@ -60,7 +67,8 @@ void drawBookView(BookView &book) {
   showConsoleCursor(false);
 }
 
-void clearBookView(BookView book) {
+void clearBookView(BookView book)
+{
   string str(book.right - book.left, ' ');
   setNormalText();
   for (int i = 0; i < book.lineCount; i++) {
@@ -71,7 +79,8 @@ void clearBookView(BookView book) {
   cout << str;
 }
 
-void changeBookSelect(BookView &book, int select) {
+void changeBookSelect(BookView &book, int select)
+{
   gotoxy(book.left, book.top + book.select);
   setNormalText();
   printBookLine(book.pageIndex * book.pageSize + book.select + 1, book.lines[book.select]);
@@ -81,7 +90,8 @@ void changeBookSelect(BookView &book, int select) {
   book.select = select;
 }
 
-void resetBookIndex(BookView &book, int dataCount) {
+void resetBookIndex(BookView &book, int dataCount)
+{
   book.pageIndex = 0;
   book.allPage = (int)ceil(dataCount * 1.0 / book.pageSize);
   if (book.allPage == 0) book.allPage = 1;
@@ -90,7 +100,8 @@ void resetBookIndex(BookView &book, int dataCount) {
 typedef void (*BookKeyPressedHandle)(BookView &book, int keyPressed);
 typedef void (*BookAction)(BookView &book);
 
-void runBookView(BookView &book, BookKeyPressedHandle onPressed, BookAction load, BookAction onChange) {
+void runBookView(BookView &book, BookKeyPressedHandle onPressed, BookAction load, BookAction onChange)
+{
   drawBookView(book);
   bool ret = false;
   while (!ret) {
@@ -98,34 +109,34 @@ void runBookView(BookView &book, BookKeyPressedHandle onPressed, BookAction load
     if (key == 0 || key == 224) key = getch();
     showConsoleCursor(false);
     switch (key) {
-      case ARROW_DOWN:
-        if (book.lineCount > 0) changeBookSelect(book, (book.select + 1) % book.lineCount);
-        break;
-      case ARROW_UP:
-        if (book.lineCount > 0) changeBookSelect(book, (book.select + book.lineCount - 1) % book.lineCount);
-        break;
-      case ARROW_RIGHT:
-        if (book.allPage > 0) {
-          clearBookView(book);
-          book.pageIndex = (book.pageIndex + 1) % book.allPage;
-          load(book);
-          drawBookView(book);
-        }
-        break;
-      case ARROW_LEFT:
-        if (book.allPage > 0) {
-          clearBookView(book);
-          book.pageIndex = (book.pageIndex + book.allPage - 1) % book.allPage;
-          load(book);
-          drawBookView(book);
-        }
-        break;
-      case ESC:
-        ret = true;
-        break;
-      default:
-        // nhan nhung phim con lai F1, F2, F3, F4
-        onPressed(book, key);
+    case ARROW_DOWN:
+      if (book.lineCount > 0) changeBookSelect(book, (book.select + 1) % book.lineCount);
+      break;
+    case ARROW_UP:
+      if (book.lineCount > 0) changeBookSelect(book, (book.select + book.lineCount - 1) % book.lineCount);
+      break;
+    case ARROW_RIGHT:
+      if (book.allPage > 0) {
+        clearBookView(book);
+        book.pageIndex = (book.pageIndex + 1) % book.allPage;
+        load(book);
+        drawBookView(book);
+      }
+      break;
+    case ARROW_LEFT:
+      if (book.allPage > 0) {
+        clearBookView(book);
+        book.pageIndex = (book.pageIndex + book.allPage - 1) % book.allPage;
+        load(book);
+        drawBookView(book);
+      }
+      break;
+    case ESC:
+      ret = true;
+      break;
+    default:
+      // nhan nhung phim con lai F1, F2, F3, F4
+      onPressed(book, key);
     }
     onChange(book);
   }
