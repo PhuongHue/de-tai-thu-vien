@@ -3,6 +3,7 @@
 
 #include <conio.h>
 #include <dos.h>
+#include <iomanip>
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
@@ -12,7 +13,8 @@
 
 #include "components/StaticDefine.cpp"
 
-int wherex(void) {
+int wherex(void)
+{
   HANDLE hConsoleOutput;
   hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
   CONSOLE_SCREEN_BUFFER_INFO screen_buffer_info;
@@ -20,7 +22,8 @@ int wherex(void) {
   return screen_buffer_info.dwCursorPosition.X;
 }
 
-int wherey(void) {
+int wherey(void)
+{
   HANDLE hConsoleOutput;
   hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
   CONSOLE_SCREEN_BUFFER_INFO screen_buffer_info;
@@ -28,18 +31,20 @@ int wherey(void) {
   return screen_buffer_info.dwCursorPosition.Y;
 }
 
-void gotoxy(short x, short y) {
+void gotoxy(short x, short y)
+{
   HANDLE hConsoleOutput;
   COORD Cursor_an_Pos = {x, y};
   hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
   SetConsoleCursorPosition(hConsoleOutput, Cursor_an_Pos);
 }
 
-void gotoLeft() { gotoxy(wherex() - 1, wherey()); }
+void gotoLeft(int count = 1) { gotoxy(wherex() - count, wherey()); }
 
-void gotoRight() { gotoxy(wherex() + 1, wherey()); }
+void gotoRight(int count = 1) { gotoxy(wherex() + count, wherey()); }
 
-void clreol() {
+void clreol()
+{
   COORD coord;
   DWORD written;
   CONSOLE_SCREEN_BUFFER_INFO info;
@@ -47,11 +52,12 @@ void clreol() {
   coord.X = info.dwCursorPosition.X;
   coord.Y = info.dwCursorPosition.Y;
   FillConsoleOutputCharacter(GetStdHandle(STD_OUTPUT_HANDLE), ' ',
-                             info.dwSize.X - info.dwCursorPosition.X * info.dwCursorPosition.Y, coord, &written);
+      info.dwSize.X - info.dwCursorPosition.X * info.dwCursorPosition.Y, coord, &written);
   gotoxy(info.dwCursorPosition.X, info.dwCursorPosition.Y);
 }
 
-void SetColor(WORD color) {
+void SetColor(WORD color)
+{
   HANDLE hConsoleOutput;
   hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
   CONSOLE_SCREEN_BUFFER_INFO screen_buffer_info;
@@ -62,7 +68,8 @@ void SetColor(WORD color) {
   wAttributes |= color;
   SetConsoleTextAttribute(hConsoleOutput, wAttributes);
 }
-void SetBGColor(WORD color) {
+void SetBGColor(WORD color)
+{
   HANDLE hConsoleOutput;
   hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
   CONSOLE_SCREEN_BUFFER_INFO screen_buffer_info;
@@ -75,7 +82,8 @@ void SetBGColor(WORD color) {
   SetConsoleTextAttribute(hConsoleOutput, wAttributes);
 }
 
-void showConsoleCursor(bool showFlag) {
+void showConsoleCursor(bool showFlag)
+{
   HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
   CONSOLE_CURSOR_INFO cursorInfo;
   GetConsoleCursorInfo(out, &cursorInfo);
@@ -85,38 +93,45 @@ void showConsoleCursor(bool showFlag) {
 
 using namespace std;
 
-void fullScreen() {
+void fullScreen()
+{
   system("mode con COLS=700");
   ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
 }
 
 void clrscr() { system("cls"); }
 
-void setSelectText() {
+void setSelectText()
+{
   SetColor(7);
   SetBGColor(8);
 }
 
-void setNormalText() {
+void setNormalText()
+{
   SetColor(15);
   SetBGColor(0);
 }
 
 struct DebugLog {
+  int lineN = 1;
   int logX = 32;
 } _DebugLog;
 
 template <class T>
-void consoleLog(T s) {
+void consoleLog(T s)
+{
   int cX = wherex();
   int cY = wherey();
   gotoxy(0, _DebugLog.logX);
-  cout << s << endl;
+  cout << setw(3) << _DebugLog.lineN << setw(0) << "::: " << s << endl;
   _DebugLog.logX++;
+  _DebugLog.lineN++;
   gotoxy(cX, cY);
 }
 
-void loadLayout(string fileName) {
+void loadLayout(string fileName)
+{
   int y = 0;
   ifstream fin(fileName.data());
   while (!fin.eof()) {
@@ -141,7 +156,8 @@ struct Header {
   int length = 0;
 } cacheHeader;
 
-void setHeader(string header) {
+void setHeader(string header)
+{
   gotoxy(cacheHeader.left, cacheHeader.top);
   cout << header;
   if (cacheHeader.length > header.length()) {
@@ -150,7 +166,8 @@ void setHeader(string header) {
   cacheHeader.length = header.length();
 }
 
-void clearPage(int left, int top, int right, int bottom) {
+void clearPage(int left, int top, int right, int bottom)
+{
   string str(right - left + 1, ' ');
   for (int i = top; i <= bottom; i++) {
     gotoxy(left, i);
@@ -158,58 +175,29 @@ void clearPage(int left, int top, int right, int bottom) {
   }
 }
 
-void customCin(string &str, int limit, string initStr = "") {
+void customCin(string &str, int limit, string initStr = "")
+{
   int cX = wherex();
   int cY = wherey();
-  showConsoleCursor(true);
   string temp = initStr;
-  int cursor = temp.length();
-  cout << temp;
   int x;
   while (x != ENTER && x != ESC) {
     x = getch();
     if (x == 0 || x == 224) {
-      x = getch();
-      switch (x) {
-        case ARROW_LEFT:
-          if (cursor > 0) {
-            gotoLeft();
-            cursor--;
-          }
-          break;
-        case ARROW_RIGHT:
-          if (cursor < temp.length()) {
-            gotoRight();
-            cursor++;
-          }
-          break;
-        default:
-          break;
-      }
+      getch();
       continue;
     }
     if (temp.length() <= limit && (x >= ' ' && x <= 'z')) {
-      int cX = wherex() + 1;
-      int xY = wherey();
-      cout << (char)x << temp.substr(cursor);
-      gotoxy(cX, cY);
-      temp.insert(temp.begin() + cursor, (char)x);
-      cursor++;
-    } else if (x == 8) {
+      cout << (char)x;
+      temp += x;
+    }
+    else if (x == 8) {
       if (temp.length() > 0) {
-        int cX = wherex() - 1;
-        int xY = wherey();
-        cout << string(temp.length() - cursor, ' ');
-        temp = temp.substr(0, cursor - 1);
-        if (cursor < temp.length()) {
-          string tempRight = temp.substr(cursor + 1);
-          temp += tempRight;
-          cout << tempRight;
-        }
-        gotoxy(cX, cY);
-        cursor--;
-      } else
-        cout << (char)7;  // keu thong bao
+        temp.pop_back();
+        cout << (char)8 << ' ' << (char)8;
+      }
+      else
+        cout << (char)7; // keu thong bao
     }
   }
   if (x == ENTER)
@@ -221,7 +209,8 @@ void customCin(string &str, int limit, string initStr = "") {
   }
 }
 
-void customCin(int &a, int limit) {
+void customCin(int &a, int limit)
+{
   if (limit > 10) limit = 10;
   char x;
   while (x != ENTER) {
@@ -238,7 +227,8 @@ struct Footer {
   int length = 0;
 } cacheFooter;
 
-void setFooter(vector<string> cmds) {
+void setFooter(vector<string> cmds)
+{
   gotoxy(cacheFooter.left, cacheFooter.top);
   int maxLength = 0;
   for (vector<string>::iterator i = cmds.begin(); i != cmds.end(); i++) {

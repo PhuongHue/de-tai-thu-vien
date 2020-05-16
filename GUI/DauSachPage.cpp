@@ -22,13 +22,20 @@ ContentView _DauSachContentView;
 ContentView _defaultDauSachContentView;
 string _DauSachSearchString;
 
-const vector<string> _DauSachBookFooter = {"ESC: Tro ve", "\xAE: Trang sau", "\xAF: Trang truoc", "F1: Tim kiem", "F2: Luu"};
+const vector<string> _DauSachBookFooter = {
+    "ESC: Tro ve",
+    "\xAE: Trang sau",
+    "\xAF: Trang truoc",
+    "F1: Tim kiem",
+    "F2: Luu",
+    "F3: Sua"};
 const vector<string> _DauSachBookSearchFooter = {"ESC: Huy", "ENTER: Tim kiem"};
 
 /**
  * _DauSachContentView funtions
  */
-void loadDauSachContent(BookView &book, ContentView &content) {
+void loadDauSachContent(BookView &book, ContentView &content)
+{
   if (book.lineCount <= 0) return;
   DauSach *ds = findDauSachByISBN(_ListDauSach, _DauSachBookView.keys[_DauSachBookView.select]);
   _DauSachContentView.lines[0] = ds->ISBN;
@@ -39,13 +46,24 @@ void loadDauSachContent(BookView &book, ContentView &content) {
   _DauSachContentView.lines[5] = ds->theLoai;
 }
 
-void handleContentInsert(ContentView &content, int key) {}
+void handleContentEdit(ContentView &content, int key) {
+  switch (key)
+  {
+  case F2:
+    /* code */
+    break;
+  
+  default:
+    break;
+  }
+}
 
 /**
  * _DauSachBookView functions
  */
 
-void loadDauSachBook(BookView &book) {
+void loadDauSachBook(BookView &book)
+{
   int startIndex = book.pageIndex * book.pageSize;
   int endIndex = startIndex + book.pageSize - 1;
   if (endIndex > _ListDauSach.length - 1) endIndex = _ListDauSach.length - 1;
@@ -63,13 +81,15 @@ void loadDauSachBook(BookView &book) {
   if (book.select > book.lineCount - 1) book.select = book.lineCount - 1;
 }
 
-void handleBookSelectChange(BookView &book) {
+void handleBookSelectChange(BookView &book)
+{
   loadDauSachContent(book, _DauSachContentView);
   clearContentView(_DauSachContentView);
   drawContentView(_DauSachContentView);
 }
 
-void searchDauSach() {
+void searchDauSach()
+{
   gotoxy(11, 3);
   showConsoleCursor(true);
   setNormalText();
@@ -83,7 +103,8 @@ void searchDauSach() {
     // reset view
     _DauSachBookView = _defaultDauSachBookView;
     consoleLog<string>("string empty");
-  } else {
+  }
+  else {
     DauSach ds;
     ds.ISBN = ds.tacGia = ds.ten = ds.theLoai = _DauSachSearchString;
     _ListDauSach = filterDauSach(_ListDauSach_Root, ds);
@@ -97,26 +118,28 @@ void searchDauSach() {
   drawBookView(_DauSachBookView);
 }
 
-void dauSachPageAction(BookView &book, int keyPressed) {
+void dauSachPageAction(BookView &book, int keyPressed)
+{
   switch (keyPressed) {
-    case F1:
-      setFooter(_DauSachBookSearchFooter);
-      searchDauSach();
-      break;
-    case F2:
-      luuFile(_ListDauSach_Root);
-      break;
-    case F3:
-      runContentViewEditMode(_DauSachContentView, NULL);
-      break;
-    default:
-      break;
+  case F1:
+    setFooter(_DauSachBookSearchFooter);
+    searchDauSach();
+    break;
+  case F2:
+    luuFile(_ListDauSach_Root);
+    break;
+  case F3:
+    runContentViewEditMode(_DauSachContentView, handleContentEdit);
+    break;
+  default:
+    break;
   }
   setFooter(_DauSachBookFooter);
 }
 
 /* Load lan dau */
-void initDauSachPage() {
+void initDauSachPage()
+{
   /* Copy data */
   _ListDauSach = _ListDauSach_Root;
 
@@ -161,7 +184,8 @@ void initDauSachPage() {
   drawContentView(_DauSachContentView);
 }
 
-void runDauSachPage() {
+void runDauSachPage()
+{
   loadLayout("layout/DauSach.layout");
   setHeader("Quan ly dau sach");
   setFooter(_DauSachBookFooter);

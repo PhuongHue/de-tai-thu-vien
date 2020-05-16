@@ -10,7 +10,8 @@ MenuView _MainMenuView;
 vector<string> _MainMenuFooter = {"ESC: Thoat", "ENTER: Chon"};
 string _MainHeaderTitle = "Quan ly thu vien";
 
-void initMainMenu() {
+void initMainMenu()
+{
   _MainMenuView.left = 1;
   _MainMenuView.top = 3;
   _MainMenuView.right = 40;
@@ -27,22 +28,24 @@ void initMainMenu() {
   // _MainMenuView.options[9] = "";
 }
 
-void mainPageAction(MenuView &menu, int keyPressed) {
+void mainPageAction(MenuView &menu, int keyPressed)
+{
   switch (menu.select) {
-    case 0:
-      clearMenu(menu);
-      initDauSachPage();
-      runDauSachPage();
-      break;
-    default:
-      break;
+  case 0:
+    clearMenu(menu);
+    initDauSachPage();
+    runDauSachPage();
+    break;
+  default:
+    break;
   }
   setHeader(_MainHeaderTitle);
   setFooter(_MainMenuFooter);
   drawMenu(menu);
 }
 
-void runMainPage() {
+void runMainPage()
+{
   loadLayout("layout/Main.layout");
   setHeader(_MainHeaderTitle);
   setFooter(_MainMenuFooter);

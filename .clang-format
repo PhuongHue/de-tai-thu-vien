@@ -1,0 +1,5 @@
+BreakBeforeBraces: Stroustrup
+AlignAfterOpenBracket : false
+AllowShortIfStatementsOnASingleLine: true
+IndentCaseLabels: false
+ColumnLimit: 0

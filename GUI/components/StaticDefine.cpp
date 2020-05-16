@@ -15,4 +15,6 @@
 #define ESC 27
 #define ENTER 13
 
+#define BACKSPACE 8
+
 #endif

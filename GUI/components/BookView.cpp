@@ -40,7 +40,7 @@ void debugBook(BookView book) {
   }
 }
 
-void printBookLine(int number, string line) { cout << right << setw(3) << number << (char)179 << " " << line; }
+void printBookLine(int number, string line) { cout << right << setw(3) << number << setw(0) << (char)179 << " " << line; }
 
 void drawBookView(BookView &book) {
   // draw book's lines

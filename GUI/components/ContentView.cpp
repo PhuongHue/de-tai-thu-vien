@@ -23,21 +23,44 @@ struct ContentView {
   int left;
   int right;
   int bottom;
+  vector<string> footer = {"ESC: Cancel", "F2: Luu"};
 };
 
-void printContentLine(string label, string line, int width = 5) {
-  cout << left << setw(width) << label << ": " << line;
+void printContentLine(string label, string line, int width = 5)
+{
+  cout << left << setw(width) << label << setw(0) << ": " << line;
 }
 
-void drawContentView(ContentView content) {
-  setNormalText();
-  for (int i = 0; i < content.lineCount; i++) {
-    gotoxy(content.left, content.top + i);
-    printContentLine(content.labels[i], content.lines[i], content.labelColumnSize);
+void drawFooter(ContentView &content)
+{
+  gotoxy(content.left, content.bottom);
+  for (int i = 0; i < content.footer.size(); i++) {
+    cout << content.footer[i] << " | ";
   }
 }
 
-void clearContentView(ContentView content) {
+void clearFooter(ContentView &content)
+{
+  gotoxy(content.left, content.bottom);
+  int length = 0;
+  for (int i = 0; i < content.footer.size(); i++) {
+    length += content.footer[i].length() + 3;
+  }
+  cout << setw(length) << setfill(' ') << setw(0);
+}
+
+void drawContentView(ContentView &content)
+{
+  setNormalText();
+  for (int i = 0; i < content.lineCount; i++) {
+    gotoxy(content.left, content.top + i);
+    printContentLine(content.labels[i], content.lines[i],
+        content.labelColumnSize);
+  }
+}
+
+void clearContentView(ContentView &content)
+{
   string str(content.right - content.left, ' ');
   setNormalText();
   for (int i = 0; i < content.lineCount; i++) {
@@ -48,24 +71,49 @@ void clearContentView(ContentView content) {
   cout << str;
 }
 
-void editLine(ContentView &content, int key) {
-  if(content.isNumberType[content.select]){
-    
+void _gotoSelect(ContentView &content)
+{
+  gotoxy(content.left + content.labelColumnSize + 2 + content.cursor,
+      content.top + content.select);
+}
+
+void editLine(ContentView &content, int key)
+{
+  int select = content.select;
+  if (content.cursor == 0) return;
+  if (key == BACKSPACE) {
+    string right = "";
+    if (content.cursor < content.lines[select].length()) {
+      right = content.lines[select].substr(content.cursor);
+    }
+    cout << (char)BACKSPACE << right << ' ';
+    content.cursor--;
+    _gotoSelect(content);
+    content.lines[select].erase(content.cursor, 1);
+  }
+  else {
+    if (content.isNumberType[select] && !(key >= '0' && key <= '9')) return;
+    content.lines[select].insert(content.lines[select].begin() + content.cursor, (char)key);
+    string right = "";
+    if (content.cursor < content.lines[select].length()) {
+      right = content.lines[select].substr(content.cursor);
+    }
+    cout << right;
+    content.cursor++;
+    _gotoSelect(content);
   }
 }
 
-void _gotoSelect(ContentView &content) {
-  gotoxy(content.left + content.labelColumnSize + 2 + content.cursor,
-         content.top + content.select);
-}
-
-void changeContentLineSelect(ContentView &content, int newSelectIndex) {
+void changeContentLineSelect(ContentView &content, int newSelectIndex)
+{
   content.select = newSelectIndex;
   content.cursor = content.lines[content.select].length();
   _gotoSelect(content);
+  consoleLog<int>(content.select);
 }
 
-void changeCursor(ContentView &content, int keyPressed) {
+void changeCursor(ContentView &content, int keyPressed)
+{
   if (keyPressed == ARROW_LEFT) {
     content.cursor--;
     if (content.cursor < 0) content.cursor = 0;
@@ -80,10 +128,12 @@ void changeCursor(ContentView &content, int keyPressed) {
 
 typedef void (*ContentAction)(ContentView &content, int key);
 
-void runContentViewEditMode(ContentView &content, ContentAction onAction) {
+void runContentViewEditMode(ContentView &content, ContentAction onAction)
+{
   content.select = 0;
   content.cursor = content.lines[0].length();
   drawContentView(content);
+  drawFooter(content);
   showConsoleCursor(true);
   _gotoSelect(content);
   bool ret = false;
@@ -95,34 +145,35 @@ void runContentViewEditMode(ContentView &content, ContentAction onAction) {
       key = getch();
     }
     switch (key) {
-      case ARROW_DOWN:
-        changeContentLineSelect(content, (content.select + 1) % content.lineCount);
+    case ARROW_DOWN:
+      changeContentLineSelect(content, (content.select + 1) % content.lineCount);
+      break;
+    case ARROW_UP:
+      changeContentLineSelect(content, (content.select + content.lineCount - 1) % content.lineCount);
+      break;
+    case ARROW_RIGHT:
+      changeCursor(content, key);
+      break;
+    case ARROW_LEFT:
+      changeCursor(content, key);
+      break;
+    case ESC:
+      ret = true;
+      break;
+    default:
+      switch (padKey) {
+      case -1:
+        // a-z A-Z 0-9 pressed
+        editLine(content, key);
         break;
-      case ARROW_UP:
-        changeContentLineSelect(content, (content.select + content.lineCount - 1) % content.lineCount);
+      case 0:
+        // F1 - f12 pressed
+        if (onAction) onAction(content, key);
         break;
-      case ARROW_RIGHT:
-        changeCursor(content, key);
-        break;
-      case ARROW_LEFT:
-        changeCursor(content, key);
-        break;
-      case ESC:
-        ret = true;
-        break;
-      default:
-        switch (padKey) {
-          case -1:
-            // a-z A-Z 0-9 pressed
-            editLine(content, key);
-            break;
-          case 0:
-            // F1 - f12 pressed
-            onAction(content, key);
-            break;
-        }
+      }
     }
   }
+  clearFooter(content);
   showConsoleCursor(false);
 }
 #endif
