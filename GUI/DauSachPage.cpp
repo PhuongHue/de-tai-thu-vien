@@ -38,9 +38,7 @@ const vector<string> _DauSachBookFooter = {
     "F3: Sua", "F4: Them moi"};
 const vector<string> _DauSachBookSearchFooter = {"ESC: Huy", "ENTER: Tim kiem"};
 
-/**
- * _DauSachContentView funtions
- */
+/* -------------------- _DauSachContentView funtions -------------------- */
 void loadDauSachContent(BookView &book, ContentView &content)
 {
   if (book.lineCount <= 0) return;
@@ -77,20 +75,7 @@ void updateContent(ContentView &content)
   }
 }
 
-void handleContentAction(ContentView &content, int key, bool &breaker)
-{
-  switch (key) {
-  case F2:
-    updateContent(content);
-    breaker = true;
-    break;
-  }
-}
-
-/**
- * _DauSachBookView functions
- */
-
+/* -------------------- _DauSachBookView functions -------------------- */
 void loadDauSachBook(BookView &book)
 {
   int startIndex = book.pageIndex * book.pageSize;
@@ -108,13 +93,6 @@ void loadDauSachBook(BookView &book)
     return;
   }
   if (book.select > book.lineCount - 1) book.select = book.lineCount - 1;
-}
-
-void handleBookSelectChange(BookView &book)
-{
-  loadDauSachContent(book, _DauSachContentView);
-  clearContentView(_DauSachContentView);
-  drawContentView(_DauSachContentView);
 }
 
 void searchDauSach()
@@ -139,19 +117,39 @@ void searchDauSach()
     _DauSachSearchString = "";
     log(_ListDauSach);
   }
-  // load data
-  clearBookView(_DauSachBookView);
-  resetBookIndex(_DauSachBookView, _ListDauSach.length);
-  loadDauSachBook(_DauSachBookView);
-  drawBookView(_DauSachBookView);
 }
 
-void dauSachPageAction(BookView &book, int keyPressed)
+/* -------------------- _DauSachContentView handles -------------------- */
+void handleContentAction(ContentView &content, int key, bool &breaker)
+{
+  switch (key) {
+  case F2:
+    updateContent(content);
+    clearContentView(_DauSachContentView);
+    drawContentView(_DauSachContentView);
+    breaker = true;
+    break;
+  }
+}
+
+/* -------------------- _DauSachBookView handles -------------------- */
+void handleBookSelectChange(BookView &book)
+{
+  loadDauSachContent(book, _DauSachContentView);
+  clearContentView(_DauSachContentView);
+  drawContentView(_DauSachContentView);
+}
+
+void handleDauSachBookAction(BookView &book, int keyPressed)
 {
   switch (keyPressed) {
   case F1:
     setFooter(_DauSachBookSearchFooter);
     searchDauSach();
+    clearBookView(_DauSachBookView);
+    resetBookIndex(_DauSachBookView, _ListDauSach.length);
+    loadDauSachBook(_DauSachBookView);
+    drawBookView(_DauSachBookView);
     break;
   case F2:
     luuFile(_ListDauSach_Root);
@@ -159,6 +157,7 @@ void dauSachPageAction(BookView &book, int keyPressed)
   case F3:
     BOOK_MODE = BOOK_EDIT;
     runContentViewEditMode(_DauSachContentView, handleContentAction);
+    loadDauSachBook(_DauSachBookView);
     BOOK_MODE = BOOK_NORMAL;
     break;
   case F4:
@@ -166,13 +165,14 @@ void dauSachPageAction(BookView &book, int keyPressed)
     clearContentView(_DauSachContentView);
     ContentView cv = getEmptyView(_DauSachContentView);
     runContentViewEditMode(cv, handleContentAction);
+    loadDauSachBook(_DauSachBookView);
     BOOK_MODE = BOOK_NORMAL;
     break;
   }
   setFooter(_DauSachBookFooter);
 }
 
-/* Load lan dau */
+/* -------------------- DauSachPage functions -------------------- */
 void initDauSachPage()
 {
   /* Copy data */
@@ -224,7 +224,7 @@ void runDauSachPage()
   loadLayout("layout/DauSach.layout");
   setHeader("Quan ly dau sach");
   setFooter(_DauSachBookFooter);
-  runBookView(_DauSachBookView, dauSachPageAction, loadDauSachBook, handleBookSelectChange);
+  runBookView(_DauSachBookView, handleDauSachBookAction, loadDauSachBook, handleBookSelectChange);
   clearPage(1, 3, 154, 26);
 }
 

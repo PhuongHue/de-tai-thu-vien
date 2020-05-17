@@ -221,24 +221,37 @@ void customCin(int &a, int limit)
   }
 }
 
+#define MAX_APP_FOOTER_LINES 2
+
 struct Footer {
   int left = 2;
   int top = 28;
-  int length = 0;
-} cacheFooter;
+  int right = 154;
+  string lines[MAX_APP_FOOTER_LINES];
+  string separator = " | ";
+} appFooter;
 
 void setFooter(vector<string> cmds)
 {
-  gotoxy(cacheFooter.left, cacheFooter.top);
-  int maxLength = 0;
-  for (vector<string>::iterator i = cmds.begin(); i != cmds.end(); i++) {
-    cout << (*i) << " | ";
-    maxLength += (*i).length() + 3;
+  // clear
+  for (int i = 0; i < MAX_APP_FOOTER_LINES; i++) {
+    gotoxy(appFooter.left, appFooter.top + i);
+    cout << string(appFooter.lines[i].length(), ' ');
+    appFooter.lines[i] = "";
   }
-  if (cacheFooter.length > maxLength) {
-    cout << string(cacheFooter.length - maxLength, ' ');
+  // set up lines
+  int maxWidth = appFooter.right - appFooter.left + 1;
+  int lineIndex = 0;
+  for (int i = 0; i < cmds.size(); i++) {
+    if (appFooter.lines[lineIndex].length() + cmds[i].length() + appFooter.separator.length() > maxWidth)
+      lineIndex++;
+    appFooter.lines[lineIndex] += cmds[i] + appFooter.separator;
   }
-  cacheFooter.length = maxLength;
+  // print lines
+  for (int i = 0; i < MAX_APP_FOOTER_LINES; i++) {
+    gotoxy(appFooter.left, appFooter.top + i);
+    cout << appFooter.lines[i];
+  }
 }
 
 #endif

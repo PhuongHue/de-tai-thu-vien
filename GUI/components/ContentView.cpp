@@ -56,7 +56,7 @@ void clearFooter(ContentView &content)
   for (int i = 0; i < content.footer.size(); i++) {
     length += content.footer[i].length() + 3;
   }
-  cout << setw(length) << setfill(' ') << setw(0);
+  cout << string(length, ' ');
 }
 
 void drawContentView(ContentView &content)
