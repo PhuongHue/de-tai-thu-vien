@@ -18,28 +18,6 @@ struct DauSach {
   DMSach *dms = NULL;
 };
 
-void log(DauSach *&ds) {
-  gotoxy(0, _DebugLog.logX);
-  cout << "ISBN: " << ds->ISBN << endl
-       << "namXB: " << ds->namXB << endl
-       << "soTrang: " << ds->soTrang << endl
-       << "tacGia: " << ds->tacGia << endl
-       << "ten: " << ds->ten << endl
-       << "theLoai: " << ds->theLoai << endl;
-  _DebugLog.logX += 6;
-}
-
-void log(DauSach &ds) {
-  gotoxy(0, _DebugLog.logX);
-  cout << "ISBN: " << ds.ISBN << endl
-       << "namXB: " << ds.namXB << endl
-       << "soTrang: " << ds.soTrang << endl
-       << "tacGia: " << ds.tacGia << endl
-       << "ten: " << ds.ten << endl
-       << "theLoai: " << ds.theLoai << endl;
-  _DebugLog.logX += 6;
-}
-
 #define MAX_LIST 500
 
 struct ListDauSach {
@@ -49,26 +27,53 @@ struct ListDauSach {
 
 typedef void (*CallBackDauSach)(DauSach *&node);
 
-void foreachListDauSach(ListDauSach &list, CallBackDauSach callBack) {
+void foreachListDauSach(ListDauSach &list, CallBackDauSach callBack)
+{
   for (int i = 0; i < list.length; i++) {
     callBack(list.data[i]);
   }
 }
 
-void log(ListDauSach &lds) { foreachListDauSach(lds, log); }
-
-DauSach *findDauSachByISBN(ListDauSach &list, string ISBN) {
+DauSach *findDauSachByISBN(ListDauSach &list, string ISBN)
+{
   for (int i = 0; i < list.length; i++) {
     if (list.data[i]->ISBN.compare(ISBN) == 0) return list.data[i];
   }
+  return NULL;
 }
 
-void addLast(ListDauSach &list, DauSach *ds) {
+int findIndexDauSachByISBN(ListDauSach &list, string ISBN)
+{
+  for (int i = 0; i < list.length; i++) {
+    if (list.data[i]->ISBN.compare(ISBN) == 0) return i;
+  }
+  return -1;
+}
+
+void addLast(ListDauSach &list, DauSach *ds)
+{
   list.data[list.length] = ds;
   list.length++;
 }
 
-void luuFile(ListDauSach &list) {
+void deleteByIndex(ListDauSach &list, int index){
+  if(index >= list.length) return;
+  delete list.data[index];
+  for (int i = index; i < list.length - 1; i++)
+  {
+    list.data[i] = list.data[i + 1]; 
+  }
+  list.length--;
+}
+
+void findAndDelete(ListDauSach &list, string ISBN)
+{
+  int index = findIndexDauSachByISBN(list, ISBN);
+  deleteByIndex(list, index);
+}
+
+void luuFile(ListDauSach &list)
+{
   ofstream fout;
   fout.open("data/DauSach.data");
   fout << list.length << endl;
@@ -83,7 +88,8 @@ void luuFile(ListDauSach &list) {
   }
 }
 
-void docFile(ListDauSach &list, fstream &fin) {
+void docFile(ListDauSach &list, fstream &fin)
+{
   int all;
   fin >> all;
   fin.ignore();
@@ -103,7 +109,8 @@ void docFile(ListDauSach &list, fstream &fin) {
   }
 }
 
-ListDauSach filterDauSach(ListDauSach list, DauSach key) {
+ListDauSach filterDauSach(ListDauSach list, DauSach key)
+{
   ListDauSach temp;
   for (int i = 0; i < list.length; i++) {
     if (find(list.data[i]->ISBN, key.ISBN) >= 0) {

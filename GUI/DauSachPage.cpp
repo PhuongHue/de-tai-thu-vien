@@ -2,7 +2,6 @@
 #define _DAUSACHPAGE_CPP_
 
 #include <math.h>
-
 #include <sstream>
 #include <string>
 
@@ -31,11 +30,13 @@ int BOOK_MODE = BOOK_NORMAL;
 
 const vector<string> _DauSachBookFooter = {
     "ESC: Tro ve",
-    "\xAE: Trang sau",
-    "\xAF: Trang truoc",
+    ">>: Trang sau",
+    "<<: Trang truoc",
     "F1: Tim kiem",
-    "F2: Luu",
-    "F3: Sua", "F4: Them moi"};
+    "F2: Sua",
+    "F3: Them moi",
+    "F4: Xoa",
+    "F5: Luu"};
 const vector<string> _DauSachBookSearchFooter = {"ESC: Huy", "ENTER: Tim kiem"};
 
 /* -------------------- _DauSachContentView funtions -------------------- */
@@ -54,7 +55,6 @@ void loadDauSachContent(BookView &book, ContentView &content)
 void updateContent(ContentView &content)
 {
   int bookIndex = getIndex(_DauSachBookView);
-  consoleLog<int>(bookIndex);
   DauSach *ds;
   if (BOOK_MODE == BOOK_EDIT) {
     ds = _ListDauSach.data[bookIndex];
@@ -78,6 +78,12 @@ void updateContent(ContentView &content)
 /* -------------------- _DauSachBookView functions -------------------- */
 void loadDauSachBook(BookView &book)
 {
+  int newAllPage = countAllPage(_ListDauSach.length, book.pageSize);
+  if (newAllPage < book.allPage) {
+    book.allPage = newAllPage;
+    if (book.pageIndex >= book.allPage)
+      book.pageIndex = book.allPage - 1;
+  }
   int startIndex = book.pageIndex * book.pageSize;
   int endIndex = startIndex + book.pageSize - 1;
   if (endIndex > _ListDauSach.length - 1) endIndex = _ListDauSach.length - 1;
@@ -115,8 +121,13 @@ void searchDauSach()
     ds.ISBN = ds.tacGia = ds.ten = ds.theLoai = _DauSachSearchString;
     _ListDauSach = filterDauSach(_ListDauSach_Root, ds);
     _DauSachSearchString = "";
-    log(_ListDauSach);
   }
+}
+
+void deleteDauSach(string ISBN)
+{
+  findAndDelete(_ListDauSach_Root, ISBN);
+  _ListDauSach = _ListDauSach_Root;
 }
 
 /* -------------------- _DauSachContentView handles -------------------- */
@@ -152,21 +163,35 @@ void handleDauSachBookAction(BookView &book, int keyPressed)
     drawBookView(_DauSachBookView);
     break;
   case F2:
-    luuFile(_ListDauSach_Root);
-    break;
-  case F3:
     BOOK_MODE = BOOK_EDIT;
     runContentViewEditMode(_DauSachContentView, handleContentAction);
     loadDauSachBook(_DauSachBookView);
+    drawBookView(_DauSachBookView);
     BOOK_MODE = BOOK_NORMAL;
     break;
-  case F4:
+  case F3: {
     BOOK_MODE = BOOK_CREATE;
     clearContentView(_DauSachContentView);
-    ContentView cv = getEmptyView(_DauSachContentView);
-    runContentViewEditMode(cv, handleContentAction);
+    ContentView createCV = getEmptyView(_DauSachContentView);
+    runContentViewEditMode(createCV, handleContentAction);
     loadDauSachBook(_DauSachBookView);
+    drawBookView(_DauSachBookView);
     BOOK_MODE = BOOK_NORMAL;
+  } break;
+  case F4:
+    clearBookView(_DauSachBookView);
+    if (appYesNo("Ban co muon xoa dau sach nay?", _DauSachBookView.left, _DauSachBookView.top)) {
+      deleteDauSach(book.keys[book.select]);
+    }
+    loadDauSachBook(_DauSachBookView);
+    drawBookView(_DauSachBookView);
+    break;
+  case F5:
+    luuFile(_ListDauSach_Root);
+    // thong bao
+    clearBookView(_DauSachBookView);
+    appPause("Da luu vao file!", _DauSachBookView.left, _DauSachBookView.top);
+    drawBookView(_DauSachBookView);
     break;
   }
   setFooter(_DauSachBookFooter);

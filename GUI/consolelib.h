@@ -175,6 +175,50 @@ void clearPage(int left, int top, int right, int bottom)
   }
 }
 
+void appPause(string message = "", int x = 0, int y = 0)
+{
+  int top = y;
+  int left = x;
+  int right = max((int)message.length(), 29);
+  gotoxy(x, y);
+  cout << message;
+  if (message.length() > 0) y++;
+  gotoxy(x, y);
+  cout << "Nhan phim bat ky de tiep tuc.";
+  int key = getch();
+  if (key == 0 || key == 224) getch();
+  clearPage(left, top, right, y);
+}
+
+bool appYesNo(string message = "", int x = 0, int y = 0)
+{
+  int top = y;
+  int left = x;
+  int right = max((int)message.length(), 29);
+  gotoxy(x, y);
+  cout << message;
+  if (message.length() > 0) y++;
+  gotoxy(x, y);
+  cout << "[y/n]: ";
+  int cX = wherex();
+  int cY = wherey();
+  string res;
+  while (true) {
+    getline(cin, res);
+    for (int i = 0; i < res.length(); i++)
+    {
+      res[i] = toupper(res[i]);
+    }
+    
+    if(res.compare("YES") == 0 || res.compare("Y") == 0) return true;
+    if(res.compare("NO") == 0 || res.compare("N") == 0) return false;
+    gotoxy(cX, cY);
+    cout << string(res.length(), ' ');
+    gotoxy(cX, cY);
+  }
+  clearPage(left, top, right, y);
+}
+
 void customCin(string &str, int limit, string initStr = "")
 {
   int cX = wherex();

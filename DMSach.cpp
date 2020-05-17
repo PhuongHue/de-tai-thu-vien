@@ -139,8 +139,6 @@ bool deleteByMaSach(DMSach *&first, int key) {
 void luuFile(DMSach *&first, ofstream &fout) {
   DMSach *p = first;
   fout << countAll(first) << endl;
-  gotoxy(0, 50);
-  cout << countAll(first);
   while (p != NULL) {
     Sach *data = p->data;
     fout << data->maSach << endl << data->trangThai << endl << data->viTri << endl;

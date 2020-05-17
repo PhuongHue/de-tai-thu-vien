@@ -119,7 +119,6 @@ void changeContentLineSelect(ContentView &content, int newSelectIndex)
   content.select = newSelectIndex;
   content.cursor = content.lines[content.select].length();
   _gotoSelect(content);
-  consoleLog<int>(content.select);
 }
 
 void changeCursor(ContentView &content, int keyPressed)

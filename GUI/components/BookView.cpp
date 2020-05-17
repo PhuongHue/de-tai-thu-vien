@@ -90,11 +90,18 @@ void changeBookSelect(BookView &book, int select)
   book.select = select;
 }
 
+int countAllPage(int dataCount, int pageSize)
+{
+  int x = (int)ceil(dataCount * 1.0 / pageSize);
+  if (x == 0) x = 1;
+  return x;
+  consoleLog<int>(x);
+}
+
 void resetBookIndex(BookView &book, int dataCount)
 {
   book.pageIndex = 0;
-  book.allPage = (int)ceil(dataCount * 1.0 / book.pageSize);
-  if (book.allPage == 0) book.allPage = 1;
+  book.allPage = countAllPage(dataCount, book.pageSize);
 }
 
 typedef void (*BookKeyPressedHandle)(BookView &book, int keyPressed);
