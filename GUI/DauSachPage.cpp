@@ -8,8 +8,11 @@
 #include "../DauSach.cpp"
 #include "components/BookView.cpp"
 #include "components/ContentView.cpp"
+#include "DMSachPage.cpp"
 
 using namespace std;
+
+namespace DAUSACHPAGE {
 
 ListDauSach _ListDauSach_Root;
 ListDauSach _ListDauSach;
@@ -36,7 +39,8 @@ const vector<string> _DauSachBookFooter = {
     "F2: Sua",
     "F3: Them moi",
     "F4: Xoa",
-    "F5: Luu"};
+    "F5: Luu",
+    "F6: Xem Danh muc sach"};
 const vector<string> _DauSachBookSearchFooter = {"ESC: Huy", "ENTER: Tim kiem"};
 
 /* -------------------- _DauSachContentView funtions -------------------- */
@@ -50,6 +54,8 @@ void loadDauSachContent(BookView &book, ContentView &content)
   _DauSachContentView.lines[3] = ds->tacGia;
   _DauSachContentView.lines[4] = ds->ten;
   _DauSachContentView.lines[5] = ds->theLoai;
+  DMSACHPAGE::_ListDMSach = ds->dms;
+  DMSACHPAGE::_CurrentNodeDMSach = ds->dms;
 }
 
 void updateContent(ContentView &content)
@@ -193,6 +199,11 @@ void handleDauSachBookAction(BookView &book, int keyPressed)
     appPause("Da luu vao file!", _DauSachBookView.left, _DauSachBookView.top);
     drawBookView(_DauSachBookView);
     break;
+  case F6:
+    clearBookView(_DauSachBookView);
+    DMSACHPAGE::initDMSachPage();
+    DMSACHPAGE::runDMSachPage();
+    break;
   }
   setFooter(_DauSachBookFooter);
 }
@@ -252,5 +263,7 @@ void runDauSachPage()
   runBookView(_DauSachBookView, handleDauSachBookAction, loadDauSachBook, handleBookSelectChange);
   clearPage(1, 3, 154, 26);
 }
+
+} // namespace DAUSACHPAGE
 
 #endif

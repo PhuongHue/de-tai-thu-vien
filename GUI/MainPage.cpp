@@ -33,8 +33,8 @@ void mainPageAction(MenuView &menu, int keyPressed)
   switch (menu.select) {
   case 0:
     clearMenu(menu);
-    initDauSachPage();
-    runDauSachPage();
+    DAUSACHPAGE::initDauSachPage();
+    DAUSACHPAGE::runDauSachPage();
     break;
   default:
     break;

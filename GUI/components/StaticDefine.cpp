@@ -11,6 +11,7 @@
 #define F3 61
 #define F4 62
 #define F5 63
+#define F6 64
 
 #define ESC 27
 #define ENTER 13
