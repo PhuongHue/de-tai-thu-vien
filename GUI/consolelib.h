@@ -124,7 +124,7 @@ void consoleLog(T s)
   int cX = wherex();
   int cY = wherey();
   gotoxy(0, _DebugLog.logX);
-  cout << setw(3) << _DebugLog.lineN << setw(0) << "::: " << s << endl;
+  cout << setw(3) << _DebugLog.lineN << setw(0) << ":::" << s << "´" << endl;
   _DebugLog.logX++;
   _DebugLog.lineN++;
   gotoxy(cX, cY);
@@ -179,10 +179,11 @@ void appPause(string message = "", int x = 0, int y = 0)
 {
   int top = y;
   int left = x;
+  int bottom = y;
   int right = max((int)message.length(), 29);
   gotoxy(x, y);
   cout << message;
-  if (message.length() > 0) y++;
+  if (message.length() > 0) bottom++;
   gotoxy(x, y);
   cout << "Nhan phim bat ky de tiep tuc.";
   int key = getch();
@@ -203,20 +204,29 @@ bool appYesNo(string message = "", int x = 0, int y = 0)
   int cX = wherex();
   int cY = wherey();
   string res;
+  bool ans;
+  showConsoleCursor(true);
   while (true) {
     getline(cin, res);
-    for (int i = 0; i < res.length(); i++)
-    {
+    for (int i = 0; i < res.length(); i++) {
       res[i] = toupper(res[i]);
     }
-    
-    if(res.compare("YES") == 0 || res.compare("Y") == 0) return true;
-    if(res.compare("NO") == 0 || res.compare("N") == 0) return false;
+
+    if (res.compare("YES") == 0 || res.compare("Y") == 0) {
+      ans = true;
+      break;
+    }
+    if (res.compare("NO") == 0 || res.compare("N") == 0) {
+      ans = false;
+      break;
+    }
     gotoxy(cX, cY);
     cout << string(res.length(), ' ');
     gotoxy(cX, cY);
   }
+  showConsoleCursor(false);
   clearPage(left, top, right, y);
+  return ans;
 }
 
 void customCin(string &str, int limit, string initStr = "")
@@ -241,7 +251,7 @@ void customCin(string &str, int limit, string initStr = "")
         cout << (char)8 << ' ' << (char)8;
       }
       else
-        cout << (char)7; // keu thong bao
+        cout << BELL; // keu thong bao
     }
   }
   if (x == ENTER)

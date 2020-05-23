@@ -15,6 +15,7 @@ struct ContentView {
   string lines[MAX_CONTENT_VIEW_LINE];
   string labels[MAX_CONTENT_VIEW_LINE];
   bool isNumberType[MAX_CONTENT_VIEW_LINE];
+  bool isEditable[MAX_CONTENT_VIEW_LINE];
   int labelColumnSize = 10;
   int lineCount = 0;
   int select = 0;
@@ -25,6 +26,19 @@ struct ContentView {
   int bottom;
   vector<string> footer = {"ESC: Cancel", "F2: Luu"};
 };
+
+ContentView getInitalView(ContentView base)
+{
+  ContentView content = base;
+  content.cursor = 0;
+  content.select = 0;
+  for (int i = 0; i < content.lineCount; i++) {
+    content.lines[i] = "";
+    content.isNumberType[i] = false;
+    content.isEditable[i] = true;
+  }
+  return content;
+}
 
 ContentView getEmptyView(ContentView base)
 {
@@ -89,6 +103,11 @@ void _gotoSelect(ContentView &content)
 
 void editLine(ContentView &content, int key)
 {
+  // return neu khong duoc sua;
+  if (content.isEditable[content.select] == false) {
+    cout << BELL;
+    return;
+  }
   int select = content.select;
   if (key == BACKSPACE) {
     if (content.cursor == 0) return;

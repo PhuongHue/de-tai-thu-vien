@@ -18,4 +18,6 @@
 
 #define BACKSPACE 8
 
+const char BELL = 7;
+
 #endif

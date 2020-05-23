@@ -6,12 +6,18 @@
 #include <string>
 
 #include "../DMSach.cpp"
+#include "../StringLib.cpp"
 #include "components/BookView.cpp"
 #include "components/ContentView.cpp"
 
 using namespace std;
 
 namespace DMSACHPAGE {
+
+int _top = 3;
+int _left = 1;
+int _right = 154;
+int _bottom = 26;
 
 DMSach *_ListDMSach = NULL;
 DMSach *_CurrentNodeDMSach = NULL;
@@ -26,7 +32,7 @@ string _DauSachSearchString;
 
 #define NORMAL 0
 #define CREATE 1
-#define DMSACH_EDIT 2
+#define EDIT 2
 
 int DMSACH_MODE = NORMAL;
 
@@ -42,7 +48,15 @@ const vector<string> _DauSachBookFooter = {
 void loadContent(BookView &book, ContentView &content)
 {
   if (book.lineCount <= 0) return;
-  DMSach *ds = findByMaSach(_ListDMSach, stoi(book.keys[book.select])).value;
+  long long key;
+  try {
+    key = stoll(book.keys[book.select]);
+  }
+  catch (const exception &e) {
+    return;
+  }
+
+  DMSach *ds = findByMaSach(_ListDMSach, key).value;
   _CurrentNodeDMSach = ds;
   _DMSachContentView.lines[0] = to_string(ds->data->maSach);
   _DMSachContentView.lines[1] = to_string(ds->data->trangThai);
@@ -52,37 +66,43 @@ void loadContent(BookView &book, ContentView &content)
 void updateContent(ContentView &content)
 {
   int bookIndex = getIndex(_DMSachBookView);
-  DMSach *ds;
-  if (DMSACH_MODE == DMSACH_EDIT) {
-    ds = _CurrentNodeDMSach;
+  Sach *sach;
+  if (DMSACH_MODE == EDIT) {
+    sach = _CurrentNodeDMSach->data;
   }
-  if (DMSACH_MODE == CREATE) ds = new DMSach;
-
-  ds->data->maSach = stoi(content.lines[0]);
-  ds->data->trangThai = stoi(content.lines[1]);
-  ds->data->viTri = content.lines[2];
   if (DMSACH_MODE == CREATE) {
-    addLast(_ListDMSach, ds->data);
+    sach = new Sach;
+  }
+
+  sach->maSach = stoll(content.lines[0]);
+  sach->trangThai = stoi(content.lines[1]);
+  sach->viTri = content.lines[2];
+  if (DMSACH_MODE == CREATE) {
+    consoleLog<long long>(sach->maSach);
+    consoleLog<int>(sach->trangThai);
+    addLast(_ListDMSach, sach);
   }
 }
 
 /* -------------------- _DMSachBookView functions -------------------- */
 void loadList(BookView &book)
 {
-  int newAllPage = countAllPage(countAll(_ListDMSach), book.pageSize);
-  if (newAllPage < book.allPage) {
-    book.allPage = newAllPage;
-    if (book.pageIndex >= book.allPage)
-      book.pageIndex = book.allPage - 1;
-  }
+  int dataCount = countAll(_ListDMSach);
+  int newAllPage = countAllPage(dataCount, book.pageSize);
+  book.allPage = newAllPage;
+  if (book.pageIndex >= book.allPage)
+    book.pageIndex = book.allPage - 1;
+
   int startIndex = book.pageIndex * book.pageSize;
   int endIndex = startIndex + book.pageSize - 1;
-  if (endIndex > countAll(_ListDMSach) - 1) endIndex = countAll(_ListDMSach) - 1;
+  if (endIndex > dataCount - 1) endIndex = dataCount - 1;
   book.lineCount = endIndex - startIndex + 1;
   // load data trang moi
   int j = 0;
-  for (DMSach *i = _ListDMSach; i->next != NULL; i = i->next) {
-    book.lines[j] = to_string(i->data->maSach);
+  for (DMSach *i = _ListDMSach; i != NULL; i = i->next) {
+    string maSach = to_string(i->data->maSach);
+    book.lines[j] = maSach;
+    book.keys[j] = maSach;
     j++;
   }
   // change select
@@ -93,32 +113,9 @@ void loadList(BookView &book)
   if (book.select > book.lineCount - 1) book.select = book.lineCount - 1;
 }
 
-// void searchDauSach()
-// {
-//   gotoxy(11, 3);
-//   showConsoleCursor(true);
-//   setNormalText();
-//   cout << string(20, ' ');
-//   gotoxy(11, 3);
-//   customCin(_DauSachSearchString, 20);
-//   showConsoleCursor(false);
-//   if (_DauSachSearchString.compare("") == 0) {
-//     // reset data
-//     _ListDMSach = _ListDMSach_Root;
-//     // reset view
-//     _DMSachBookView = _defaultDMSachBookView;
-//   }
-//   else {
-//     DauSach ds;
-//     ds.ISBN = ds.tacGia = ds.ten = ds.theLoai = _DauSachSearchString;
-//     _ListDMSach = filterDauSach(_ListDMSach_Root, ds);
-//     _DauSachSearchString = "";
-//   }
-// }
-
 void deleteDMSach(string key)
 {
-  deleteByMaSach(_ListDMSach, stoi(key));
+  deleteByMaSach(_ListDMSach, stoll(key));
 }
 
 /* -------------------- _DMSachContentView handles -------------------- */
@@ -135,18 +132,18 @@ void handleContentAction(ContentView &content, int key, bool &breaker)
 }
 
 /* -------------------- _DMSachBookView handles -------------------- */
-void handleBookSelectChange(BookView &book)
+void handleSelectChange(BookView &book)
 {
   loadContent(book, _DMSachContentView);
   clearContentView(_DMSachContentView);
   drawContentView(_DMSachContentView);
 }
 
-void handleDauSachBookAction(BookView &book, int keyPressed)
+void handleListAction(BookView &book, int keyPressed)
 {
   switch (keyPressed) {
   case F2:
-    DMSACH_MODE = DMSACH_EDIT;
+    DMSACH_MODE = EDIT;
     runContentViewEditMode(_DMSachContentView, handleContentAction);
     loadList(_DMSachBookView);
     drawBookView(_DMSachBookView);
@@ -156,6 +153,7 @@ void handleDauSachBookAction(BookView &book, int keyPressed)
     DMSACH_MODE = CREATE;
     clearContentView(_DMSachContentView);
     ContentView createCV = getEmptyView(_DMSachContentView);
+    createCV.lines[0] = to_string(getNewMaSach());
     runContentViewEditMode(createCV, handleContentAction);
     loadList(_DMSachBookView);
     drawBookView(_DMSachBookView);
@@ -195,14 +193,15 @@ void initDMSachPage()
   _DMSachContentView.left = 72;
   _DMSachContentView.right = 154;
   _DMSachContentView.bottom = 26;
-  _DMSachContentView.lineCount = 6;
-  _DMSachContentView.labelColumnSize = 8;
+  _DMSachContentView.lineCount = 3;
+  _DMSachContentView.labelColumnSize = 10;
   _DMSachContentView.labels[0] = "Ma Sach";
   _DMSachContentView.labels[1] = "Trang thai";
   _DMSachContentView.labels[2] = "Vi tri";
+  _DMSachContentView = getInitalView(_DMSachContentView);
   _DMSachContentView.isNumberType[0] = true;
   _DMSachContentView.isNumberType[1] = true;
-  _DMSachContentView.isNumberType[2] = false;
+  _DMSachContentView.isEditable[0] = false;
   /* load _DMSachBookView */
   loadContent(_DMSachBookView, _DMSachContentView);
   // backup
@@ -216,10 +215,9 @@ void runDMSachPage()
   loadLayout("layout/DMSach.layout");
   setHeader("Quan ly dau sach");
   setFooter(_DauSachBookFooter);
-  runBookView(_DMSachBookView, handleDauSachBookAction, loadList, handleBookSelectChange);
-  clearPage(1, 3, 154, 26);
+  runBookView(_DMSachBookView, handleListAction, loadList, handleSelectChange);
+  clearPage(_left, _top, _right, _bottom);
 }
-
 } // namespace DMSACHPAGE
 
 #endif

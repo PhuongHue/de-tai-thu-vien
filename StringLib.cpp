@@ -1,10 +1,12 @@
 #ifndef _STRINGLIB_CPP_
 #define _STRINGLIB_CPP_
 
+#include <sstream>
 #include <string>
 using namespace std;
 
-int find(string str1, string str2, int begin = 0) {
+int find(string str1, string str2, int begin = 0)
+{
   for (int i = begin; i < str1.length() - str2.length(); i++) {
     bool f = true;
     for (int j = 0; j < str2.length(); j++) {
@@ -16,6 +18,16 @@ int find(string str1, string str2, int begin = 0) {
     if (f) return i;
   }
   return -1;
+}
+
+template <class T>
+T convert(string str)
+{
+  stringstream ss;
+  ss << str;
+  T x;
+  ss >> x;
+  return x;
 }
 
 #endif

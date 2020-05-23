@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <time.h>
 
 #include "GUI/consolelib.h"
 using namespace std;
@@ -13,15 +14,23 @@ using namespace std;
 #define DA_THANH_LY 2
 
 struct Sach {
-  int maSach;
+  long long maSach;
   int trangThai;
   string viTri;
 };
 
-int compareData(Sach *a, Sach *b) {
-  int cmpMSSV = a->maSach - b->maSach;
-  if (cmpMSSV != 0)
-    return cmpMSSV;
+long long getNewMaSach()
+{
+  time_t currentTime;
+  time(&currentTime);
+  return currentTime;
+}
+
+int compareData(Sach *a, Sach *b)
+{
+  int cmpMaSach = a->maSach - b->maSach;
+  if (cmpMaSach != 0)
+    return cmpMaSach;
   else {
     int cmpTrangThai = a->trangThai - b->trangThai;
     if (cmpTrangThai != 0)
@@ -38,6 +47,13 @@ struct DMSach {
   DMSach *next = NULL;
 };
 
+DMSach *getNewDMSach()
+{
+  DMSach *dms = new DMSach;
+  dms->data = new Sach;
+  return dms;
+}
+
 struct PairNode {
   DMSach *before = NULL;
   DMSach *value = NULL;
@@ -45,7 +61,8 @@ struct PairNode {
 
 typedef void (*CallBackDMSach)(DMSach *node);
 
-void foreachDMSach(DMSach *first, CallBackDMSach callBack) {
+void foreachDMSach(DMSach *first, CallBackDMSach callBack)
+{
   DMSach *p = first;
   while (p != NULL) {
     callBack(p);
@@ -53,13 +70,15 @@ void foreachDMSach(DMSach *first, CallBackDMSach callBack) {
   }
 }
 
-void swapNodeData(DMSach *&a, DMSach *&b) {
+void swapNodeData(DMSach *&a, DMSach *&b)
+{
   Sach *c = a->data;
   a->data = b->data;
   b->data = c;
 }
 
-void addFirst(DMSach *&first, Sach *info) {
+void addFirst(DMSach *&first, Sach *info)
+{
   if (first == NULL) {
     first = new DMSach;
     first->data = info;
@@ -70,20 +89,23 @@ void addFirst(DMSach *&first, Sach *info) {
   p->next = first;
 }
 
-void addLast(DMSach *&first, Sach *info) {
+void addLast(DMSach *&first, Sach *info)
+{
   if (first == NULL) {
     first = new DMSach;
     first->data = info;
     return;
   }
   DMSach *p = first;
-  while (p->next) p = p->next;
+  while (p->next)
+    p = p->next;
   DMSach *q = new DMSach;
   q->data = info;
   p->next = q;
 }
 
-int countAll(DMSach *first) {
+int countAll(DMSach *first)
+{
   DMSach *p = first;
   int count = 0;
   while (p != NULL) {
@@ -93,7 +115,8 @@ int countAll(DMSach *first) {
   return count;
 }
 
-PairNode findByMaSach(DMSach *first, int key) {
+PairNode findByMaSach(DMSach *first, long long key)
+{
   DMSach *p = first;
   DMSach *pBefore = NULL;
   DMSach *kq = NULL;
@@ -112,7 +135,8 @@ PairNode findByMaSach(DMSach *first, int key) {
   return pair;
 }
 
-void deleteAll(DMSach *&first) {
+void deleteAll(DMSach *&first)
+{
   DMSach *p = first;
   first = NULL;
   while (p != NULL) {
@@ -123,7 +147,8 @@ void deleteAll(DMSach *&first) {
   }
 }
 
-bool deleteByMaSach(DMSach *&first, int key) {
+bool deleteByMaSach(DMSach *&first, long long key)
+{
   PairNode pn = findByMaSach(first, key);
   if (pn.value == NULL)
     return false;
@@ -136,17 +161,21 @@ bool deleteByMaSach(DMSach *&first, int key) {
     return true;
   }
 }
-void luuFile(DMSach *&first, ofstream &fout) {
+void luuFile(DMSach *&first, ofstream &fout)
+{
   DMSach *p = first;
   fout << countAll(first) << endl;
   while (p != NULL) {
     Sach *data = p->data;
-    fout << data->maSach << endl << data->trangThai << endl << data->viTri << endl;
+    fout << data->maSach << endl
+         << data->trangThai << endl
+         << data->viTri << endl;
     p = p->next;
   }
 }
 
-void docFile(DMSach *&list, fstream &fin) {
+void docFile(DMSach *&list, fstream &fin)
+{
   int n;
   fin >> n;
   for (int i = 0; i < n; i++) {
@@ -158,7 +187,8 @@ void docFile(DMSach *&list, fstream &fin) {
   }
 }
 
-void sortByMS(DMSach *&first) {
+void sortByMS(DMSach *&first)
+{
   for (DMSach *i = first; i != NULL && i->next != NULL; i = i->next) {
     for (DMSach *j = i->next; j != NULL; j = j->next) {
       if (i->data->maSach > j->data->maSach) swapNodeData(i, j);
@@ -166,7 +196,8 @@ void sortByMS(DMSach *&first) {
   }
 }
 
-int compareDataDanhMuc(Sach *a, Sach *b) {
+int compareDataDanhMuc(Sach *a, Sach *b)
+{
   int cmpTrangThai = a->trangThai - b->trangThai;
   if (cmpTrangThai != 0)
     return cmpTrangThai;
@@ -175,7 +206,8 @@ int compareDataDanhMuc(Sach *a, Sach *b) {
   }
 }
 
-void sortByTTVT(DMSach *&first) {
+void sortByTTVT(DMSach *&first)
+{
   for (DMSach *i = first; i != NULL && i->next != NULL; i = i->next) {
     for (DMSach *j = i->next; j != NULL; j = j->next) {
       if (compareDataDanhMuc(i->data, j->data) > 0) swapNodeData(i, j);

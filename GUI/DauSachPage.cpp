@@ -6,13 +6,18 @@
 #include <string>
 
 #include "../DauSach.cpp"
+#include "DMSachPage.cpp"
 #include "components/BookView.cpp"
 #include "components/ContentView.cpp"
-#include "DMSachPage.cpp"
 
 using namespace std;
 
 namespace DAUSACHPAGE {
+
+int _top = 3;
+int _left = 1;
+int _right = 154;
+int _bottom = 26;
 
 ListDauSach _ListDauSach_Root;
 ListDauSach _ListDauSach;
@@ -40,7 +45,7 @@ const vector<string> _DauSachBookFooter = {
     "F3: Them moi",
     "F4: Xoa",
     "F5: Luu",
-    "F6: Xem Danh muc sach"};
+    "ENTER: Xem Danh muc sach"};
 const vector<string> _DauSachBookSearchFooter = {"ESC: Huy", "ENTER: Tim kiem"};
 
 /* -------------------- _DauSachContentView funtions -------------------- */
@@ -199,10 +204,14 @@ void handleDauSachBookAction(BookView &book, int keyPressed)
     appPause("Da luu vao file!", _DauSachBookView.left, _DauSachBookView.top);
     drawBookView(_DauSachBookView);
     break;
-  case F6:
-    clearBookView(_DauSachBookView);
+  case ENTER:
+    clearPage(_left, _top, _right, _bottom);
     DMSACHPAGE::initDMSachPage();
     DMSACHPAGE::runDMSachPage();
+    loadLayout("layout/DauSach.layout");
+    setHeader("Quan ly dau sach");
+    drawBookView(_DauSachBookView);
+    drawContentView(_DauSachContentView);
     break;
   }
   setFooter(_DauSachBookFooter);
@@ -241,12 +250,9 @@ void initDauSachPage()
   _DauSachContentView.labels[3] = "Tac gia";
   _DauSachContentView.labels[4] = "Ten";
   _DauSachContentView.labels[5] = "The loai";
-  _DauSachContentView.isNumberType[0] = false;
+  _DauSachContentView = getInitalView(_DauSachContentView);
   _DauSachContentView.isNumberType[1] = true;
   _DauSachContentView.isNumberType[2] = true;
-  _DauSachContentView.isNumberType[3] = false;
-  _DauSachContentView.isNumberType[4] = false;
-  _DauSachContentView.isNumberType[5] = false;
   /* load _DauSachBookView */
   loadDauSachContent(_DauSachBookView, _DauSachContentView);
   // backup
@@ -261,7 +267,7 @@ void runDauSachPage()
   setHeader("Quan ly dau sach");
   setFooter(_DauSachBookFooter);
   runBookView(_DauSachBookView, handleDauSachBookAction, loadDauSachBook, handleBookSelectChange);
-  clearPage(1, 3, 154, 26);
+  clearPage(_left, _top, _right, _bottom);
 }
 
 } // namespace DAUSACHPAGE
