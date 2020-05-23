@@ -23,7 +23,7 @@ struct DauSach {
 struct ListDauSach {
   DauSach *data[MAX_LIST];
   int length = 0;
-};
+} _ListDauSach_Root;
 
 typedef void (*CallBackDauSach)(DauSach *&node);
 

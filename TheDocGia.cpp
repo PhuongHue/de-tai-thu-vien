@@ -5,35 +5,42 @@
 #include <fstream>
 #include <iostream>
 
+#include "MuonTra.cpp"
+
 using namespace std;
 
 struct TNData {
-  int key;
-  int value;
+  long long maThe;
+  string ho;
+  string ten;
+  string phai;
+  int trangThai;
+  ListMuonTra *lmt = NULL;
 };
 
-int keyCmp(int a, int b) { return a - b; }
+int keyCmp(long long a, long long b) { return a - b; }
 
 struct TreeNode {
   TNData *data = NULL;
   struct TreeNode *left = NULL;
   struct TreeNode *right = NULL;
-  TreeNode() {}
-  TreeNode(TNData *data) { this->data = data; }
-};
+} * _ListTheDocGia_root;
 
-void insertTreeNode(TreeNode *&root, TNData *data) {
+void insertTreeNode(TreeNode *&root, TNData *data)
+{
   if (root == NULL) {
-    TreeNode *p = new TreeNode(data);
+    TreeNode *p = new TreeNode;
+    p->data = data;
     root->left = p;
   }
 
-  int keyCmpRes = keyCmp(data->key, root->data->key);
+  int keyCmpRes = keyCmp(data->maThe, root->data->maThe);
   if (keyCmpRes < 0) {
     if (root->left != NULL)
       insertTreeNode(root->left, data);
     else {
-      TreeNode *p = new TreeNode(data);
+      TreeNode *p = new TreeNode;
+      p->data = data;
       root->left = p;
     }
     return;
@@ -41,8 +48,10 @@ void insertTreeNode(TreeNode *&root, TNData *data) {
   if (keyCmpRes > 0) {
     if (root->right != NULL) {
       insertTreeNode(root->right, data);
-    } else {
-      TreeNode *p = new TreeNode(data);
+    }
+    else {
+      TreeNode *p = new TreeNode;
+      p->data = data;
       root->right = p;
     }
     return;

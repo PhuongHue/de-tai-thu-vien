@@ -1,44 +1,35 @@
-#ifndef _DAUSACHPAGE_CPP_
-#define _DAUSACHPAGE_CPP_
+#ifndef _DMSACHPAGE_CPP_
+#define _DMSACHPAGE_CPP_
 
-#include <math.h>
-#include <sstream>
-#include <string>
-
-#include "../DauSach.cpp"
-#include "DMSachPage.cpp"
+#include "../TheDocGia.cpp"
 #include "components/BookView.cpp"
 #include "components/ContentView.cpp"
 
 using namespace std;
 
-namespace DAUSACHPAGE {
+namespace THEDOCGIAPAGE {
 
 int _top = 3;
 int _left = 1;
 int _right = 154;
 int _bottom = 26;
 
-ListDauSach _ListDauSach;
-
-BookView _DauSachBookView;
-BookView _defaultDauSachBookView;
+BookView _TheDocGiaBookView;
 
 ContentView _DauSachContentView;
 
 string _DauSachSearchString;
 
-#define BOOK_NORMAL 0
-#define BOOK_CREATE 1
-#define BOOK_EDIT 2
+#define NORMAL 0
+#define CREATE 1
+#define EDIT 2
 
-int BOOK_MODE = BOOK_NORMAL;
+int BOOK_MODE = NORMAL;
 
 const vector<string> _DauSachBookFooter = {
     "ESC: Tro ve",
     ">>: Trang sau",
     "<<: Trang truoc",
-    "F1: Tim kiem",
     "F2: Sua",
     "F3: Them moi",
     "F4: Xoa",
@@ -50,7 +41,7 @@ const vector<string> _DauSachBookSearchFooter = {"ESC: Huy", "ENTER: Tim kiem"};
 void loadDauSachContent(BookView &book, ContentView &content)
 {
   if (book.lineCount <= 0) return;
-  DauSach *ds = findDauSachByISBN(_ListDauSach, _DauSachBookView.keys[_DauSachBookView.select]);
+  DauSach *ds = findDauSachByISBN(_ListDauSach, _TheDocGiaBookView.keys[_TheDocGiaBookView.select]);
   _DauSachContentView.lines[0] = ds->ISBN;
   _DauSachContentView.lines[1] = to_string(ds->namXB);
   _DauSachContentView.lines[2] = to_string(ds->soTrang);
@@ -63,13 +54,13 @@ void loadDauSachContent(BookView &book, ContentView &content)
 
 void updateContent(ContentView &content)
 {
-  int bookIndex = getIndex(_DauSachBookView);
+  int bookIndex = getIndex(_TheDocGiaBookView);
   DauSach *ds;
-  if (BOOK_MODE == BOOK_EDIT) {
+  if (BOOK_MODE == EDIT) {
     ds = _ListDauSach.data[bookIndex];
-    _DauSachBookView.keys[_DauSachBookView.select] = content.lines[0];
+    _TheDocGiaBookView.keys[_TheDocGiaBookView.select] = content.lines[0];
   }
-  if (BOOK_MODE == BOOK_CREATE) ds = new DauSach;
+  if (BOOK_MODE == CREATE) ds = new DauSach;
 
   ds->ISBN = content.lines[0];
   ds->namXB = stoi(content.lines[1]);
@@ -78,7 +69,7 @@ void updateContent(ContentView &content)
   ds->ten = content.lines[4];
   ds->theLoai = content.lines[5];
 
-  if (BOOK_MODE == BOOK_CREATE) {
+  if (BOOK_MODE == CREATE) {
     addLast(_ListDauSach_Root, ds);
     _ListDauSach = _ListDauSach_Root;
   }
@@ -108,29 +99,6 @@ void loadDauSachBook(BookView &book)
     return;
   }
   if (book.select > book.lineCount - 1) book.select = book.lineCount - 1;
-}
-
-void searchDauSach()
-{
-  gotoxy(11, 3);
-  showConsoleCursor(true);
-  setNormalText();
-  cout << string(20, ' ');
-  gotoxy(11, 3);
-  customCin(_DauSachSearchString, 20);
-  showConsoleCursor(false);
-  if (_DauSachSearchString.compare("") == 0) {
-    // reset data
-    _ListDauSach = _ListDauSach_Root;
-    // reset view
-    _DauSachBookView = _defaultDauSachBookView;
-  }
-  else {
-    DauSach ds;
-    ds.ISBN = ds.tacGia = ds.ten = ds.theLoai = _DauSachSearchString;
-    _ListDauSach = filterDauSach(_ListDauSach_Root, ds);
-    _DauSachSearchString = "";
-  }
 }
 
 void deleteDauSach(string ISBN)
@@ -163,54 +131,46 @@ void handleBookSelectChange(BookView &book)
 void handleDauSachBookAction(BookView &book, int keyPressed)
 {
   switch (keyPressed) {
-  case F1:
-    setFooter(_DauSachBookSearchFooter);
-    searchDauSach();
-    clearBookView(_DauSachBookView);
-    resetBookIndex(_DauSachBookView, _ListDauSach.length);
-    loadDauSachBook(_DauSachBookView);
-    drawBookView(_DauSachBookView);
-    break;
   case F2:
-    BOOK_MODE = BOOK_EDIT;
+    BOOK_MODE = EDIT;
     runContentViewEditMode(_DauSachContentView, handleContentAction);
-    loadDauSachBook(_DauSachBookView);
-    drawBookView(_DauSachBookView);
-    BOOK_MODE = BOOK_NORMAL;
+    loadDauSachBook(_TheDocGiaBookView);
+    drawBookView(_TheDocGiaBookView);
+    BOOK_MODE = NORMAL;
     break;
   case F3: {
-    BOOK_MODE = BOOK_CREATE;
+    BOOK_MODE = CREATE;
     clearContentView(_DauSachContentView);
     ContentView createCV = getEmptyView(_DauSachContentView);
     runContentViewEditMode(createCV, handleContentAction);
-    loadDauSachBook(_DauSachBookView);
-    drawBookView(_DauSachBookView);
-    BOOK_MODE = BOOK_NORMAL;
+    loadDauSachBook(_TheDocGiaBookView);
+    drawBookView(_TheDocGiaBookView);
+    BOOK_MODE = NORMAL;
   } break;
   case F4:
-    clearBookView(_DauSachBookView);
-    if (appYesNo("Ban co muon xoa dau sach nay?", _DauSachBookView.left, _DauSachBookView.top)) {
+    clearBookView(_TheDocGiaBookView);
+    if (appYesNo("Ban co muon xoa dau sach nay?", _TheDocGiaBookView.left, _TheDocGiaBookView.top)) {
       deleteDauSach(book.keys[book.select]);
     }
-    loadDauSachBook(_DauSachBookView);
-    drawBookView(_DauSachBookView);
+    loadDauSachBook(_TheDocGiaBookView);
+    drawBookView(_TheDocGiaBookView);
     break;
-  case F5:
-    luuFile(_ListDauSach_Root);
-    // thong bao
-    clearBookView(_DauSachBookView);
-    appPause("Da luu vao file!", _DauSachBookView.left, _DauSachBookView.top);
-    drawBookView(_DauSachBookView);
-    break;
-  case ENTER:
-    clearPage(_left, _top, _right, _bottom);
-    DMSACHPAGE::initDMSachPage();
-    DMSACHPAGE::runDMSachPage();
-    loadLayout("layout/DauSach.layout");
-    setHeader("Quan ly dau sach");
-    drawBookView(_DauSachBookView);
-    drawContentView(_DauSachContentView);
-    break;
+    // case F5:
+    //   luuFile(_ListTheDocGia_root);
+    //   // thong bao
+    //   clearBookView(_TheDocGiaBookView);
+    //   appPause("Da luu vao file!", _TheDocGiaBookView.left, _TheDocGiaBookView.top);
+    //   drawBookView(_TheDocGiaBookView);
+    //   break;
+    // case ENTER:
+    //   clearPage(_left, _top, _right, _bottom);
+    //   DMSACHPAGE::initDMSachPage();
+    //   DMSACHPAGE::runDMSachPage();
+    //   loadLayout("layout/DauSach.layout");
+    //   setHeader("Quan ly dau sach");
+    //   drawBookView(_TheDocGiaBookView);
+    //   drawContentView(_DauSachContentView);
+    //   break;
   }
   setFooter(_DauSachBookFooter);
 }
@@ -218,23 +178,17 @@ void handleDauSachBookAction(BookView &book, int keyPressed)
 /* -------------------- DauSachPage functions -------------------- */
 void initDauSachPage()
 {
-  /* Copy data */
-  _ListDauSach = _ListDauSach_Root;
-
   /* init _DauSachBookView, _DauSachBookView */
-  _DauSachBookView.left = 1;
-  _DauSachBookView.top = 5;
-  _DauSachBookView.right = 40;
-  _DauSachBookView.bottom = 26;
-  _DauSachBookView.pageSize = 20;
-  _DauSachBookView.lineCount = 20;
+  _TheDocGiaBookView.left = 1;
+  _TheDocGiaBookView.top = 5;
+  _TheDocGiaBookView.right = 40;
+  _TheDocGiaBookView.bottom = 26;
+  _TheDocGiaBookView.pageSize = 20;
+  _TheDocGiaBookView.lineCount = 20;
   // tinh so trang, dua page index ve 0
-  resetBookIndex(_DauSachBookView, _ListDauSach.length);
+  resetBookIndex(_TheDocGiaBookView, _ListDauSach.length);
   /* load _DauSachBookView */
-  loadDauSachBook(_DauSachBookView);
-  // backup
-  _defaultDauSachBookView = _DauSachBookView;
-
+  loadDauSachBook(_TheDocGiaBookView);
   /* init _DauSachContentView */
   _DauSachContentView.top = 3;
   _DauSachContentView.left = 72;
@@ -252,7 +206,7 @@ void initDauSachPage()
   _DauSachContentView.isNumberType[1] = true;
   _DauSachContentView.isNumberType[2] = true;
   /* load _DauSachBookView */
-  loadDauSachContent(_DauSachBookView, _DauSachContentView);
+  loadDauSachContent(_TheDocGiaBookView, _DauSachContentView);
   drawContentView(_DauSachContentView);
 }
 
@@ -261,10 +215,9 @@ void runDauSachPage()
   loadLayout("layout/DauSach.layout");
   setHeader("Quan ly dau sach");
   setFooter(_DauSachBookFooter);
-  runBookView(_DauSachBookView, handleDauSachBookAction, loadDauSachBook, handleBookSelectChange);
+  runBookView(_TheDocGiaBookView, handleDauSachBookAction, loadDauSachBook, handleBookSelectChange);
   clearPage(_left, _top, _right, _bottom);
 }
-
-} // namespace DAUSACHPAGE
+} // namespace THEDOCGIAPAGE
 
 #endif
