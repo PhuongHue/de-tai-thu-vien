@@ -41,15 +41,15 @@ const vector<string> _DauSachBookSearchFooter = {"ESC: Huy", "ENTER: Tim kiem"};
 void loadDauSachContent(BookView &book, ContentView &content)
 {
   if (book.lineCount <= 0) return;
-  DauSach *ds = findDauSachByISBN(_ListDauSach, _TheDocGiaBookView.keys[_TheDocGiaBookView.select]);
+  // DauSach *ds = findDauSachByISBN(_ListDauSach, _TheDocGiaBookView.keys[_TheDocGiaBookView.select]);
   _DauSachContentView.lines[0] = ds->ISBN;
   _DauSachContentView.lines[1] = to_string(ds->namXB);
   _DauSachContentView.lines[2] = to_string(ds->soTrang);
   _DauSachContentView.lines[3] = ds->tacGia;
   _DauSachContentView.lines[4] = ds->ten;
   _DauSachContentView.lines[5] = ds->theLoai;
-  DMSACHPAGE::_ListDMSach = ds->dms;
-  DMSACHPAGE::_CurrentNodeDMSach = ds->dms;
+  // DMSACHPAGE::_ListDMSach = ds->dms;
+  // DMSACHPAGE::_CurrentNodeDMSach = ds->dms;
 }
 
 void updateContent(ContentView &content)
@@ -78,7 +78,8 @@ void updateContent(ContentView &content)
 /* -------------------- _DauSachBookView functions -------------------- */
 void loadDauSachBook(BookView &book)
 {
-  int newAllPage = countAllPage(_ListDauSach.length, book.pageSize);
+  int dataLength = countAll(_ListTheDocGia_root);
+  int newAllPage = countAllPage(dataLength, book.pageSize);
   if (newAllPage < book.allPage) {
     book.allPage = newAllPage;
     if (book.pageIndex >= book.allPage)
@@ -86,12 +87,14 @@ void loadDauSachBook(BookView &book)
   }
   int startIndex = book.pageIndex * book.pageSize;
   int endIndex = startIndex + book.pageSize - 1;
-  if (endIndex > _ListDauSach.length - 1) endIndex = _ListDauSach.length - 1;
+  if (endIndex > dataLength - 1) endIndex = dataLength - 1;
   book.lineCount = endIndex - startIndex + 1;
   // load data trang moi
-  for (int i = startIndex, j = 0; i <= endIndex; i++, j++) {
-    book.lines[j] = _ListDauSach.data[i]->ten;
-    book.keys[j] = _ListDauSach.data[i]->ISBN;
+  initDuyetLNR();
+  duyetLNR(_ListTheDocGia_root, startIndex, endIndex);
+  for (int i = 0; i < _TDGArray_temp.length; i++) {
+    book.lines[i] = _TDGArray_temp.data[i]->maThe;
+    book.keys[i] = to_string(_TDGArray_temp.data[i]->maThe);
   }
   // change select
   if (book.lineCount == 0) {
@@ -101,10 +104,10 @@ void loadDauSachBook(BookView &book)
   if (book.select > book.lineCount - 1) book.select = book.lineCount - 1;
 }
 
-void deleteDauSach(string ISBN)
+void deleteTDG(long long maThe)
 {
-  findAndDelete(_ListDauSach_Root, ISBN);
-  _ListDauSach = _ListDauSach_Root;
+  bool deleted = false;
+  findAndDelete(_ListTheDocGia_root, maThe, deleted);
 }
 
 /* -------------------- _DauSachContentView handles -------------------- */
@@ -150,7 +153,7 @@ void handleDauSachBookAction(BookView &book, int keyPressed)
   case F4:
     clearBookView(_TheDocGiaBookView);
     if (appYesNo("Ban co muon xoa dau sach nay?", _TheDocGiaBookView.left, _TheDocGiaBookView.top)) {
-      deleteDauSach(book.keys[book.select]);
+      deleteTDG(stoll(book.keys[book.select]));
     }
     loadDauSachBook(_TheDocGiaBookView);
     drawBookView(_TheDocGiaBookView);
@@ -186,7 +189,7 @@ void initDauSachPage()
   _TheDocGiaBookView.pageSize = 20;
   _TheDocGiaBookView.lineCount = 20;
   // tinh so trang, dua page index ve 0
-  resetBookIndex(_TheDocGiaBookView, _ListDauSach.length);
+  resetBookIndex(_TheDocGiaBookView, countAll(_ListTheDocGia_root));
   /* load _DauSachBookView */
   loadDauSachBook(_TheDocGiaBookView);
   /* init _DauSachContentView */
