@@ -20,11 +20,13 @@ ContentView _DauSachContentView;
 
 string _DauSachSearchString;
 
+TheDocGia *_CurrentTDG = NULL;
+
 #define NORMAL 0
 #define CREATE 1
 #define EDIT 2
 
-int BOOK_MODE = NORMAL;
+int MODE = NORMAL;
 
 const vector<string> _DauSachBookFooter = {
     "ESC: Tro ve",
@@ -41,37 +43,34 @@ const vector<string> _DauSachBookSearchFooter = {"ESC: Huy", "ENTER: Tim kiem"};
 void loadDauSachContent(BookView &book, ContentView &content)
 {
   if (book.lineCount <= 0) return;
-  // DauSach *ds = findDauSachByISBN(_ListDauSach, _TheDocGiaBookView.keys[_TheDocGiaBookView.select]);
-  _DauSachContentView.lines[0] = ds->ISBN;
-  _DauSachContentView.lines[1] = to_string(ds->namXB);
-  _DauSachContentView.lines[2] = to_string(ds->soTrang);
-  _DauSachContentView.lines[3] = ds->tacGia;
-  _DauSachContentView.lines[4] = ds->ten;
-  _DauSachContentView.lines[5] = ds->theLoai;
+  TheDocGia *tdg = find(_ListTheDocGia_root, stoll(book.keys[book.select]))->data;
+  _CurrentTDG = tdg;
+  _DauSachContentView.lines[0] = to_string(tdg->maThe);
+  _DauSachContentView.lines[1] = tdg->ho;
+  _DauSachContentView.lines[2] = tdg->ten;
+  _DauSachContentView.lines[3] = tdg->phai ? "Nam" : "Nu";
+  _DauSachContentView.lines[4] = to_string(tdg->trangThai);
   // DMSACHPAGE::_ListDMSach = ds->dms;
   // DMSACHPAGE::_CurrentNodeDMSach = ds->dms;
 }
 
 void updateContent(ContentView &content)
 {
-  int bookIndex = getIndex(_TheDocGiaBookView);
-  DauSach *ds;
-  if (BOOK_MODE == EDIT) {
-    ds = _ListDauSach.data[bookIndex];
+  TheDocGia *tdg;
+  if (MODE == EDIT) {
+    tdg = _CurrentTDG;
     _TheDocGiaBookView.keys[_TheDocGiaBookView.select] = content.lines[0];
   }
-  if (BOOK_MODE == CREATE) ds = new DauSach;
-
-  ds->ISBN = content.lines[0];
-  ds->namXB = stoi(content.lines[1]);
-  ds->soTrang = stoi(content.lines[2]);
-  ds->tacGia = content.lines[3];
-  ds->ten = content.lines[4];
-  ds->theLoai = content.lines[5];
-
-  if (BOOK_MODE == CREATE) {
-    addLast(_ListDauSach_Root, ds);
-    _ListDauSach = _ListDauSach_Root;
+  if (MODE == CREATE) {
+    tdg = new TheDocGia;
+    tdg->maThe = stoll(content.lines[0]);
+  }
+  tdg->ho = content.lines[1];
+  tdg->ten = content.lines[2];
+  tdg->phai = content.lines[3].compare("Nam") == 0;
+  tdg->trangThai = stoi(content.lines[4]);
+  if (MODE == CREATE) {
+    insert(_ListTheDocGia_root, tdg);
   }
 }
 
@@ -135,20 +134,20 @@ void handleDauSachBookAction(BookView &book, int keyPressed)
 {
   switch (keyPressed) {
   case F2:
-    BOOK_MODE = EDIT;
+    MODE = EDIT;
     runContentViewEditMode(_DauSachContentView, handleContentAction);
     loadDauSachBook(_TheDocGiaBookView);
     drawBookView(_TheDocGiaBookView);
-    BOOK_MODE = NORMAL;
+    MODE = NORMAL;
     break;
   case F3: {
-    BOOK_MODE = CREATE;
+    MODE = CREATE;
     clearContentView(_DauSachContentView);
     ContentView createCV = getEmptyView(_DauSachContentView);
     runContentViewEditMode(createCV, handleContentAction);
     loadDauSachBook(_TheDocGiaBookView);
     drawBookView(_TheDocGiaBookView);
-    BOOK_MODE = NORMAL;
+    MODE = NORMAL;
   } break;
   case F4:
     clearBookView(_TheDocGiaBookView);
@@ -158,13 +157,13 @@ void handleDauSachBookAction(BookView &book, int keyPressed)
     loadDauSachBook(_TheDocGiaBookView);
     drawBookView(_TheDocGiaBookView);
     break;
-    // case F5:
-    //   luuFile(_ListTheDocGia_root);
-    //   // thong bao
-    //   clearBookView(_TheDocGiaBookView);
-    //   appPause("Da luu vao file!", _TheDocGiaBookView.left, _TheDocGiaBookView.top);
-    //   drawBookView(_TheDocGiaBookView);
-    //   break;
+    case F5:
+      luuFile(_ListTheDocGia_root);
+      // thong bao
+      clearBookView(_TheDocGiaBookView);
+      appPause("Da luu vao file!", _TheDocGiaBookView.left, _TheDocGiaBookView.top);
+      drawBookView(_TheDocGiaBookView);
+      break;
     // case ENTER:
     //   clearPage(_left, _top, _right, _bottom);
     //   DMSACHPAGE::initDMSachPage();
@@ -199,15 +198,14 @@ void initDauSachPage()
   _DauSachContentView.bottom = 26;
   _DauSachContentView.lineCount = 6;
   _DauSachContentView.labelColumnSize = 8;
-  _DauSachContentView.labels[0] = "ISBN";
-  _DauSachContentView.labels[1] = "Nam XB";
-  _DauSachContentView.labels[2] = "So trang";
-  _DauSachContentView.labels[3] = "Tac gia";
-  _DauSachContentView.labels[4] = "Ten";
-  _DauSachContentView.labels[5] = "The loai";
+  _DauSachContentView.labels[0] = "Ma the";
+  _DauSachContentView.labels[1] = "Ho";
+  _DauSachContentView.labels[2] = "Ten";
+  _DauSachContentView.labels[3] = "Phai";
+  _DauSachContentView.labels[4] = "Trang thai";
   _DauSachContentView = getInitalView(_DauSachContentView);
-  _DauSachContentView.isNumberType[1] = true;
-  _DauSachContentView.isNumberType[2] = true;
+  _DauSachContentView.isNumberType[0] = true;
+  _DauSachContentView.isNumberType[4] = true;
   /* load _DauSachBookView */
   loadDauSachContent(_TheDocGiaBookView, _DauSachContentView);
   drawContentView(_DauSachContentView);

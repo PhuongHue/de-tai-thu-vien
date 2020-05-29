@@ -28,13 +28,11 @@ BookView _defaultDMSachBookView;
 ContentView _DMSachContentView;
 ContentView _defaultDMSachContentView;
 
-string _DauSachSearchString;
-
 #define NORMAL 0
 #define CREATE 1
 #define EDIT 2
 
-int DMSACH_MODE = NORMAL;
+int MODE = NORMAL;
 
 const vector<string> _DauSachBookFooter = {
     "ESC: Tro ve",
@@ -67,17 +65,17 @@ void updateContent(ContentView &content)
 {
   int bookIndex = getIndex(_DMSachBookView);
   Sach *sach;
-  if (DMSACH_MODE == EDIT) {
+  if (MODE == EDIT) {
     sach = _CurrentNodeDMSach->data;
   }
-  if (DMSACH_MODE == CREATE) {
+  if (MODE == CREATE) {
     sach = new Sach;
   }
 
   sach->maSach = stoll(content.lines[0]);
   sach->trangThai = stoi(content.lines[1]);
   sach->viTri = content.lines[2];
-  if (DMSACH_MODE == CREATE) {
+  if (MODE == CREATE) {
     consoleLog<long long>(sach->maSach);
     consoleLog<int>(sach->trangThai);
     addLast(_ListDMSach, sach);
@@ -143,21 +141,21 @@ void handleListAction(BookView &book, int keyPressed)
 {
   switch (keyPressed) {
   case F2:
-    DMSACH_MODE = EDIT;
+    MODE = EDIT;
     runContentViewEditMode(_DMSachContentView, handleContentAction);
     loadList(_DMSachBookView);
     drawBookView(_DMSachBookView);
-    DMSACH_MODE = NORMAL;
+    MODE = NORMAL;
     break;
   case F3: {
-    DMSACH_MODE = CREATE;
+    MODE = CREATE;
     clearContentView(_DMSachContentView);
     ContentView createCV = getEmptyView(_DMSachContentView);
     createCV.lines[0] = to_string(getNewMaSach());
     runContentViewEditMode(createCV, handleContentAction);
     loadList(_DMSachBookView);
     drawBookView(_DMSachBookView);
-    DMSACH_MODE = NORMAL;
+    MODE = NORMAL;
   } break;
   case F4:
     clearBookView(_DMSachBookView);

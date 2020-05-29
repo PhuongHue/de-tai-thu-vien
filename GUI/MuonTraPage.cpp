@@ -19,16 +19,14 @@ int _left = 1;
 int _right = 154;
 int _bottom = 26;
 
-ListMuonTra *_ListDMSach = NULL;
-ListMuonTra *_CurrentNodeDMSach = NULL;
+ListMuonTra *_ListMuonTra = NULL;
+ListMuonTra *_CurrentNodeMuonTra = NULL;
 
 BookView _DMSachBookView;
 BookView _defaultDMSachBookView;
 
 ContentView _DMSachContentView;
 ContentView _defaultDMSachContentView;
-
-string _DauSachSearchString;
 
 #define NORMAL 0
 #define CREATE 1
@@ -56,8 +54,8 @@ void loadContent(BookView &book, ContentView &content)
     return;
   }
 
-  DMSach *ds = findByMaSach(_ListDMSach, key).value;
-  _CurrentNodeDMSach = ds;
+  DMSach *ds = findByMaSach(_ListMuonTra, key).value;
+  _CurrentNodeMuonTra = ds;
   _DMSachContentView.lines[0] = to_string(ds->data->maSach);
   _DMSachContentView.lines[1] = to_string(ds->data->trangThai);
   _DMSachContentView.lines[2] = ds->data->viTri;
@@ -68,7 +66,7 @@ void updateContent(ContentView &content)
   int bookIndex = getIndex(_DMSachBookView);
   MuonTra *sach;
   if (DMSACH_MODE == EDIT) {
-    sach = _CurrentNodeDMSach->data;
+    sach = _CurrentNodeMuonTra->data;
   }
   if (DMSACH_MODE == CREATE) {
     sach = new MuonTra;
@@ -80,14 +78,14 @@ void updateContent(ContentView &content)
   if (DMSACH_MODE == CREATE) {
     consoleLog<long long>(sach->maSach);
     consoleLog<int>(sach->trangThai);
-    addLast(_ListDMSach, sach);
+    addLast(_ListMuonTra, sach);
   }
 }
 
 /* -------------------- _DMSachBookView functions -------------------- */
 void loadList(BookView &book)
 {
-  int dataCount = countAll(_ListDMSach);
+  int dataCount = countAll(_ListMuonTra);
   int newAllPage = countAllPage(dataCount, book.pageSize);
   book.allPage = newAllPage;
   if (book.pageIndex >= book.allPage)
@@ -99,7 +97,7 @@ void loadList(BookView &book)
   book.lineCount = endIndex - startIndex + 1;
   // load data trang moi
   int j = 0;
-  for (DMSach *i = _ListDMSach; i != NULL; i = i->next) {
+  for (DMSach *i = _ListMuonTra; i != NULL; i = i->next) {
     string maSach = to_string(i->data->maSach);
     book.lines[j] = maSach;
     book.keys[j] = maSach;
@@ -115,7 +113,7 @@ void loadList(BookView &book)
 
 void deleteDMSach(string key)
 {
-  deleteByMaSach(_ListDMSach, stoll(key));
+  deleteByMaSach(_ListMuonTra, stoll(key));
 }
 
 /* -------------------- _DMSachContentView handles -------------------- */
@@ -182,7 +180,7 @@ void initDMSachPage()
   _DMSachBookView.pageSize = 20;
   _DMSachBookView.lineCount = 20;
   // tinh so trang, dua page index ve 0
-  resetBookIndex(_DMSachBookView, countAll(_ListDMSach));
+  resetBookIndex(_DMSachBookView, countAll(_ListMuonTra));
   /* load _DMSachBookView */
   loadList(_DMSachBookView);
   // backup

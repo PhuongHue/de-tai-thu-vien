@@ -24,77 +24,68 @@ struct TreeNode {
   struct TreeNode *right = NULL;
 } * _ListTheDocGia_root;
 
-void insert(TreeNode *&root, TheDocGia *tdg)
+void insert(TreeNode *&node, TheDocGia *tdg)
 {
-  if (root == NULL) {
-    root = new TreeNode;
-    root->data = tdg;
+  if (node == NULL) {
+    node = new TreeNode;
+    node->data = tdg;
     return;
   }
-  if (tdg->maThe < root->data->maThe) {
-    if (root->left != NULL)
-      insert(root->left, tdg);
-    else {
-      TreeNode *p = new TreeNode;
-      p->data = tdg;
-      root->left = p;
-    }
-    return;
+  if (tdg->maThe < node->data->maThe) {
+    insert(node->left, tdg);
   }
-  if (tdg->maThe > root->data->maThe) {
-    if (root->right != NULL) {
-      insert(root->right, tdg);
-    }
-    else {
-      TreeNode *p = new TreeNode;
-      p->data = tdg;
-      root->right = p;
-    }
-    return;
+  else if (tdg->maThe > node->data->maThe) {
+    insert(node->right, tdg);
   }
-  if (tdg->maThe == root->data->maThe) {
-    root->data = tdg;
+  else {
+    node->data = tdg;
   }
 }
 
 void findAndDelete(TreeNode *&node, long long maThe, bool &deleted)
 {
   if (node == NULL) return;
-  if (maThe < node->data->maThe && node->left != NULL)
+  if (maThe < node->data->maThe)
     findAndDelete(node->left, maThe, deleted);
-  else if (maThe > node->data->maThe && node->right != NULL)
+  else if (maThe > node->data->maThe)
     findAndDelete(node->right, maThe, deleted);
   else {
-    delete node->data;
-    TreeNode *p = node;
-    deleted = true;
-    if (p->left != NULL) {
-      p = p->left;
-      if (p->right == NULL) {
-        node->left = p->left;
-      }
-      else {
-        while (p->right != NULL)
-          p = p->right;
-      }
-      node->data = p->data;
+    if (node->right == NULL) {
+      node = node->left;
     }
-    else if (p->right != NULL) {
-      p = p->right;
-      if (p->left == NULL) {
-        node->right = p->right;
-      }
-      else {
-        while (p->left != NULL) {
-          node->left = p->left;
-        }
-      }
-      node->data = p->data;
+    else if (node->left == NULL) {
+      node = node->right;
     }
     else {
-      node = NULL;
+      delete node->data;
+      TreeNode *pParent = node;
+      TreeNode *p = node->right;
+
+      while (p->left != NULL) {
+        pParent = p;
+        p = p->left;
+      }
+      if (p != node) {
+        pParent->left = p->right;
+      }
+      else {
+        pParent->right = p->right;
+      }
+      delete p;
+      deleted = true;
     }
-    delete p;
+  }
+}
+
+TreeNode *find(TreeNode *&node, long long maThe)
+{
+  if (node == NULL) return NULL;
+  if (maThe < node->data->maThe && node->left != NULL)
+    return find(node->left, maThe);
+  else if (maThe > node->data->maThe && node->right != NULL)
+    return find(node->right, maThe);
+  else {
+    return node;
   }
 }
 
