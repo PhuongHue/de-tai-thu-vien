@@ -56,12 +56,12 @@ void addLast(ListDauSach &list, DauSach *ds)
   list.length++;
 }
 
-void deleteByIndex(ListDauSach &list, int index){
-  if(index >= list.length) return;
+void deleteByIndex(ListDauSach &list, int index)
+{
+  if (index >= list.length) return;
   delete list.data[index];
-  for (int i = index; i < list.length - 1; i++)
-  {
-    list.data[i] = list.data[i + 1]; 
+  for (int i = index; i < list.length - 1; i++) {
+    list.data[i] = list.data[i + 1];
   }
   list.length--;
 }
@@ -90,6 +90,7 @@ void luuFile(ListDauSach &list)
 
 void docFile(ListDauSach &list, fstream &fin)
 {
+  if (fin.eof()) return;
   int all;
   fin >> all;
   fin.ignore();

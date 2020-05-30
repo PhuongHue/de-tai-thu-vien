@@ -33,9 +33,9 @@ ListMuonTra *getNewListMuonTra()
   return lmt;
 }
 
-typedef void (*CallBackDMSach)(ListMuonTra *node);
+typedef void (*CallBackMuonTra)(ListMuonTra *node);
 
-void foreachDMSach(ListMuonTra *first, CallBackDMSach callBack)
+void foreachDMSach(ListMuonTra *first, CallBackMuonTra callBack)
 {
   ListMuonTra *p = first;
   while (p != NULL) {

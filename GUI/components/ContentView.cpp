@@ -50,7 +50,7 @@ ContentView getEmptyView(ContentView base)
   return content;
 }
 
-void printContentLine(string label, string line, int width = 5)
+void printContentLine(string label, string line, int width)
 {
   cout << left << setw(width) << label << setw(0) << ": " << line;
 }

@@ -76,8 +76,6 @@ void updateContent(ContentView &content)
   sach->trangThai = stoi(content.lines[1]);
   sach->viTri = content.lines[2];
   if (MODE == CREATE) {
-    consoleLog<long long>(sach->maSach);
-    consoleLog<int>(sach->trangThai);
     addLast(_ListDMSach, sach);
   }
 }
@@ -98,9 +96,11 @@ void loadList(BookView &book)
   // load data trang moi
   int j = 0;
   for (DMSach *i = _ListDMSach; i != NULL; i = i->next) {
+    if (j < startIndex) continue;
+    if (j > endIndex) break;
     string maSach = to_string(i->data->maSach);
-    book.lines[j] = maSach;
-    book.keys[j] = maSach;
+    book.lines[j - startIndex] = maSach;
+    book.keys[j - startIndex] = maSach;
     j++;
   }
   // change select

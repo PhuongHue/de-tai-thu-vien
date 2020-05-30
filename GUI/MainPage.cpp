@@ -2,6 +2,7 @@
 #define _MAINPAGE_CPP_
 
 #include "DauSachPage.cpp"
+#include "TheDocGiaPage.cpp"
 #include "components/Menu.cpp"
 
 using namespace std;
@@ -15,9 +16,9 @@ void initMainMenu()
   _MainMenuView.left = 1;
   _MainMenuView.top = 3;
   _MainMenuView.right = 40;
-  _MainMenuView.count = 1;
+  _MainMenuView.count = 2;
   _MainMenuView.options[0] = "Quan ly dau sach.";
-  // _MainMenuView.options[1] = "";
+  _MainMenuView.options[1] = "Quan ly the doc gia.";
   // _MainMenuView.options[2] = "";
   // _MainMenuView.options[3] = "";
   // _MainMenuView.options[4] = "";
@@ -30,11 +31,17 @@ void initMainMenu()
 
 void mainPageAction(MenuView &menu, int keyPressed)
 {
+  if (keyPressed != ENTER) return;
   switch (menu.select) {
   case 0:
     clearMenu(menu);
     DAUSACHPAGE::initDauSachPage();
     DAUSACHPAGE::runDauSachPage();
+    break;
+  case 1:
+    clearMenu(menu);
+    THEDOCGIAPAGE::initTheDocGiaPage();
+    THEDOCGIAPAGE::runTheDocGiaPage();
     break;
   default:
     break;

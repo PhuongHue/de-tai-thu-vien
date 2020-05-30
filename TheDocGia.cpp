@@ -18,6 +18,13 @@ struct TheDocGia {
   ListMuonTra *lmt = NULL;
 };
 
+long long getNewMaTheDocGia()
+{
+  time_t currentTime;
+  time(&currentTime);
+  return currentTime;
+}
+
 struct TreeNode {
   TheDocGia *data = NULL;
   struct TreeNode *left = NULL;
@@ -91,9 +98,23 @@ TreeNode *find(TreeNode *&node, long long maThe)
 
 int countAll(TreeNode *&node)
 {
-  if (node == NULL) return 0;
-  if (node->left == NULL && node->right == NULL) return 1;
-  return countAll(node->left) + countAll(node->right);
+  int c = 1;
+  if (node == NULL)
+    return 0;
+  else {
+    c += countAll(node->left);
+    c += countAll(node->right);
+    return c;
+  }
+}
+
+void consoleLogLNR(TreeNode *node)
+{
+  if (node != NULL) {
+    consoleLogLNR(node->left);
+    consoleLog<string>(to_string(node->data->maThe) + ": " + node->data->ho + ' ' + node->data->ten);
+    consoleLogLNR(node->right);
+  }
 }
 
 #define MAX_TDG_ARRAY_LENGTH 50
@@ -111,26 +132,20 @@ void initDuyetLNR()
   _LNR_temp_index = 0;
 }
 
-void duyetLNR(TreeNode *node, int from = -1, int to = -1)
+void duyetLNR(TreeNode *node, int from, int to)
 {
   if (node != NULL) {
     duyetLNR(node->left, from, to);
-    if (from == -1 && to == -1) {
+    if (_LNR_temp_index >= from && _LNR_temp_index <= to) {
       _TDGArray_temp.data[_TDGArray_temp.length] = node->data;
       _TDGArray_temp.length++;
-    }
-    else {
-      if (_LNR_temp_index >= from && _LNR_temp_index <= to) {
-        _TDGArray_temp.data[_TDGArray_temp.length] = node->data;
-        _TDGArray_temp.length++;
-      }
     }
     _LNR_temp_index++;
     duyetLNR(node->right, from, to);
   }
 }
 
-void luuFile(TheDocGia *tdg, ofstream &fout)
+void luuFile(TheDocGia *tdg, fstream &fout)
 {
   fout << tdg->maThe << endl
        << tdg->ho << endl
@@ -139,25 +154,25 @@ void luuFile(TheDocGia *tdg, ofstream &fout)
        << tdg->trangThai << endl;
 }
 
-void duyetLNRLuuFile(TreeNode *node, ofstream &fout)
+void duyetLNRLuuFile(TreeNode *node, fstream &fout)
 {
   if (node != NULL) {
-    duyetLNR(node->left);
+    duyetLNRLuuFile(node->left, fout);
     luuFile(node->data, fout);
-    duyetLNR(node->right);
+    duyetLNRLuuFile(node->right, fout);
   }
 }
 
 void luuFile(TreeNode *node)
 {
-  ofstream fout;
+  fstream fout;
   fout.open("data/TheDocGia.data");
   fout << countAll(node) << endl;
   duyetLNRLuuFile(node, fout);
   fout.close();
 }
 
-void docFile(TheDocGia *tdg, ifstream &fin)
+void docFile(TheDocGia *tdg, fstream &fin)
 {
   int phai;
   fin >> tdg->maThe;
@@ -171,8 +186,9 @@ void docFile(TheDocGia *tdg, ifstream &fin)
   fin.ignore();
 }
 
-void docFile(TreeNode *node, ifstream &fin)
+void docFile(TreeNode *node, fstream &fin)
 {
+  if (fin.eof()) return;
   int all;
   fin >> all;
   fin.ignore();
