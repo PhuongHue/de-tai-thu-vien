@@ -9,6 +9,7 @@
 #include "../StringLib.cpp"
 #include "components/BookView.cpp"
 #include "components/ContentView.cpp"
+#include "components/YesNoMenu.cpp"
 
 using namespace std;
 
@@ -25,7 +26,7 @@ string _PageLayout = "layout/MuonTra.layout";
 ListMuonTra *_ListMuonTra = NULL;
 ListMuonTra *_CurrentNodeMuonTra = NULL;
 
-BookView _DMSachBookView;
+BookView _MuonTraBookView;
 
 ContentView _MuonTraContentView;
 ContentView _defaultMuonTraContentView;
@@ -104,12 +105,12 @@ void handleListAction(BookView &book, int keyPressed)
 {
   switch (keyPressed) {
   case F4:
-    clearBookView(_DMSachBookView);
-    if (appYesNo("Ban co muon xoa sach nay?", _DMSachBookView.left, _DMSachBookView.top)) {
+    clearBookView(_MuonTraBookView);
+    if (YesNoMenu("Ban co muon xoa sach nay?", _MuonTraBookView.left, _MuonTraBookView.top)) {
       deleteDMSach(book.keys[book.select]);
     }
-    loadList(_DMSachBookView);
-    drawBookView(_DMSachBookView);
+    loadList(_MuonTraBookView);
+    drawBookView(_MuonTraBookView);
     break;
   }
   setFooter(_DauSachBookFooter);
@@ -119,16 +120,16 @@ void handleListAction(BookView &book, int keyPressed)
 void initMuonTraPage()
 {
   /* init _DMSachBookView, _DMSachBookView */
-  _DMSachBookView.left = 1;
-  _DMSachBookView.top = 3;
-  _DMSachBookView.right = 40;
-  _DMSachBookView.bottom = 26;
-  _DMSachBookView.pageSize = 20;
-  _DMSachBookView.lineCount = 20;
+  _MuonTraBookView.left = 1;
+  _MuonTraBookView.top = 3;
+  _MuonTraBookView.right = 40;
+  _MuonTraBookView.bottom = 26;
+  _MuonTraBookView.pageSize = 20;
+  _MuonTraBookView.lineCount = 20;
   // tinh so trang, dua page index ve 0
-  resetBookIndex(_DMSachBookView, countAll(_ListMuonTra));
+  resetBookIndex(_MuonTraBookView, countAll(_ListMuonTra));
   /* load _DMSachBookView */
-  loadList(_DMSachBookView);
+  loadList(_MuonTraBookView);
   /* init _MuonTraContentView */
   _MuonTraContentView.top = 3;
   _MuonTraContentView.left = 72;
@@ -145,7 +146,7 @@ void initMuonTraPage()
   _MuonTraContentView.isNumberType[3] = true;
   _MuonTraContentView.isEditable[0] = false;
   /* load _DMSachBookView */
-  loadContent(_DMSachBookView, _MuonTraContentView);
+  loadContent(_MuonTraBookView, _MuonTraContentView);
   // backup
   _defaultMuonTraContentView = _MuonTraContentView;
 
@@ -157,7 +158,7 @@ void runMuonTraPage()
   loadLayout(_PageLayout);
   setHeader(_HeaderText);
   setFooter(_DauSachBookFooter);
-  runBookView(_DMSachBookView, handleListAction, loadList, handleSelectChange);
+  runBookView(_MuonTraBookView, handleListAction, loadList, handleSelectChange);
   clearPage(_left, _top, _right, _bottom);
 }
 } // namespace MUONTRAPAGE

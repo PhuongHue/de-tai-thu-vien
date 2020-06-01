@@ -67,7 +67,7 @@ void changeMenuSelect(MenuView &menu, int select) {
   menu.select = select;
 }
 
-typedef void (*DispathMenuAction)(MenuView &menu, int keyPressed);
+typedef void (*DispathMenuAction)(MenuView &menu, int keyPressed, bool &ret);
 
 void runMenu(MenuView &menu, DispathMenuAction action) {
   drawMenu(menu);
@@ -87,7 +87,7 @@ void runMenu(MenuView &menu, DispathMenuAction action) {
         ret = true;
         break;
       default:
-        action(menu, key);
+        action(menu, key, ret);
     }
   }
   clearMenu(menu);

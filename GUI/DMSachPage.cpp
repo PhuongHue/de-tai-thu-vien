@@ -9,6 +9,7 @@
 #include "../StringLib.cpp"
 #include "components/BookView.cpp"
 #include "components/ContentView.cpp"
+#include "components/YesNoMenu.cpp"
 
 using namespace std;
 
@@ -160,7 +161,7 @@ void handleListAction(BookView &book, int keyPressed)
   } break;
   case F4:
     clearBookView(_DMSachBookView);
-    if (appYesNo("Ban co muon xoa sach nay?", _DMSachBookView.left, _DMSachBookView.top)) {
+    if (YesNoMenu("Ban co muon xoa sach nay?", _DMSachBookView.left, _DMSachBookView.top)) {
       deleteDMSach(book.keys[book.select]);
     }
     loadList(_DMSachBookView);

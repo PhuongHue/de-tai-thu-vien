@@ -32,7 +32,7 @@ void initMainMenu()
   // _MainMenuView.options[9] = "";
 }
 
-void mainPageAction(MenuView &menu, int keyPressed)
+void mainPageAction(MenuView &menu, int keyPressed, bool &ret)
 {
   if (keyPressed != ENTER) return;
   switch (menu.select) {

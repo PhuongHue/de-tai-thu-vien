@@ -4,6 +4,7 @@
 #include "../TheDocGia.cpp"
 #include "components/BookView.cpp"
 #include "components/ContentView.cpp"
+#include "components/YesNoMenu.cpp"
 #include "MuonTraPage.cpp"
 
 using namespace std;
@@ -158,7 +159,7 @@ void handleBookAction(BookView &book, int keyPressed)
   } break;
   case F4:
     clearBookView(_TheDocGiaBookView);
-    if (appYesNo("Ban co muon xoa dau sach nay?", _TheDocGiaBookView.left, _TheDocGiaBookView.top)) {
+    if (YesNoMenu("Ban co muon xoa dau sach nay?", _TheDocGiaBookView.left, _TheDocGiaBookView.top)) {
       deleteTDG(stoll(book.keys[book.select]));
     }
     loadTDGBook(_TheDocGiaBookView);
