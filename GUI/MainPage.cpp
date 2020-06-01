@@ -3,6 +3,7 @@
 
 #include "DauSachPage.cpp"
 #include "TheDocGiaPage.cpp"
+#include "MuonSachPage.cpp"
 #include "components/Menu.cpp"
 
 using namespace std;
@@ -19,7 +20,7 @@ void initMainMenu()
   _MainMenuView.left = 1;
   _MainMenuView.top = 3;
   _MainMenuView.right = 40;
-  _MainMenuView.count = 2;
+  _MainMenuView.count = 3;
   _MainMenuView.options[0] = "Quan ly dau sach.";
   _MainMenuView.options[1] = "Quan ly the doc gia.";
   _MainMenuView.options[2] = "Muon sach.";
@@ -46,7 +47,11 @@ void mainPageAction(MenuView &menu, int keyPressed, bool &ret)
     THEDOCGIAPAGE::initTheDocGiaPage();
     THEDOCGIAPAGE::runTheDocGiaPage();
     break;
-  
+  case 2:
+    clearMenu(menu);
+    MUONSACHPAGE::initMuonSachPage();
+    MUONSACHPAGE::runMuonSachPage();
+    break;
   default:
     break;
   }
