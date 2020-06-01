@@ -124,7 +124,7 @@ void consoleLog(T s)
   int cX = wherex();
   int cY = wherey();
   gotoxy(0, _DebugLog.logX);
-  cout << setw(3) << _DebugLog.lineN << setw(0) << ":::" << s << "´" << endl;
+  cout << setw(3) << _DebugLog.lineN << setw(0) << ":::" << s << "ï¿½" << endl;
   _DebugLog.logX++;
   _DebugLog.lineN++;
   gotoxy(cX, cY);
@@ -175,20 +175,20 @@ void clearPage(int left, int top, int right, int bottom)
   }
 }
 
-void appPause(string message = "", int x = 0, int y = 0)
+void appPause(string message, int x = 0, int y = 0)
 {
   int top = y;
   int left = x;
   int bottom = y;
-  int right = max((int)message.length(), 29);
+  int right = left + max((int)message.length(), 29);
   gotoxy(x, y);
   cout << message;
   if (message.length() > 0) bottom++;
-  gotoxy(x, y);
+  gotoxy(left, bottom);
   cout << "Nhan phim bat ky de tiep tuc.";
   int key = getch();
   if (key == 0 || key == 224) getch();
-  clearPage(left, top, right, y);
+  clearPage(left, top, right, bottom);
 }
 
 bool appYesNo(string message = "", int x = 0, int y = 0)

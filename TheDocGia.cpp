@@ -186,15 +186,19 @@ void docFile(TheDocGia *tdg, fstream &fin)
   fin.ignore();
 }
 
-void docFile(TreeNode *node, fstream &fin)
+bool docFile(TreeNode *&node)
 {
-  if (fin.eof()) return;
+  fstream fin("data/TheDocGia.data", fstream::in);
+  if (!fin.is_open() || fin.eof()) return false;
   int all;
   fin >> all;
   fin.ignore();
-  TheDocGia *tdg = new TheDocGia;
-  docFile(tdg, fin);
-  insert(node, tdg);
+  for (int i = 0; i < all; i++) {
+    TheDocGia *tdg = new TheDocGia;
+    docFile(tdg, fin);
+    insert(node, tdg);
+  }
+  return true;
 }
 
 #endif

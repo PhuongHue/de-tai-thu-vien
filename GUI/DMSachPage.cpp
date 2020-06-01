@@ -40,7 +40,8 @@ const vector<string> _DauSachBookFooter = {
     "<<: Trang truoc",
     "F2: Sua",
     "F3: Them moi",
-    "F4: Xoa"};
+    "F4: Xoa",
+    "Trang thai (0=Muon duoc | 1=Da muon | 2=Thanh ly)"};
 
 /* -------------------- _DMSachContentView funtions -------------------- */
 void loadContent(BookView &book, ContentView &content)

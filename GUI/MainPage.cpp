@@ -7,9 +7,12 @@
 
 using namespace std;
 
+namespace MAINPAGE {
+
 MenuView _MainMenuView;
 vector<string> _MainMenuFooter = {"ESC: Thoat", "ENTER: Chon"};
-string _MainHeaderTitle = "Quan ly thu vien";
+string _PageLayout = "layout/Main.layout";
+string _HeaderText = "Quan ly thu vien";
 
 void initMainMenu()
 {
@@ -19,7 +22,7 @@ void initMainMenu()
   _MainMenuView.count = 2;
   _MainMenuView.options[0] = "Quan ly dau sach.";
   _MainMenuView.options[1] = "Quan ly the doc gia.";
-  // _MainMenuView.options[2] = "";
+  _MainMenuView.options[2] = "Muon sach.";
   // _MainMenuView.options[3] = "";
   // _MainMenuView.options[4] = "";
   // _MainMenuView.options[5] = "";
@@ -43,20 +46,22 @@ void mainPageAction(MenuView &menu, int keyPressed)
     THEDOCGIAPAGE::initTheDocGiaPage();
     THEDOCGIAPAGE::runTheDocGiaPage();
     break;
+  
   default:
     break;
   }
-  setHeader(_MainHeaderTitle);
+  setHeader(_HeaderText);
   setFooter(_MainMenuFooter);
   drawMenu(menu);
 }
 
 void runMainPage()
 {
-  loadLayout("layout/Main.layout");
-  setHeader(_MainHeaderTitle);
+  loadLayout(_PageLayout);
+  setHeader(_HeaderText);
   setFooter(_MainMenuFooter);
   runMenu(_MainMenuView, mainPageAction);
 }
 
+} // namespace MAINPAGE
 #endif

@@ -88,9 +88,10 @@ void luuFile(ListDauSach &list)
   }
 }
 
-void docFile(ListDauSach &list, fstream &fin)
+bool docFile(ListDauSach &list)
 {
-  if (fin.eof()) return;
+  fstream fin("data/DauSach.data", fstream::in);
+  if(!fin.is_open() || fin.eof()) return false;
   int all;
   fin >> all;
   fin.ignore();
@@ -108,6 +109,7 @@ void docFile(ListDauSach &list, fstream &fin)
     docFile(ds->dms, fin);
     addLast(list, ds);
   }
+  return true;
 }
 
 ListDauSach filterDauSach(ListDauSach list, DauSach key)

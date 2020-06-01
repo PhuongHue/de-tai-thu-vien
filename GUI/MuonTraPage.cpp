@@ -19,29 +19,22 @@ int _left = 1;
 int _right = 154;
 int _bottom = 26;
 
+string _HeaderText = "Danh sach muon tra";
+string _PageLayout = "layout/MuonTra.layout";
+
 ListMuonTra *_ListMuonTra = NULL;
 ListMuonTra *_CurrentNodeMuonTra = NULL;
 
 BookView _DMSachBookView;
-BookView _defaultDMSachBookView;
 
 ContentView _MuonTraContentView;
 ContentView _defaultMuonTraContentView;
-
-#define NORMAL 0
-#define CREATE 1
-#define EDIT 2
-
-int DMSACH_MODE = NORMAL;
 
 const vector<string> _DauSachBookFooter = {
     "ESC: Tro ve",
     ">>: Trang sau",
     "<<: Trang truoc",
-    "F2: Sua",
-    "F3: Them moi",
-    "F4: Xoa"};
-
+    "F4: Tra sach"};
 /* -------------------- _MuonTraContentView funtions -------------------- */
 void loadContent(BookView &book, ContentView &content)
 {
@@ -61,26 +54,6 @@ void loadContent(BookView &book, ContentView &content)
   _MuonTraContentView.lines[2] = getDateString(node->data->ngayTra);
   ;
   _MuonTraContentView.lines[3] = to_string(node->data->trangThai);
-}
-
-void updateContent(ContentView &content)
-{
-  int bookIndex = getIndex(_DMSachBookView);
-  MuonTra *mt;
-  if (DMSACH_MODE == EDIT) {
-    mt = _CurrentNodeMuonTra->data;
-  }
-  if (DMSACH_MODE == CREATE) {
-    mt = new MuonTra;
-  }
-
-  mt->maSach = stoll(content.lines[0]);
-  mt->ngayMuon = getDateNumber(content.lines[1]);
-  mt->ngayTra = getDateNumber(content.lines[2]);
-  mt->trangThai = stoi(content.lines[3]);
-  if (DMSACH_MODE == CREATE) {
-    addLast(_ListMuonTra, mt);
-  }
 }
 
 /* -------------------- _DMSachBookView functions -------------------- */
@@ -119,19 +92,6 @@ void deleteDMSach(string key)
   deleteByMaSach(_ListMuonTra, stoll(key));
 }
 
-/* -------------------- _MuonTraContentView handles -------------------- */
-void handleContentAction(ContentView &content, int key, bool &breaker)
-{
-  switch (key) {
-  case F2:
-    updateContent(content);
-    clearContentView(_MuonTraContentView);
-    drawContentView(_MuonTraContentView);
-    breaker = true;
-    break;
-  }
-}
-
 /* -------------------- _DMSachBookView handles -------------------- */
 void handleSelectChange(BookView &book)
 {
@@ -143,22 +103,6 @@ void handleSelectChange(BookView &book)
 void handleListAction(BookView &book, int keyPressed)
 {
   switch (keyPressed) {
-  case F2:
-    DMSACH_MODE = EDIT;
-    runContentViewEditMode(_MuonTraContentView, handleContentAction);
-    loadList(_DMSachBookView);
-    drawBookView(_DMSachBookView);
-    DMSACH_MODE = NORMAL;
-    break;
-  case F3: {
-    DMSACH_MODE = CREATE;
-    clearContentView(_MuonTraContentView);
-    ContentView createCV = getEmptyView(_MuonTraContentView);
-    runContentViewEditMode(createCV, handleContentAction);
-    loadList(_DMSachBookView);
-    drawBookView(_DMSachBookView);
-    DMSACH_MODE = NORMAL;
-  } break;
   case F4:
     clearBookView(_DMSachBookView);
     if (appYesNo("Ban co muon xoa sach nay?", _DMSachBookView.left, _DMSachBookView.top)) {
@@ -172,7 +116,7 @@ void handleListAction(BookView &book, int keyPressed)
 }
 
 /* -------------------- DMSachPage functions -------------------- */
-void initDMSachPage()
+void initMuonTraPage()
 {
   /* init _DMSachBookView, _DMSachBookView */
   _DMSachBookView.left = 1;
@@ -185,9 +129,6 @@ void initDMSachPage()
   resetBookIndex(_DMSachBookView, countAll(_ListMuonTra));
   /* load _DMSachBookView */
   loadList(_DMSachBookView);
-  // backup
-  _defaultDMSachBookView = _DMSachBookView;
-
   /* init _MuonTraContentView */
   _MuonTraContentView.top = 3;
   _MuonTraContentView.left = 72;
@@ -211,10 +152,10 @@ void initDMSachPage()
   drawContentView(_MuonTraContentView);
 }
 
-void runDMSachPage()
+void runMuonTraPage()
 {
-  loadLayout("layout/DMSach.layout");
-  setHeader("Quan ly dau sach");
+  loadLayout(_PageLayout);
+  setHeader(_HeaderText);
   setFooter(_DauSachBookFooter);
   runBookView(_DMSachBookView, handleListAction, loadList, handleSelectChange);
   clearPage(_left, _top, _right, _bottom);

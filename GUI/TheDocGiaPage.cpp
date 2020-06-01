@@ -4,6 +4,7 @@
 #include "../TheDocGia.cpp"
 #include "components/BookView.cpp"
 #include "components/ContentView.cpp"
+#include "MuonTraPage.cpp"
 
 using namespace std;
 
@@ -13,6 +14,9 @@ int _top = 3;
 int _left = 1;
 int _right = 154;
 int _bottom = 26;
+
+string _HeaderText = "Quan ly the doc gia";
+string _PageLayout = "layout/TheDocGia.layout";
 
 BookView _TheDocGiaBookView;
 
@@ -50,8 +54,8 @@ void loadContent(BookView &book, ContentView &content)
   _TheDocGiaContentView.lines[2] = tdg->ten;
   _TheDocGiaContentView.lines[3] = tdg->phai ? "nam" : "nu";
   _TheDocGiaContentView.lines[4] = to_string(tdg->trangThai);
-  // DMSACHPAGE::_ListDMSach = ds->dms;
-  // DMSACHPAGE::_CurrentNodeDMSach = ds->dms;
+  MUONTRAPAGE::_ListMuonTra = tdg->lmt;
+  MUONTRAPAGE::_CurrentNodeMuonTra = tdg->lmt;
 }
 
 void updateContent(ContentView &content)
@@ -145,6 +149,8 @@ void handleBookAction(BookView &book, int keyPressed)
     clearContentView(_TheDocGiaContentView);
     ContentView createCV = getEmptyView(_TheDocGiaContentView);
     createCV.lines[0] = to_string(getNewMaTheDocGia());
+    createCV.lines[4] = "0";
+    createCV.isEditable[4] = false;
     runContentViewEditMode(createCV, handleContentAction);
     loadTDGBook(_TheDocGiaBookView);
     drawBookView(_TheDocGiaBookView);
@@ -165,15 +171,15 @@ void handleBookAction(BookView &book, int keyPressed)
     appPause("Da luu vao file!", _TheDocGiaBookView.left, _TheDocGiaBookView.top);
     drawBookView(_TheDocGiaBookView);
     break;
-    // case ENTER:
-    //   clearPage(_left, _top, _right, _bottom);
-    //   DMSACHPAGE::initDMSachPage();
-    //   DMSACHPAGE::runDMSachPage();
-    //   loadLayout("layout/DauSach.layout");
-    //   setHeader("Quan ly dau sach");
-    //   drawBookView(_TheDocGiaBookView);
-    //   drawContentView(_DauSachContentView);
-    //   break;
+    case ENTER:
+      clearPage(_left, _top, _right, _bottom);
+      MUONTRAPAGE::initMuonTraPage();
+      MUONTRAPAGE::runMuonTraPage();
+      loadLayout(_PageLayout);
+      setHeader(_HeaderText);
+      drawBookView(_TheDocGiaBookView);
+      drawContentView(_TheDocGiaContentView);
+      break;
   }
   setFooter(_DauSachBookFooter);
 }
@@ -198,12 +204,12 @@ void initTheDocGiaPage()
   _TheDocGiaContentView.right = 154;
   _TheDocGiaContentView.bottom = 26;
   _TheDocGiaContentView.lineCount = 5;
-  _TheDocGiaContentView.labelColumnSize = 10;
+  _TheDocGiaContentView.labelColumnSize = 30;
   _TheDocGiaContentView.labels[0] = "Ma the";
   _TheDocGiaContentView.labels[1] = "Ho";
   _TheDocGiaContentView.labels[2] = "Ten";
-  _TheDocGiaContentView.labels[3] = "Phai";
-  _TheDocGiaContentView.labels[4] = "Trang thai";
+  _TheDocGiaContentView.labels[3] = "Phai (nam | nu)";
+  _TheDocGiaContentView.labels[4] = "Trang thai (0=h.dong | 1=khoa)";
   _TheDocGiaContentView = getInitalView(_TheDocGiaContentView);
   _TheDocGiaContentView.isNumberType[0] = true;
   _TheDocGiaContentView.isNumberType[4] = true;
@@ -214,8 +220,8 @@ void initTheDocGiaPage()
 
 void runTheDocGiaPage()
 {
-  loadLayout("layout/TheDocGia.layout");
-  setHeader("Quan ly the doc gia");
+  loadLayout(_PageLayout);
+  setHeader(_HeaderText);
   setFooter(_DauSachBookFooter);
   runBookView(_TheDocGiaBookView, handleBookAction, loadTDGBook, handleBookSelectChange);
   clearPage(_left, _top, _right, _bottom);

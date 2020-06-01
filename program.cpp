@@ -4,14 +4,12 @@ using namespace std;
 
 int main()
 {
-  fstream finDS("data/DauSach.data", fstream::in);
-  docFile(_ListDauSach_Root, finDS);
-  finDS.close();
-  fstream finTDG("data/TheDocGia.data", fstream::in);
-  docFile(_ListTheDocGia_root, finTDG);
-  finTDG.close();
+  if (!(docFile(_ListDauSach_Root) && docFile(_ListTheDocGia_root))) {
+    appPause("Load du lieu loi!");
+    return 0;
+  };
   fullScreen();
   appPause("Load du lieu xong!");
-  initMainMenu();
-  runMainPage();
+  MAINPAGE::initMainMenu();
+  MAINPAGE::runMainPage();
 };
