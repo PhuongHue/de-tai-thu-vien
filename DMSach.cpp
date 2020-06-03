@@ -87,6 +87,7 @@ void addFirst(DMSach *&first, Sach *info)
   DMSach *p = new DMSach;
   p->data = info;
   p->next = first;
+  first = p;
 }
 
 void addLast(DMSach *&first, Sach *info)
@@ -97,7 +98,7 @@ void addLast(DMSach *&first, Sach *info)
     return;
   }
   DMSach *p = first;
-  while (p->next)
+  while (p->next != NULL)
     p = p->next;
   DMSach *q = new DMSach;
   q->data = info;
