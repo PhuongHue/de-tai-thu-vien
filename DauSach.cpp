@@ -91,7 +91,7 @@ void luuFile(ListDauSach &list)
 bool docFile(ListDauSach &list)
 {
   fstream fin("data/DauSach.data", fstream::in);
-  if(!fin.is_open() || fin.eof()) return false;
+  if (!fin.is_open() || fin.eof()) return false;
   int all;
   fin >> all;
   fin.ignore();
@@ -121,6 +121,16 @@ ListDauSach filterDauSach(ListDauSach list, DauSach key)
     }
   }
   return temp;
+}
+
+DMSach *findMaSach(ListDauSach &list, long long key)
+{
+  DMSach *ans = NULL;
+  for (int i = 0; i < list.length; i++) {
+    ans = findByMaSach(list.data[i]->dms, key).value;
+    if(ans != NULL) break;
+  }
+  return ans;
 }
 
 #endif

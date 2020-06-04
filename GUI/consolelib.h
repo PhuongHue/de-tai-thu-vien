@@ -161,7 +161,7 @@ void setHeader(string header)
   gotoxy(cacheHeader.left, cacheHeader.top);
   cout << header;
   if (cacheHeader.length > header.length()) {
-    cout << string(cacheHeader.length - header.length(), ' ');
+    cout << setw(cacheHeader.length - header.length()) << setfill(' ') << ' ' << setw(0);
   }
   cacheHeader.length = header.length();
 }
@@ -221,7 +221,7 @@ bool appYesNo(string message = "", int x = 0, int y = 0)
       break;
     }
     gotoxy(cX, cY);
-    cout << string(res.length(), ' ');
+    cout << setw(res.length()) << setfill(' ') << ' ' << setw(0);
     gotoxy(cX, cY);
   }
   showConsoleCursor(false);
@@ -229,11 +229,12 @@ bool appYesNo(string message = "", int x = 0, int y = 0)
   return ans;
 }
 
-void customCin(string &str, int limit, string initStr = "")
+void inputText(string &str, int limit, int left, int top, bool isNumber = false)
 {
-  int cX = wherex();
-  int cY = wherey();
-  string temp = initStr;
+  gotoxy(left, top);
+  showConsoleCursor(true);
+  setNormalText();
+  cout << str;
   int x;
   while (x != ENTER && x != ESC) {
     x = getch();
@@ -241,38 +242,27 @@ void customCin(string &str, int limit, string initStr = "")
       getch();
       continue;
     }
-    if (temp.length() <= limit && (x >= ' ' && x <= 'z')) {
+    if (str.length() < limit && (x >= ' ' && x <= 'z')) {
+      if (isNumber)
+        if (x < '0' || x > '9') continue;
       cout << (char)x;
-      temp += x;
+      str += x;
     }
     else if (x == 8) {
-      if (temp.length() > 0) {
-        temp.pop_back();
+      if (str.length() > 0) {
+        str.pop_back();
         cout << (char)8 << ' ' << (char)8;
       }
       else
         cout << BELL; // keu thong bao
     }
   }
-  if (x == ENTER)
-    str = temp;
-  else {
-    string spaceStr(temp.length(), ' ');
-    gotoxy(cX, cY);
-    cout << spaceStr;
+  if (x == ESC) {
+    gotoxy(left, top);
+    cout << setw(str.length()) << setfill(' ') << ' ' << setw(0);
+    str = "";
   }
-}
-
-void customCin(int &a, int limit)
-{
-  if (limit > 10) limit = 10;
-  char x;
-  while (x != ENTER) {
-    x = getch();
-    if (x >= 48 && x <= 57) {
-      a += a * 10 + x;
-    }
-  }
+  showConsoleCursor(false);
 }
 
 #define MAX_APP_FOOTER_LINES 2
@@ -290,7 +280,7 @@ void setFooter(vector<string> cmds)
   // clear
   for (int i = 0; i < MAX_APP_FOOTER_LINES; i++) {
     gotoxy(appFooter.left, appFooter.top + i);
-    cout << string(appFooter.lines[i].length(), ' ');
+    cout << setw(appFooter.lines[i].length()) << setfill(' ') << ' ' << setw(0);
     appFooter.lines[i] = "";
   }
   // set up lines

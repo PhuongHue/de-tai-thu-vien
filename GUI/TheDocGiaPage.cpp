@@ -216,7 +216,6 @@ void initTheDocGiaPage()
   _TheDocGiaContentView.isNumberType[4] = true;
   /* load _DauSachBookView */
   loadContent(_TheDocGiaBookView, _TheDocGiaContentView);
-  drawContentView(_TheDocGiaContentView);
 }
 
 void runTheDocGiaPage()
@@ -224,6 +223,7 @@ void runTheDocGiaPage()
   loadLayout(_PageLayout);
   setHeader(_HeaderText);
   setFooter(_DauSachBookFooter);
+  drawContentView(_TheDocGiaContentView);
   runBookView(_TheDocGiaBookView, handleBookAction, loadTDGBook, handleBookSelectChange);
   clearPage(_left, _top, _right, _bottom);
 }

@@ -39,17 +39,14 @@ void mainPageAction(MenuView &menu, int keyPressed, bool &ret)
   switch (menu.select) {
   case 0:
     clearMenu(menu);
-    DAUSACHPAGE::initDauSachPage();
     DAUSACHPAGE::runDauSachPage();
     break;
   case 1:
     clearMenu(menu);
-    THEDOCGIAPAGE::initTheDocGiaPage();
     THEDOCGIAPAGE::runTheDocGiaPage();
     break;
   case 2:
     clearMenu(menu);
-    MUONSACHPAGE::initMuonSachPage();
     MUONSACHPAGE::runMuonSachPage();
     break;
   default:

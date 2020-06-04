@@ -11,5 +11,8 @@ int main()
   fullScreen();
   appPause("Load du lieu xong!");
   MAINPAGE::initMainMenu();
+  DAUSACHPAGE::initDauSachPage();
+  MUONSACHPAGE::initMuonSachPage();
+  THEDOCGIAPAGE::initTheDocGiaPage();
   MAINPAGE::runMainPage();
 };

@@ -33,12 +33,15 @@ string _TheDocGiaSearchString;
 ContentView _DMSachContentView;
 string _DMSachSearchString;
 
-const vector<string> _DauSachBookFooter = {
+const vector<string> _MuonSachFooter = {
     "ESC: Tro ve",
     "F1: Nhap ma TDG",
     "F2: Nhap ma DMS",
     "F3: Muon sach",
     "F4: Luu"};
+const vector<string> _EditStringFooter = {
+    "ESC: Huy",
+    "ENTER: Tim"};
 /* -------------------- _TheDocGiaContentView funtions -------------------- */
 void loadContentTDG()
 {
@@ -48,6 +51,15 @@ void loadContentTDG()
   _TheDocGiaContentView.lines[2] = _CurrentTDG->ten;
   _TheDocGiaContentView.lines[3] = _CurrentTDG->phai ? "nam" : "nu";
   _TheDocGiaContentView.lines[4] = _CurrentTDG->trangThai == 0 ? "hoat dong" : "khoa";
+}
+
+void searchTDG()
+{
+  inputText(_TheDocGiaSearchString, 20, 13, 3, true);
+  if (_TheDocGiaSearchString.compare("") == 0) return;
+  _CurrentTDG = find(_ListTheDocGia_root, stoll(_TheDocGiaSearchString))->data;
+  loadContentTDG();
+  drawContentView(_TheDocGiaContentView);
 }
 
 /* -------------------- _DMSachContentView functions -------------------- */
@@ -67,6 +79,15 @@ void loadContentDMS()
     break;
   }
   _DMSachContentView.lines[2] = _CurrentDMSach->data->viTri;
+}
+
+void searchMS()
+{
+  inputText(_DMSachSearchString, 20, 94, 3, true);
+  if (_DMSachSearchString.compare("") == 0) return;
+  _CurrentDMSach = findMaSach(_ListDauSach_Root, stoll(_DMSachSearchString));
+  loadContentDMS();
+  drawContentView(_DMSachContentView);
 }
 
 /* -------------------- DMSachPage functions -------------------- */
@@ -104,16 +125,26 @@ void runMuonSachPage()
   loadLayout(_PageLayout);
   drawContentView(_TheDocGiaContentView);
   drawContentView(_DMSachContentView);
+  setFooter(_MuonSachFooter);
   bool ret = false;
   while (!ret) {
     int key = getch();
     if (key == 0 || key == 224) key = getch();
     showConsoleCursor(false);
     switch (key) {
+    case F1:
+      setFooter(_EditStringFooter);
+      searchTDG();
+      break;
+    case F2:
+      setFooter(_EditStringFooter);
+      searchMS();
+      break;
     case ESC:
       ret = true;
       break;
     }
+    setFooter(_MuonSachFooter);
   }
   clearPage(_left, _top, _right, _bottom);
 }

@@ -114,12 +114,9 @@ void loadDauSachBook(BookView &book)
 void searchDauSach()
 {
   gotoxy(11, 3);
-  showConsoleCursor(true);
-  setNormalText();
-  cout << string(20, ' ');
+  cout << setw(20) << setfill(' ') << ' ' << setw(0);
   gotoxy(11, 3);
-  customCin(_DauSachSearchString, 20);
-  showConsoleCursor(false);
+  inputText(_DauSachSearchString, 20, 11, 3);
   if (_DauSachSearchString.compare("") == 0) {
     // reset data
     _ListDauSach = _ListDauSach_Root;
@@ -254,7 +251,6 @@ void initDauSachPage()
   _DauSachContentView.isNumberType[2] = true;
   /* load _DauSachBookView */
   loadDauSachContent(_DauSachBookView, _DauSachContentView);
-  drawContentView(_DauSachContentView);
 }
 
 void runDauSachPage()
@@ -262,6 +258,7 @@ void runDauSachPage()
   loadLayout("layout/DauSach.layout");
   setHeader("Quan ly dau sach");
   setFooter(_DauSachBookFooter);
+  drawContentView(_DauSachContentView);
   runBookView(_DauSachBookView, handleDauSachBookAction, loadDauSachBook, handleBookSelectChange);
   clearPage(_left, _top, _right, _bottom);
 }

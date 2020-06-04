@@ -87,9 +87,9 @@ void findAndDelete(TreeNode *&node, long long maThe, bool &deleted)
 TreeNode *find(TreeNode *&node, long long maThe)
 {
   if (node == NULL) return NULL;
-  if (maThe < node->data->maThe && node->left != NULL)
+  if (maThe < node->data->maThe)
     return find(node->left, maThe);
-  else if (maThe > node->data->maThe && node->right != NULL)
+  else if (maThe > node->data->maThe)
     return find(node->right, maThe);
   else {
     return node;
