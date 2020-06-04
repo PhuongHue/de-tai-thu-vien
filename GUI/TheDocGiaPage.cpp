@@ -2,10 +2,10 @@
 #define _THEDOCGIAPAGE_CPP_
 
 #include "../TheDocGia.cpp"
+#include "MuonTraPage.cpp"
 #include "components/BookView.cpp"
 #include "components/ContentView.cpp"
 #include "components/YesNoMenu.cpp"
-#include "MuonTraPage.cpp"
 
 using namespace std;
 
@@ -41,6 +41,7 @@ const vector<string> _DauSachBookFooter = {
     "F3: Them moi",
     "F4: Xoa",
     "F5: Luu",
+    "F6: Chon TDG",
     "ENTER: Xem Danh muc sach"};
 const vector<string> _DauSachBookSearchFooter = {"ESC: Huy", "ENTER: Tim kiem"};
 
@@ -114,6 +115,10 @@ void deleteTDG(long long maThe)
   findAndDelete(_ListTheDocGia_root, maThe, deleted);
 }
 
+void coppyToClipboard()
+{
+  clipboardTDG = _CurrentTDG;
+}
 /* -------------------- _DauSachContentView handles -------------------- */
 void handleContentAction(ContentView &content, int key, bool &breaker)
 {
@@ -172,15 +177,18 @@ void handleBookAction(BookView &book, int keyPressed)
     appPause("Da luu vao file!", _TheDocGiaBookView.left, _TheDocGiaBookView.top);
     drawBookView(_TheDocGiaBookView);
     break;
-    case ENTER:
-      clearPage(_left, _top, _right, _bottom);
-      MUONTRAPAGE::initMuonTraPage();
-      MUONTRAPAGE::runMuonTraPage();
-      loadLayout(_PageLayout);
-      setHeader(_HeaderText);
-      drawBookView(_TheDocGiaBookView);
-      drawContentView(_TheDocGiaContentView);
-      break;
+  case F6:
+    coppyToClipboard();
+    break;
+  case ENTER:
+    clearPage(_left, _top, _right, _bottom);
+    MUONTRAPAGE::initMuonTraPage();
+    MUONTRAPAGE::runMuonTraPage();
+    loadLayout(_PageLayout);
+    setHeader(_HeaderText);
+    drawBookView(_TheDocGiaBookView);
+    drawContentView(_TheDocGiaContentView);
+    break;
   }
   setFooter(_DauSachBookFooter);
 }

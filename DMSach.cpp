@@ -19,6 +19,8 @@ struct Sach {
   string viTri;
 };
 
+Sach *clipboardSach = NULL;
+
 long long getNewMaSach()
 {
   time_t currentTime;

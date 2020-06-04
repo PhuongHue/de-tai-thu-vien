@@ -25,12 +25,12 @@ string _HeaderText = "Muon sach";
 string _PageLayout = "layout/MuonSach.layout";
 
 TheDocGia *_CurrentTDG = NULL;
-DMSach *_CurrentDMSach = NULL;
+Sach *_CurrentSach = NULL;
 
 ContentView _TheDocGiaContentView;
 string _TheDocGiaSearchString;
 
-ContentView _DMSachContentView;
+ContentView _SachContentView;
 string _DMSachSearchString;
 
 const vector<string> _MuonSachFooter = {
@@ -62,32 +62,32 @@ void searchTDG()
   drawContentView(_TheDocGiaContentView);
 }
 
-/* -------------------- _DMSachContentView functions -------------------- */
-void loadContentDMS()
+/* -------------------- _SachContentView functions -------------------- */
+void loadContentSach()
 {
-  if (!_CurrentDMSach) return;
-  _DMSachContentView.lines[0] = to_string(_CurrentDMSach->data->maSach);
-  switch (_CurrentDMSach->data->trangThai) {
+  if (!_CurrentSach) return;
+  _SachContentView.lines[0] = to_string(_CurrentSach->maSach);
+  switch (_CurrentSach->trangThai) {
   case 0:
-    _DMSachContentView.lines[1] = "Muon duoc";
+    _SachContentView.lines[1] = "Muon duoc";
     break;
   case 1:
-    _DMSachContentView.lines[1] = "Da duoc";
+    _SachContentView.lines[1] = "Da duoc";
     break;
   case 2:
-    _DMSachContentView.lines[1] = "Thanh ly";
+    _SachContentView.lines[1] = "Thanh ly";
     break;
   }
-  _DMSachContentView.lines[2] = _CurrentDMSach->data->viTri;
+  _SachContentView.lines[2] = _CurrentSach->viTri;
 }
 
 void searchMS()
 {
   inputText(_DMSachSearchString, 20, 94, 3, true);
   if (_DMSachSearchString.compare("") == 0) return;
-  _CurrentDMSach = findMaSach(_ListDauSach_Root, stoll(_DMSachSearchString));
-  loadContentDMS();
-  drawContentView(_DMSachContentView);
+  _CurrentSach = findMaSach(_ListDauSach_Root, stoll(_DMSachSearchString))->data;
+  loadContentSach();
+  drawContentView(_SachContentView);
 }
 
 /* -------------------- DMSachPage functions -------------------- */
@@ -107,25 +107,39 @@ void initMuonSachPage()
   _TheDocGiaContentView = getInitalView(_TheDocGiaContentView);
   _TheDocGiaContentView.select = -1;
 
-  _DMSachContentView.top = _top + 2;
-  _DMSachContentView.left = 78;
-  _DMSachContentView.right = 154;
-  _DMSachContentView.bottom = _top + 2 + 3;
-  _DMSachContentView.lineCount = 3;
-  _DMSachContentView.labelColumnSize = 11;
-  _DMSachContentView.labels[0] = "Ma sach";
-  _DMSachContentView.labels[1] = "Trang thai";
-  _DMSachContentView.labels[2] = "Vi tri";
-  _DMSachContentView = getInitalView(_DMSachContentView);
-  _DMSachContentView.select = -1;
+  _SachContentView.top = _top + 2;
+  _SachContentView.left = 78;
+  _SachContentView.right = 154;
+  _SachContentView.bottom = _top + 2 + 3;
+  _SachContentView.lineCount = 3;
+  _SachContentView.labelColumnSize = 11;
+  _SachContentView.labels[0] = "Ma sach";
+  _SachContentView.labels[1] = "Trang thai";
+  _SachContentView.labels[2] = "Vi tri";
+  _SachContentView = getInitalView(_SachContentView);
+  _SachContentView.select = -1;
 }
 
 void runMuonSachPage()
 {
   loadLayout(_PageLayout);
-  drawContentView(_TheDocGiaContentView);
-  drawContentView(_DMSachContentView);
   setFooter(_MuonSachFooter);
+  
+  if(clipboardTDG != NULL)
+  {
+    _CurrentTDG = clipboardTDG;
+    loadContentTDG();
+  }
+
+  if(clipboardSach != NULL)
+  {
+    _CurrentSach = clipboardSach;
+    loadContentSach();
+  }
+
+  drawContentView(_TheDocGiaContentView);
+  drawContentView(_SachContentView);
+
   bool ret = false;
   while (!ret) {
     int key = getch();

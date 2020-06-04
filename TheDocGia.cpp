@@ -18,6 +18,8 @@ struct TheDocGia {
   ListMuonTra *lmt = NULL;
 };
 
+TheDocGia *clipboardTDG = NULL;
+
 long long getNewMaTheDocGia()
 {
   time_t currentTime;

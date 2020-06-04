@@ -42,6 +42,7 @@ const vector<string> _DauSachBookFooter = {
     "F2: Sua",
     "F3: Them moi",
     "F4: Xoa",
+    "F6: Chon sach",
     "Trang thai (0=Muon duoc | 1=Da muon | 2=Thanh ly)"};
 
 /* -------------------- _DMSachContentView funtions -------------------- */
@@ -118,6 +119,12 @@ void deleteDMSach(string key)
   deleteByMaSach(_ListDMSach, stoll(key));
 }
 
+void coppyToClipboard()
+{
+  if (_CurrentNodeDMSach == NULL) return;
+  clipboardSach = _CurrentNodeDMSach->data;
+}
+
 /* -------------------- _DMSachContentView handles -------------------- */
 void handleContentAction(ContentView &content, int key, bool &breaker)
 {
@@ -166,6 +173,9 @@ void handleListAction(BookView &book, int keyPressed)
     }
     loadList(_DMSachBookView);
     drawBookView(_DMSachBookView);
+    break;
+  case F6:
+    coppyToClipboard();
     break;
   }
   setFooter(_DauSachBookFooter);
