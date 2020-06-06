@@ -20,7 +20,10 @@ int _left = 1;
 int _right = 154;
 int _bottom = 26;
 
-DMSach *_ListDMSach = NULL;
+string _HeaderText = "Danh muc sach";
+string _PageLayout = "layout/DMSach.layout";
+
+DauSach *_CurrentListDauSach = NULL;
 DMSach *_CurrentNodeDMSach = NULL;
 
 BookView _DMSachBookView;
@@ -47,7 +50,7 @@ const vector<string> _DauSachBookFooter = {
 void loadContent(BookView &book, ContentView &content)
 {
   if (book.lineCount <= 0) return;
-  DMSach *ds = findByMaSach(_ListDMSach, stoll(book.keys[book.select]));
+  DMSach *ds = findByMaSach(_CurrentListDauSach->dms, stoll(book.keys[book.select]));
   if (!ds) return;
   _CurrentNodeDMSach = ds;
   _DMSachContentView.lines[0] = to_string(ds->data->maSach);
@@ -70,14 +73,14 @@ void updateContent(ContentView &content)
   sach->trangThai = stoi(content.lines[1]);
   sach->viTri = content.lines[2];
   if (MODE == CREATE) {
-    addLast(_ListDMSach, sach);
+    addLast(_CurrentListDauSach->dms, sach);
   }
 }
 
 /* -------------------- _DMSachBookView functions -------------------- */
 void loadList(BookView &book)
 {
-  int dataCount = countAll(_ListDMSach);
+  int dataCount = countAll(_CurrentListDauSach->dms);
   int newAllPage = countAllPage(dataCount, book.pageSize);
   book.allPage = newAllPage;
   if (book.pageIndex >= book.allPage)
@@ -89,7 +92,7 @@ void loadList(BookView &book)
   book.lineCount = endIndex - startIndex + 1;
   // load data trang moi
   int j = 0;
-  for (DMSach *i = _ListDMSach; i != NULL; i = i->next) {
+  for (DMSach *i = _CurrentListDauSach->dms; i != NULL; i = i->next) {
     if (j < startIndex) continue;
     if (j > endIndex) break;
     string maSach = to_string(i->data->maSach);
@@ -107,7 +110,7 @@ void loadList(BookView &book)
 
 void deleteDMSach(string key)
 {
-  deleteByMaSach(_ListDMSach, stoll(key));
+  deleteByMaSach(_CurrentListDauSach->dms, stoll(key));
 }
 
 void coppyToClipboard()
@@ -183,7 +186,7 @@ void initDMSachPage()
   _DMSachBookView.pageSize = 20;
   _DMSachBookView.lineCount = 20;
   // tinh so trang, dua page index ve 0
-  resetBookIndex(_DMSachBookView, countAll(_ListDMSach));
+  resetBookIndex(_DMSachBookView, countAll(_CurrentListDauSach->dms));
   /* load _DMSachBookView */
   loadList(_DMSachBookView);
 
@@ -203,15 +206,15 @@ void initDMSachPage()
   _DMSachContentView.isEditable[0] = false;
   /* load _DMSachBookView */
   loadContent(_DMSachBookView, _DMSachContentView);
-
-  drawContentView(_DMSachContentView);
 }
 
 void runDMSachPage()
 {
-  loadLayout("layout/DMSach.layout");
-  setHeader("Quan ly dau sach");
+  loadLayout(_PageLayout);
+  setHeader(_HeaderText);
   setFooter(_DauSachBookFooter);
+  drawBookView(_DMSachBookView);
+  drawContentView(_DMSachContentView);
   runBookView(_DMSachBookView, handleListAction, loadList, handleSelectChange);
   clearPage(_left, _top, _right, _bottom);
 }

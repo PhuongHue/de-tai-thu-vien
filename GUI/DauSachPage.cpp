@@ -20,6 +20,9 @@ int _left = 1;
 int _right = 154;
 int _bottom = 26;
 
+string _HeaderText = "Quan ly dau sach";
+string _PageLayout = "layout/DauSach.layout";
+
 ListDauSach _ListDauSach;
 
 BookView _DauSachBookView;
@@ -58,7 +61,7 @@ void loadDauSachContent(BookView &book, ContentView &content)
   _DauSachContentView.lines[3] = ds->tacGia;
   _DauSachContentView.lines[4] = ds->ten;
   _DauSachContentView.lines[5] = ds->theLoai;
-  DMSACHPAGE::_ListDMSach = ds->dms;
+  DMSACHPAGE::_CurrentListDauSach = ds;
   DMSACHPAGE::_CurrentNodeDMSach = ds->dms;
 }
 
@@ -204,8 +207,8 @@ void handleDauSachBookAction(BookView &book, int keyPressed)
     clearPage(_left, _top, _right, _bottom);
     DMSACHPAGE::initDMSachPage();
     DMSACHPAGE::runDMSachPage();
-    loadLayout("layout/DauSach.layout");
-    setHeader("Quan ly dau sach");
+    loadLayout(_PageLayout);
+    setHeader(_HeaderText);
     drawBookView(_DauSachBookView);
     drawContentView(_DauSachContentView);
     break;
@@ -255,9 +258,10 @@ void initDauSachPage()
 
 void runDauSachPage()
 {
-  loadLayout("layout/DauSach.layout");
-  setHeader("Quan ly dau sach");
+  loadLayout(_PageLayout);
+  setHeader(_HeaderText);
   setFooter(_DauSachBookFooter);
+  drawBookView(_DauSachBookView);
   drawContentView(_DauSachContentView);
   runBookView(_DauSachBookView, handleDauSachBookAction, loadDauSachBook, handleBookSelectChange);
   clearPage(_left, _top, _right, _bottom);

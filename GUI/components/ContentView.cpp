@@ -172,34 +172,35 @@ void runContentViewEditMode(ContentView &content, ContentAction onAction)
       padKey = key;
       key = getch();
     }
-    switch (key) {
-    case ARROW_DOWN:
-      changeContentLineSelect(content, (content.select + 1) % content.lineCount);
-      break;
-    case ARROW_UP:
-      changeContentLineSelect(content, (content.select + content.lineCount - 1) % content.lineCount);
-      break;
-    case ARROW_RIGHT:
-      changeCursor(content, key);
-      break;
-    case ARROW_LEFT:
-      changeCursor(content, key);
-      break;
-    case ESC:
-      ret = true;
-      break;
-    default:
-      switch (padKey) {
-      case -1:
-        // a-z A-Z 0-9 pressed
-        editLine(content, key);
-        break;
-      case 0:
-        // F1 - f12 pressed
-        if (onAction) onAction(content, key, ret);
-        break;
-      }
+    if (padKey == -1) {
+      // a-z A-Z 0-9 pressed
+      editLine(content, key);
     }
+    else
+      switch (key) {
+      case ARROW_DOWN:
+        changeContentLineSelect(content, (content.select + 1) % content.lineCount);
+        break;
+      case ARROW_UP:
+        changeContentLineSelect(content, (content.select + content.lineCount - 1) % content.lineCount);
+        break;
+      case ARROW_RIGHT:
+        changeCursor(content, key);
+        break;
+      case ARROW_LEFT:
+        changeCursor(content, key);
+        break;
+      case ESC:
+        ret = true;
+        break;
+      default:
+        switch (padKey) {
+        case 0:
+          // F1 - f12 pressed
+          if (onAction) onAction(content, key, ret);
+          break;
+        }
+      }
   }
   clearFooter(content);
   showConsoleCursor(false);
