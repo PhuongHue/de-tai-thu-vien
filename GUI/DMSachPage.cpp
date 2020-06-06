@@ -24,10 +24,8 @@ DMSach *_ListDMSach = NULL;
 DMSach *_CurrentNodeDMSach = NULL;
 
 BookView _DMSachBookView;
-BookView _defaultDMSachBookView;
 
 ContentView _DMSachContentView;
-ContentView _defaultDMSachContentView;
 
 #define NORMAL 0
 #define CREATE 1
@@ -49,15 +47,8 @@ const vector<string> _DauSachBookFooter = {
 void loadContent(BookView &book, ContentView &content)
 {
   if (book.lineCount <= 0) return;
-  long long key;
-  try {
-    key = stoll(book.keys[book.select]);
-  }
-  catch (const exception &e) {
-    return;
-  }
-
-  DMSach *ds = findByMaSach(_ListDMSach, key).value;
+  DMSach *ds = findByMaSach(_ListDMSach, stoll(book.keys[book.select]));
+  if (!ds) return;
   _CurrentNodeDMSach = ds;
   _DMSachContentView.lines[0] = to_string(ds->data->maSach);
   _DMSachContentView.lines[1] = to_string(ds->data->trangThai);
@@ -195,8 +186,6 @@ void initDMSachPage()
   resetBookIndex(_DMSachBookView, countAll(_ListDMSach));
   /* load _DMSachBookView */
   loadList(_DMSachBookView);
-  // backup
-  _defaultDMSachBookView = _DMSachBookView;
 
   /* init _DMSachContentView */
   _DMSachContentView.top = 3;
@@ -214,8 +203,6 @@ void initDMSachPage()
   _DMSachContentView.isEditable[0] = false;
   /* load _DMSachBookView */
   loadContent(_DMSachBookView, _DMSachContentView);
-  // backup
-  _defaultDMSachContentView = _DMSachContentView;
 
   drawContentView(_DMSachContentView);
 }

@@ -15,24 +15,6 @@ vector<string> _MainMenuFooter = {"ESC: Thoat", "ENTER: Chon"};
 string _PageLayout = "layout/Main.layout";
 string _HeaderText = "Quan ly thu vien";
 
-void initMainMenu()
-{
-  _MainMenuView.left = 1;
-  _MainMenuView.top = 3;
-  _MainMenuView.right = 40;
-  _MainMenuView.count = 3;
-  _MainMenuView.options[0] = "Quan ly dau sach.";
-  _MainMenuView.options[1] = "Quan ly the doc gia.";
-  _MainMenuView.options[2] = "Muon sach.";
-  // _MainMenuView.options[3] = "";
-  // _MainMenuView.options[4] = "";
-  // _MainMenuView.options[5] = "";
-  // _MainMenuView.options[6] = "";
-  // _MainMenuView.options[7] = "";
-  // _MainMenuView.options[8] = "";
-  // _MainMenuView.options[9] = "";
-}
-
 void mainPageAction(MenuView &menu, int keyPressed, bool &ret)
 {
   if (keyPressed != ENTER) return;
@@ -55,6 +37,24 @@ void mainPageAction(MenuView &menu, int keyPressed, bool &ret)
   setHeader(_HeaderText);
   setFooter(_MainMenuFooter);
   drawMenu(menu);
+}
+
+void initMainMenu()
+{
+  _MainMenuView.left = 1;
+  _MainMenuView.top = 3;
+  _MainMenuView.right = 40;
+  _MainMenuView.count = 3;
+  _MainMenuView.options[0] = "Quan ly dau sach.";
+  _MainMenuView.options[1] = "Quan ly the doc gia.";
+  _MainMenuView.options[2] = "Muon sach.";
+  // _MainMenuView.options[3] = "";
+  // _MainMenuView.options[4] = "";
+  // _MainMenuView.options[5] = "";
+  // _MainMenuView.options[6] = "";
+  // _MainMenuView.options[7] = "";
+  // _MainMenuView.options[8] = "";
+  // _MainMenuView.options[9] = "";
 }
 
 void runMainPage()

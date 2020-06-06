@@ -105,7 +105,6 @@ bool docFile(ListDauSach &list)
     fin >> ds->namXB;
     fin.ignore();
     getline(fin, ds->theLoai);
-    // log(ds);
     docFile(ds->dms, fin);
     addLast(list, ds);
   }
@@ -127,7 +126,7 @@ DMSach *findMaSach(ListDauSach &list, long long key)
 {
   DMSach *ans = NULL;
   for (int i = 0; i < list.length; i++) {
-    ans = findByMaSach(list.data[i]->dms, key).value;
+    ans = findByMaSach(list.data[i]->dms, key);
     if(ans != NULL) break;
   }
   return ans;

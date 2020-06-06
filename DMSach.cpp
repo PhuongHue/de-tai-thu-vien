@@ -118,24 +118,16 @@ int countAll(DMSach *first)
   return count;
 }
 
-PairNode findByMaSach(DMSach *first, long long key)
+DMSach *findByMaSach(DMSach *first, long long key)
 {
   DMSach *p = first;
-  DMSach *pBefore = NULL;
-  DMSach *kq = NULL;
   while (p != NULL) {
-    Sach *info = p->data;
-    if (info->maSach == key) {
-      kq = p;
-      break;
+    if (p->data->maSach == key) {
+      return p;
     }
-    pBefore = p;
     p = p->next;
   }
-  PairNode pair;
-  pair.before = pBefore;
-  pair.value = kq;
-  return pair;
+  return NULL;
 }
 
 void deleteAll(DMSach *&first)
@@ -152,19 +144,31 @@ void deleteAll(DMSach *&first)
 
 bool deleteByMaSach(DMSach *&first, long long key)
 {
-  PairNode pn = findByMaSach(first, key);
-  if (pn.value == NULL)
-    return false;
-  else {
-    if (pn.before == NULL)
-      first = pn.value->next;
-    else {
-      pn.before->next = pn.value->next;
+  DMSach *p = first;
+  DMSach *q = NULL;
+  while (p != NULL) {
+    if (p->data->maSach == key) {
+      if (q == NULL) {
+        // delete first
+        if (first->next == NULL) {
+          first = NULL;
+        }
+        else {
+          first = first->next;
+        }
+      }
+      else {
+        q->next = p->next;
+      }
+      delete p;
+      return true;
     }
-    return true;
+    q = p;
+    p = p->next;
   }
+  return false;
 }
-void luuFile(DMSach *&first, ofstream &fout)
+void luuFile(DMSach *first, ofstream &fout)
 {
   DMSach *p = first;
   fout << countAll(first) << endl;
@@ -181,6 +185,8 @@ void docFile(DMSach *&list, fstream &fin)
 {
   int n;
   fin >> n;
+  fin.ignore();
+  if(n == 0) return;
   for (int i = 0; i < n; i++) {
     Sach *data = new Sach;
     fin >> data->maSach >> data->trangThai;
