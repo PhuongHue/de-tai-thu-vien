@@ -213,7 +213,6 @@ void runDMSachPage()
   loadLayout(_PageLayout);
   setHeader(_HeaderText);
   setFooter(_DauSachBookFooter);
-  drawBookView(_DMSachBookView);
   drawContentView(_DMSachContentView);
   runBookView(_DMSachBookView, handleListAction, loadList, handleSelectChange);
   clearPage(_left, _top, _right, _bottom);

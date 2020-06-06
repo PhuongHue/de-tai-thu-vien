@@ -66,6 +66,7 @@ void findAndDelete(TreeNode *&node, long long maThe, bool &deleted)
       node = node->right;
     }
     else {
+      if (node->data == clipboardTDG) clipboardTDG = NULL;
       delete node->data;
       TreeNode *pParent = node;
       TreeNode *p = node->right;

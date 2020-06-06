@@ -62,6 +62,10 @@ void searchTDG()
   drawContentView(_TheDocGiaContentView);
 }
 
+void checkTDG()
+{
+}
+
 /* -------------------- _SachContentView functions -------------------- */
 void loadContentSach()
 {
@@ -90,7 +94,23 @@ void searchMS()
   drawContentView(_SachContentView);
 }
 
+void checkSach()
+{
+}
+
 /* -------------------- DMSachPage functions -------------------- */
+void muonSach()
+{
+  if (!_CurrentSach || !_CurrentTDG) return;
+  MuonTra *mt = new MuonTra;
+  mt->maSach = _CurrentSach->maSach;
+  time_t t;
+  time(&t);
+  mt->ngayMuon = t;
+  addLast(_CurrentTDG->lmt, mt);
+  _CurrentSach->trangThai = 1;
+}
+
 void initMuonSachPage()
 {
   _TheDocGiaContentView.top = _top + 2;
@@ -124,17 +144,21 @@ void runMuonSachPage()
 {
   loadLayout(_PageLayout);
   setFooter(_MuonSachFooter);
-  
-  if(clipboardTDG != NULL)
-  {
+
+  if (clipboardTDG != NULL) {
     _CurrentTDG = clipboardTDG;
     loadContentTDG();
   }
+  else {
+    _TheDocGiaContentView = getEmptyView(_TheDocGiaContentView);
+  }
 
-  if(clipboardSach != NULL)
-  {
+  if (clipboardSach != NULL) {
     _CurrentSach = clipboardSach;
     loadContentSach();
+  }
+  else {
+    _SachContentView = getEmptyView(_SachContentView);
   }
 
   drawContentView(_TheDocGiaContentView);
@@ -153,6 +177,9 @@ void runMuonSachPage()
     case F2:
       setFooter(_EditStringFooter);
       searchMS();
+      break;
+    case F3:
+      muonSach();
       break;
     case ESC:
       ret = true;

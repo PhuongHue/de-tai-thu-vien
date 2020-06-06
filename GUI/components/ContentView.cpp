@@ -173,8 +173,17 @@ void runContentViewEditMode(ContentView &content, ContentAction onAction)
       key = getch();
     }
     if (padKey == -1) {
-      // a-z A-Z 0-9 pressed
-      editLine(content, key);
+      if (key == ESC) {
+        ret = true;
+      }
+      else {
+        // a-z A-Z 0-9 pressed
+        editLine(content, key);
+      }
+    }
+    else if (padKey == 0) {
+      // f1 f2 f3 f4
+      if (onAction) onAction(content, key, ret);
     }
     else
       switch (key) {
@@ -190,16 +199,6 @@ void runContentViewEditMode(ContentView &content, ContentAction onAction)
       case ARROW_LEFT:
         changeCursor(content, key);
         break;
-      case ESC:
-        ret = true;
-        break;
-      default:
-        switch (padKey) {
-        case 0:
-          // F1 - f12 pressed
-          if (onAction) onAction(content, key, ret);
-          break;
-        }
       }
   }
   clearFooter(content);

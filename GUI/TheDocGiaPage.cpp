@@ -57,7 +57,7 @@ void loadContent(BookView &book, ContentView &content)
   _TheDocGiaContentView.lines[3] = tdg->phai ? "nam" : "nu";
   _TheDocGiaContentView.lines[4] = to_string(tdg->trangThai);
   MUONTRAPAGE::_ListMuonTra = tdg->lmt;
-  MUONTRAPAGE::_CurrentNodeMuonTra = tdg->lmt;
+  MUONTRAPAGE::_CurrentNode = tdg->lmt;
 }
 
 void updateContent(ContentView &content)
@@ -196,18 +196,15 @@ void handleBookAction(BookView &book, int keyPressed)
 /* -------------------- DauSachPage functions -------------------- */
 void initTheDocGiaPage()
 {
-  /* init _DauSachBookView, _DauSachBookView */
+  /* init _TheDocGiaBookView */
   _TheDocGiaBookView.left = _left;
   _TheDocGiaBookView.top = _top;
   _TheDocGiaBookView.right = 40;
   _TheDocGiaBookView.bottom = 26;
   _TheDocGiaBookView.pageSize = 20;
   _TheDocGiaBookView.lineCount = 20;
-  // tinh so trang, dua page index ve 0
-  resetBookIndex(_TheDocGiaBookView, countAll(_ListTheDocGia_root));
-  /* load _DauSachBookView */
-  loadTDGBook(_TheDocGiaBookView);
-  /* init _DauSachContentView */
+
+  /* init _TheDocGiaContentView */
   _TheDocGiaContentView.top = _top;
   _TheDocGiaContentView.left = 72;
   _TheDocGiaContentView.right = 154;
@@ -222,12 +219,17 @@ void initTheDocGiaPage()
   _TheDocGiaContentView = getInitalView(_TheDocGiaContentView);
   _TheDocGiaContentView.isNumberType[0] = true;
   _TheDocGiaContentView.isNumberType[4] = true;
-  /* load _DauSachBookView */
-  loadContent(_TheDocGiaBookView, _TheDocGiaContentView);
 }
 
 void runTheDocGiaPage()
 {
+  /* tinh so trang, dua page index ve 0 */
+  resetBookIndex(_TheDocGiaBookView, countAll(_ListTheDocGia_root));
+  /* load _TheDocGiaBookView */
+  loadTDGBook(_TheDocGiaBookView);
+  /* load _TheDocGiaContentView */
+  loadContent(_TheDocGiaBookView, _TheDocGiaContentView);
+
   loadLayout(_PageLayout);
   setHeader(_HeaderText);
   setFooter(_DauSachBookFooter);

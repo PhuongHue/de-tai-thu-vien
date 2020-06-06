@@ -160,6 +160,7 @@ bool deleteByMaSach(DMSach *&first, long long key)
       else {
         q->next = p->next;
       }
+      if (p->data == clipboardSach) clipboardSach = NULL;
       delete p;
       return true;
     }
@@ -186,7 +187,7 @@ void docFile(DMSach *&list, fstream &fin)
   int n;
   fin >> n;
   fin.ignore();
-  if(n == 0) return;
+  if (n == 0) return;
   for (int i = 0; i < n; i++) {
     Sach *data = new Sach;
     fin >> data->maSach >> data->trangThai;

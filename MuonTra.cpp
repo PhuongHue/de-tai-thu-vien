@@ -16,8 +16,8 @@ using namespace std;
 struct MuonTra {
   long long maSach;
   long long ngayMuon;
-  long long ngayTra;
-  int trangThai;
+  long long ngayTra = -1;
+  int trangThai = 0;
 };
 
 struct ListMuonTra {

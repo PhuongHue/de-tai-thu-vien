@@ -37,6 +37,7 @@ T convert(string str)
 
 string getDateString(long long dateNumber)
 {
+  if (dateNumber < 0) return "";
   tm *t = localtime(&dateNumber);
   stringstream ss;
   ss << t->tm_mday << '/' << t->tm_mon + 1 << '/' << t->tm_year + 1900;
@@ -47,6 +48,7 @@ string getDateString(long long dateNumber)
 
 time_t getDateNumber(string dateString)
 {
+  if (dateString.empty()) return -1;
   tm *t = new tm;
   int day, month, year;
   sscanf(dateString.data(), "%d/%d/%d", &day, &month, &year);
