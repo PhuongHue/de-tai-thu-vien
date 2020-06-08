@@ -168,10 +168,9 @@ void setHeader(string header)
 
 void clearPage(int left, int top, int right, int bottom)
 {
-  string str(right - left + 1, ' ');
   for (int i = top; i <= bottom; i++) {
     gotoxy(left, i);
-    cout << str;
+    cout << setw(right - left + 1) << setfill(' ') << ' ' << setw(0);
   }
 }
 
@@ -192,43 +191,43 @@ void appPause(string message, int x = 0, int y = 0)
   clearPage(left, top, right, bottom);
 }
 
-bool appYesNo(string message = "", int x = 0, int y = 0)
-{
-  int top = y;
-  int left = x;
-  int right = max((int)message.length(), 29);
-  gotoxy(x, y);
-  cout << message;
-  if (message.length() > 0) y++;
-  gotoxy(x, y);
-  cout << "[y/n]: ";
-  int cX = wherex();
-  int cY = wherey();
-  string res;
-  bool ans;
-  showConsoleCursor(true);
-  while (true) {
-    getline(cin, res);
-    for (int i = 0; i < res.length(); i++) {
-      res[i] = toupper(res[i]);
-    }
+// bool appYesNo(string message = "", int x = 0, int y = 0)
+// {
+//   int top = y;
+//   int left = x;
+//   int right = max((int)message.length(), 29);
+//   gotoxy(x, y);
+//   cout << message;
+//   if (message.length() > 0) y++;
+//   gotoxy(x, y);
+//   cout << "[y/n]: ";
+//   int cX = wherex();
+//   int cY = wherey();
+//   string res;
+//   bool ans;
+//   showConsoleCursor(true);
+//   while (true) {
+//     getline(cin, res);
+//     for (int i = 0; i < res.length(); i++) {
+//       res[i] = toupper(res[i]);
+//     }
 
-    if (res.compare("YES") == 0 || res.compare("Y") == 0) {
-      ans = true;
-      break;
-    }
-    if (res.compare("NO") == 0 || res.compare("N") == 0) {
-      ans = false;
-      break;
-    }
-    gotoxy(cX, cY);
-    cout << setw(res.length()) << setfill(' ') << ' ' << setw(0);
-    gotoxy(cX, cY);
-  }
-  showConsoleCursor(false);
-  clearPage(left, top, right, y);
-  return ans;
-}
+//     if (res.compare("YES") == 0 || res.compare("Y") == 0) {
+//       ans = true;
+//       break;
+//     }
+//     if (res.compare("NO") == 0 || res.compare("N") == 0) {
+//       ans = false;
+//       break;
+//     }
+//     gotoxy(cX, cY);
+//     cout << setw(res.length()) << setfill(' ') << ' ' << setw(0);
+//     gotoxy(cX, cY);
+//   }
+//   showConsoleCursor(false);
+//   clearPage(left, top, right, y);
+//   return ans;
+// }
 
 void inputText(string &str, int limit, int left, int top, bool isNumber = false)
 {
@@ -288,8 +287,9 @@ void setFooter(vector<string> cmds)
   int maxWidth = appFooter.right - appFooter.left + 1;
   int lineIndex = 0;
   for (int i = 0; i < cmds.size(); i++) {
-    if (appFooter.lines[lineIndex].length() + cmds[i].length() + appFooter.separator.length() > maxWidth)
+    if (appFooter.lines[lineIndex].length() + cmds[i].length() + appFooter.separator.length() > maxWidth) {
       lineIndex++;
+    };
     appFooter.lines[lineIndex] += cmds[i] + appFooter.separator;
   }
   // print lines
