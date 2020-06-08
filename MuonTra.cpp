@@ -137,7 +137,7 @@ bool deleteByMaSach(ListMuonTra *&first, long long key)
     return true;
   }
 }
-void luuFile(ListMuonTra *&first, ofstream &fout)
+void luuFile(ListMuonTra *first, fstream &fout)
 {
   ListMuonTra *p = first;
   fout << countAll(first) << endl;

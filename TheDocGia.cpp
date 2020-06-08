@@ -155,6 +155,7 @@ void luuFile(TheDocGia *tdg, fstream &fout)
        << tdg->ten << endl
        << (tdg->phai ? 1 : 0) << endl
        << tdg->trangThai << endl;
+  luuFile(tdg->lmt, fout);
 }
 
 void duyetLNRLuuFile(TreeNode *node, fstream &fout)
@@ -187,6 +188,7 @@ void docFile(TheDocGia *tdg, fstream &fin)
   fin.ignore();
   fin >> tdg->trangThai;
   fin.ignore();
+  docFile(tdg->lmt, fin);
 }
 
 bool docFile(TreeNode *&node)

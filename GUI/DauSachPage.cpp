@@ -15,8 +15,8 @@ using namespace std;
 
 namespace DAUSACHPAGE {
 
-int _top = 3;
 int _left = 1;
+int _top = 3;
 int _right = 154;
 int _bottom = 26;
 
@@ -46,14 +46,16 @@ const vector<string> _DauSachBookFooter = {
     "F2: Sua",
     "F3: Them moi",
     "F4: Xoa",
-    "F5: Luu",
     "ENTER: Xem Danh muc sach"};
 const vector<string> _DauSachBookSearchFooter = {"ESC: Huy", "ENTER: Tim kiem"};
 
 /* -------------------- _DauSachContentView funtions -------------------- */
 void loadDauSachContent(BookView &book, ContentView &content)
 {
-  if (book.lineCount <= 0) return;
+  if (book.lineCount <= 0) {
+    _DauSachContentView = getEmptyView(_DauSachContentView);
+    return;
+  }
   DauSach *ds = findDauSachByISBN(_ListDauSach, _DauSachBookView.keys[_DauSachBookView.select]);
   _DauSachContentView.lines[0] = ds->ISBN;
   _DauSachContentView.lines[1] = to_string(ds->namXB);
@@ -173,6 +175,7 @@ void handleDauSachBookAction(BookView &book, int keyPressed)
     drawBookView(_DauSachBookView);
     break;
   case F2:
+    if (_DauSachBookView.lineCount == 0) break;
     BOOK_MODE = BOOK_EDIT;
     runContentViewEditMode(_DauSachContentView, handleContentAction);
     loadDauSachBook(_DauSachBookView);
@@ -189,6 +192,7 @@ void handleDauSachBookAction(BookView &book, int keyPressed)
     BOOK_MODE = BOOK_NORMAL;
   } break;
   case F4:
+    if (_DauSachBookView.lineCount == 0) break;
     clearBookView(_DauSachBookView);
     if (YesNoMenu("Ban co muon xoa dau sach nay?", _DauSachBookView.left, _DauSachBookView.top)) {
       deleteDauSach(book.keys[book.select]);
@@ -196,14 +200,8 @@ void handleDauSachBookAction(BookView &book, int keyPressed)
     loadDauSachBook(_DauSachBookView);
     drawBookView(_DauSachBookView);
     break;
-  case F5:
-    luuFile(_ListDauSach_Root);
-    // thong bao
-    clearBookView(_DauSachBookView);
-    appPause("Da luu vao file!", _DauSachBookView.left, _DauSachBookView.top);
-    drawBookView(_DauSachBookView);
-    break;
   case ENTER:
+    if (_DauSachBookView.lineCount == 0) break;
     clearPage(_left, _top, _right, _bottom);
     DMSACHPAGE::initDMSachPage();
     DMSACHPAGE::runDMSachPage();
@@ -223,10 +221,10 @@ void initDauSachPage()
   _ListDauSach = _ListDauSach_Root;
 
   /* init _DauSachBookView, _DauSachBookView */
-  _DauSachBookView.left = 1;
+  _DauSachBookView.left = _left;
   _DauSachBookView.top = 5;
   _DauSachBookView.right = 40;
-  _DauSachBookView.bottom = 26;
+  _DauSachBookView.bottom = _bottom;
   _DauSachBookView.pageSize = 20;
   _DauSachBookView.lineCount = 20;
   // tinh so trang, dua page index ve 0
@@ -237,10 +235,10 @@ void initDauSachPage()
   _defaultDauSachBookView = _DauSachBookView;
 
   /* init _DauSachContentView */
-  _DauSachContentView.top = 3;
   _DauSachContentView.left = 72;
-  _DauSachContentView.right = 154;
-  _DauSachContentView.bottom = 26;
+  _DauSachContentView.top = 3;
+  _DauSachContentView.right = _right;
+  _DauSachContentView.bottom = _bottom;
   _DauSachContentView.lineCount = 6;
   _DauSachContentView.labelColumnSize = 8;
   _DauSachContentView.labels[0] = "ISBN";
@@ -252,6 +250,10 @@ void initDauSachPage()
   _DauSachContentView = getInitalView(_DauSachContentView);
   _DauSachContentView.isNumberType[1] = true;
   _DauSachContentView.isNumberType[2] = true;
+  _DauSachContentView.maxLength[0] = 13;
+  _DauSachContentView.maxLength[1] = 4;
+  _DauSachContentView.maxLength[2] = 4;
+
   /* load _DauSachBookView */
   loadDauSachContent(_DauSachBookView, _DauSachContentView);
 }

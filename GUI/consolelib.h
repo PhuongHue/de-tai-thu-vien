@@ -177,6 +177,7 @@ void clearPage(int left, int top, int right, int bottom)
 
 void appPause(string message, int x = 0, int y = 0)
 {
+  setNormalText();
   int top = y;
   int left = x;
   int bottom = y;

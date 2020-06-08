@@ -16,6 +16,7 @@ struct ContentView {
   string labels[MAX_CONTENT_VIEW_LINE];
   bool isNumberType[MAX_CONTENT_VIEW_LINE];
   bool isEditable[MAX_CONTENT_VIEW_LINE];
+  int maxLength[MAX_CONTENT_VIEW_LINE];
   int labelColumnSize = 10;
   int lineCount = 0;
   int select = 0;
@@ -36,6 +37,7 @@ ContentView getInitalView(ContentView base)
     content.lines[i] = "";
     content.isNumberType[i] = false;
     content.isEditable[i] = true;
+    content.maxLength[i] = 20;
   }
   return content;
 }
@@ -103,12 +105,12 @@ void _gotoSelect(ContentView &content)
 
 void editLine(ContentView &content, int key)
 {
+  int select = content.select;
   // return neu khong duoc sua;
-  if (content.isEditable[content.select] == false) {
+  if (content.isEditable[select] == false) {
     cout << BELL;
     return;
   }
-  int select = content.select;
   if (key == BACKSPACE) {
     if (content.cursor == 0) return;
     string right = "";
@@ -121,6 +123,12 @@ void editLine(ContentView &content, int key)
     content.lines[select].erase(content.cursor, 1);
   }
   else {
+    // vuot qua max length
+    if (content.lines[select].length() == content.maxLength[select]) {
+      cout << BELL;
+      return;
+    }
+    // quy dinh so nhung nhap chu
     if (content.isNumberType[select] && !(key >= '0' && key <= '9')) return;
     content.lines[select].insert(content.lines[select].begin() + content.cursor, (char)key);
     string right = "";

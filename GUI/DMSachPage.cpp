@@ -49,7 +49,11 @@ const vector<string> _DauSachBookFooter = {
 /* -------------------- _DMSachContentView funtions -------------------- */
 void loadContent(BookView &book, ContentView &content)
 {
-  if (book.lineCount <= 0) return;
+  if (book.lineCount <= 0) {
+    _CurrentNodeDMSach = NULL;
+    _DMSachContentView = getEmptyView(_DMSachContentView);
+    return;
+  }
   DMSach *ds = findByMaSach(_CurrentListDauSach->dms, stoll(book.keys[book.select]));
   if (!ds) return;
   _CurrentNodeDMSach = ds;
@@ -144,6 +148,7 @@ void handleListAction(BookView &book, int keyPressed)
 {
   switch (keyPressed) {
   case F2:
+    if (_DMSachBookView.lineCount <= 0) break;
     MODE = EDIT;
     runContentViewEditMode(_DMSachContentView, handleContentAction);
     loadList(_DMSachBookView);
@@ -155,12 +160,15 @@ void handleListAction(BookView &book, int keyPressed)
     clearContentView(_DMSachContentView);
     ContentView createCV = getEmptyView(_DMSachContentView);
     createCV.lines[0] = to_string(getNewMaSach());
+    createCV.lines[1] = "0";
+    createCV.isEditable[1] = false;
     runContentViewEditMode(createCV, handleContentAction);
     loadList(_DMSachBookView);
     drawBookView(_DMSachBookView);
     MODE = NORMAL;
   } break;
   case F4:
+    if (_DMSachBookView.lineCount <= 0) break;
     clearBookView(_DMSachBookView);
     if (YesNoMenu("Ban co muon xoa sach nay?", _DMSachBookView.left, _DMSachBookView.top)) {
       deleteDMSach(book.keys[book.select]);
@@ -169,6 +177,7 @@ void handleListAction(BookView &book, int keyPressed)
     drawBookView(_DMSachBookView);
     break;
   case F6:
+    if (_DMSachBookView.lineCount <= 0) break;
     coppyToClipboard();
     break;
   }

@@ -40,7 +40,6 @@ const vector<string> _DauSachBookFooter = {
     "F2: Sua",
     "F3: Them moi",
     "F4: Xoa",
-    "F5: Luu",
     "F6: Chon TDG",
     "ENTER: Xem Danh muc sach"};
 const vector<string> _DauSachBookSearchFooter = {"ESC: Huy", "ENTER: Tim kiem"};
@@ -48,7 +47,10 @@ const vector<string> _DauSachBookSearchFooter = {"ESC: Huy", "ENTER: Tim kiem"};
 /* -------------------- _TheDocGiaContentView funtions -------------------- */
 void loadContent(BookView &book, ContentView &content)
 {
-  if (book.lineCount <= 0) return;
+  if (book.lineCount <= 0) {
+    _TheDocGiaContentView = getEmptyView(_TheDocGiaContentView);
+    return;
+  }
   TheDocGia *tdg = find(_ListTheDocGia_root, stoll(book.keys[book.select]))->data;
   _CurrentTDG = tdg;
   _TheDocGiaContentView.lines[0] = to_string(tdg->maThe);
@@ -144,6 +146,7 @@ void handleBookAction(BookView &book, int keyPressed)
 {
   switch (keyPressed) {
   case F2:
+    if (_TheDocGiaContentView.lineCount <= 0) break;
     MODE = EDIT;
     runContentViewEditMode(_TheDocGiaContentView, handleContentAction);
     loadTDGBook(_TheDocGiaBookView);
@@ -163,6 +166,7 @@ void handleBookAction(BookView &book, int keyPressed)
     MODE = NORMAL;
   } break;
   case F4:
+    if (_TheDocGiaContentView.lineCount <= 0) break;
     clearBookView(_TheDocGiaBookView);
     if (YesNoMenu("Ban co muon xoa dau sach nay?", _TheDocGiaBookView.left, _TheDocGiaBookView.top)) {
       deleteTDG(stoll(book.keys[book.select]));
@@ -170,17 +174,12 @@ void handleBookAction(BookView &book, int keyPressed)
     loadTDGBook(_TheDocGiaBookView);
     drawBookView(_TheDocGiaBookView);
     break;
-  case F5:
-    luuFile(_ListTheDocGia_root);
-    // thong bao
-    clearBookView(_TheDocGiaBookView);
-    appPause("Da luu vao file!", _TheDocGiaBookView.left, _TheDocGiaBookView.top);
-    drawBookView(_TheDocGiaBookView);
-    break;
   case F6:
+    if (_TheDocGiaContentView.lineCount <= 0) break;
     coppyToClipboard();
     break;
   case ENTER:
+    if (_TheDocGiaContentView.lineCount <= 0) break;
     clearPage(_left, _top, _right, _bottom);
     MUONTRAPAGE::initMuonTraPage();
     MUONTRAPAGE::runMuonTraPage();
@@ -219,6 +218,9 @@ void initTheDocGiaPage()
   _TheDocGiaContentView = getInitalView(_TheDocGiaContentView);
   _TheDocGiaContentView.isNumberType[0] = true;
   _TheDocGiaContentView.isNumberType[4] = true;
+  _TheDocGiaContentView.maxLength[2] = 10;
+  _TheDocGiaContentView.maxLength[3] = 3;
+  _TheDocGiaContentView.maxLength[4] = 1;
 }
 
 void runTheDocGiaPage()

@@ -2,13 +2,18 @@
 #define _MAINPAGE_CPP_
 
 #include "DauSachPage.cpp"
-#include "TheDocGiaPage.cpp"
 #include "MuonSachPage.cpp"
+#include "TheDocGiaPage.cpp"
 #include "components/Menu.cpp"
 
 using namespace std;
 
 namespace MAINPAGE {
+
+int _top = 3;
+int _left = 1;
+int _right = 40;
+int _bottom = 26;
 
 MenuView _MainMenuView;
 vector<string> _MainMenuFooter = {"ESC: Thoat", "ENTER: Chon"};
@@ -31,6 +36,12 @@ void mainPageAction(MenuView &menu, int keyPressed, bool &ret)
     clearMenu(menu);
     MUONSACHPAGE::runMuonSachPage();
     break;
+  case 3:
+    luuFile(_ListDauSach_Root);
+    luuFile(_ListTheDocGia_root);
+    clearMenu(menu);
+    appPause("Da luu vao file!", _left, _top);
+    break;
   default:
     break;
   }
@@ -41,14 +52,14 @@ void mainPageAction(MenuView &menu, int keyPressed, bool &ret)
 
 void initMainMenu()
 {
-  _MainMenuView.left = 1;
-  _MainMenuView.top = 3;
-  _MainMenuView.right = 40;
-  _MainMenuView.count = 3;
+  _MainMenuView.left = _left;
+  _MainMenuView.top = _top;
+  _MainMenuView.right = _right;
+  _MainMenuView.count = 4;
   _MainMenuView.options[0] = "Quan ly dau sach.";
   _MainMenuView.options[1] = "Quan ly the doc gia.";
   _MainMenuView.options[2] = "Muon sach.";
-  // _MainMenuView.options[3] = "";
+  _MainMenuView.options[3] = "Luu file.";
   // _MainMenuView.options[4] = "";
   // _MainMenuView.options[5] = "";
   // _MainMenuView.options[6] = "";
