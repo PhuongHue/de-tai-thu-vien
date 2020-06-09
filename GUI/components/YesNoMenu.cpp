@@ -2,10 +2,11 @@
 #define _YESNOMENU_CPP_
 
 #include "Menu.cpp"
+#include <algorithm>
 
 namespace YESNOMENU {
 MenuView _Menu;
-bool _Ans = true;
+bool _KetQua = true;
 void initYesNoMenu(int left, int top, int right)
 {
   _Menu.left = left;
@@ -19,10 +20,10 @@ void action(MenuView &menu, int keyPressed, bool &ret)
 {
   switch (menu.select) {
   case 0:
-    _Ans = true;
+    _KetQua = true;
     break;
   case 1:
-    _Ans = false;
+    _KetQua = false;
   }
   ret = true; // bat buoc return;
 }
@@ -30,12 +31,12 @@ void action(MenuView &menu, int keyPressed, bool &ret)
 
 bool YesNoMenu(string message, int left = 0, int top = 0)
 {
-  int right = message.length();
+  int right = left + max((int)message.length(), 6);
   YESNOMENU::initYesNoMenu(left, top, right);
   gotoxy(left, top);
   cout << message;
   runMenu(YESNOMENU::_Menu, YESNOMENU::action);
   clearPage(left, top, right, top + 3);
-  return YESNOMENU::_Ans;
+  return YESNOMENU::_KetQua;
 }
 #endif
