@@ -58,4 +58,20 @@ time_t getDateNumber(string dateString)
   return mktime(t);
 }
 
+void chuanHoa(string &str)
+{
+  while (str[0] == ' ')
+    str.erase(0, 1); // xoa khoang trang dau
+  while (str[str.length() - 1] == ' ')
+    str.erase(str.length() - 1, 1); // xoa khoang trang cuoi
+  for (int i = 0; i < str.length() - 1; i++) {
+    if (str[i] == ' ' && str[i + 1] == ' ') str.erase(i, 1);
+  }
+  int x = str.find("  ");
+  while (x != -1) {
+    str.erase(x, 1);
+    x = str.find("  ");
+  }
+}
+
 #endif

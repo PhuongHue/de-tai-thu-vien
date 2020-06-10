@@ -168,9 +168,10 @@ void setHeader(string header)
 
 void clearPage(int left, int top, int right, int bottom)
 {
+  string str(right - left + 1, ' ');
   for (int i = top; i <= bottom; i++) {
     gotoxy(left, i);
-    cout << setw(right - left + 1) << setfill(' ') << ' ' << setw(0);
+    cout << str;
   }
 }
 

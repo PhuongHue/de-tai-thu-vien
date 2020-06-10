@@ -67,6 +67,28 @@ void loadDauSachContent(BookView &book, ContentView &content)
   DMSACHPAGE::_CurrentNodeDMSach = ds->dms;
 }
 
+void formatDauSach(ContentView &content)
+{
+  chuanHoa(content.lines[0]);
+  chuanHoa(content.lines[3]);
+  chuanHoa(content.lines[4]);
+  chuanHoa(content.lines[5]);
+}
+
+string checkDauSach(ContentView content)
+{
+  for (int i = 0; i < content.lines[0].length(); i++) {
+    if (!((content.lines[0][i] >= '0' && content.lines[0][i] <= '9') || content.lines[0][i] == '-')) {
+      // khong phai so va dau '-'
+      return "ISBN chi duoc dung so va dau '-'.";
+    }
+  }
+  for (int i = 0; i < content.lines[0].length(); i++) {
+  }
+
+  return "";
+}
+
 void updateContent(ContentView &content)
 {
   int bookIndex = getIndex(_DauSachBookView);
@@ -105,7 +127,7 @@ void loadDauSachBook(BookView &book)
   book.lineCount = endIndex - startIndex + 1;
   // load data trang moi
   for (int i = startIndex, j = 0; i <= endIndex; i++, j++) {
-    book.lines[j] = _ListDauSach.data[i]->ten;
+    book.lines[j] = _ListDauSach.data[i]->ISBN + " - " + _ListDauSach.data[i]->ten;
     book.keys[j] = _ListDauSach.data[i]->ISBN;
   }
   // change select
@@ -147,6 +169,15 @@ void handleContentAction(ContentView &content, int key, bool &breaker)
 {
   switch (key) {
   case F2:
+    formatDauSach(content);
+    string error = checkDauSach(content);
+    if (error.compare("") != 0) {
+      clearContentView(content);
+      appPause(error, content.left, content.top);
+      drawContentView(content);
+      _gotoSelect(content);
+      return;
+    }
     updateContent(content);
     clearContentView(_DauSachContentView);
     drawContentView(_DauSachContentView);
