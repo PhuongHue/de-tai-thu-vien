@@ -88,7 +88,7 @@ void loadContentSach()
 void searchMS()
 {
   inputText(_DMSachSearchString, 20, 94, 3, true);
-  if (_DMSachSearchString.compare("") == 0) return;
+  if (_DMSachSearchString.empty()) return;
   _CurrentSach = findMaSach(_ListDauSach_Root, stoll(_DMSachSearchString))->data;
   loadContentSach();
   drawContentView(_SachContentView);

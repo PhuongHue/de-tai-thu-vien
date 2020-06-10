@@ -124,7 +124,7 @@ void consoleLog(T s)
   int cX = wherex();
   int cY = wherey();
   gotoxy(0, _DebugLog.logX);
-  cout << setw(3) << _DebugLog.lineN << setw(0) << ":::" << s << "�" << endl;
+  cout << setw(3) << _DebugLog.lineN << setw(0) << ":::" << s << "|" << endl;
   _DebugLog.logX++;
   _DebugLog.lineN++;
   gotoxy(cX, cY);

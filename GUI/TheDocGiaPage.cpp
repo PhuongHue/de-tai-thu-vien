@@ -33,7 +33,7 @@ TheDocGia *_CurrentTDG = NULL;
 
 int MODE = NORMAL;
 
-const vector<string> _DauSachBookFooter = {
+const vector<string> _TDGBookFooter = {
     "ESC: Tro ve",
     ">>: Trang sau",
     "<<: Trang truoc",
@@ -42,7 +42,7 @@ const vector<string> _DauSachBookFooter = {
     "F4: Xoa",
     "F6: Chon TDG",
     "ENTER: Xem Danh muc sach"};
-const vector<string> _DauSachBookSearchFooter = {"ESC: Huy", "ENTER: Tim kiem"};
+const vector<string> _TDGBookSearchFooter = {"ESC: Huy", "ENTER: Tim kiem"};
 
 /* -------------------- _TheDocGiaContentView funtions -------------------- */
 void loadContent(BookView &book, ContentView &content)
@@ -60,6 +60,29 @@ void loadContent(BookView &book, ContentView &content)
   _TheDocGiaContentView.lines[4] = to_string(tdg->trangThai);
   MUONTRAPAGE::_ListMuonTra = tdg->lmt;
   MUONTRAPAGE::_CurrentNode = tdg->lmt;
+}
+
+void formatTDG(ContentView &content)
+{
+  chuanHoa(content.lines[1]);
+  chuanHoa(content.lines[2]);
+}
+
+string checkTDG(ContentView content)
+{
+  if (content.lines[1].empty()) {
+    return "Ho khong duoc rong.";
+  }
+  if (content.lines[2].empty()) {
+    return "Ten khong duoc rong.";
+  }
+  if (content.lines[3].empty()) {
+    return "Phai khong duoc rong.";
+  }
+  if (content.lines[3].compare("nam") != 0 && content.lines[3].compare("nu") != 0) {
+    return "Phai phai la 'nam' hoac 'nu'.";
+  }
+  return "";
 }
 
 void updateContent(ContentView &content)
@@ -121,11 +144,20 @@ void coppyToClipboard()
 {
   clipboardTDG = _CurrentTDG;
 }
-/* -------------------- _DauSachContentView handles -------------------- */
+/* -------------------- _TDGContentView handles -------------------- */
 void handleContentAction(ContentView &content, int key, bool &breaker)
 {
   switch (key) {
   case F2:
+    formatTDG(content);
+    string error = checkTDG(content);
+    if (!error.empty()) {
+      clearContentView(content);
+      appPause(error, content.left, content.top);
+      drawContentView(content);
+      _gotoSelect(content);
+      return;
+    }
     updateContent(content);
     clearContentView(_TheDocGiaContentView);
     drawContentView(_TheDocGiaContentView);
@@ -134,7 +166,7 @@ void handleContentAction(ContentView &content, int key, bool &breaker)
   }
 }
 
-/* -------------------- _DauSachBookView handles -------------------- */
+/* -------------------- _TDGBookView handles -------------------- */
 void handleBookSelectChange(BookView &book)
 {
   loadContent(book, _TheDocGiaContentView);
@@ -189,10 +221,10 @@ void handleBookAction(BookView &book, int keyPressed)
     drawContentView(_TheDocGiaContentView);
     break;
   }
-  setFooter(_DauSachBookFooter);
+  setFooter(_TDGBookFooter);
 }
 
-/* -------------------- DauSachPage functions -------------------- */
+/* -------------------- TDGPage functions -------------------- */
 void initTheDocGiaPage()
 {
   /* init _TheDocGiaBookView */
@@ -218,6 +250,7 @@ void initTheDocGiaPage()
   _TheDocGiaContentView = getInitalView(_TheDocGiaContentView);
   _TheDocGiaContentView.isNumberType[0] = true;
   _TheDocGiaContentView.isNumberType[4] = true;
+  _TheDocGiaContentView.isEditable[0] = false;
   _TheDocGiaContentView.maxLength[2] = 10;
   _TheDocGiaContentView.maxLength[3] = 3;
   _TheDocGiaContentView.maxLength[4] = 1;
@@ -234,7 +267,7 @@ void runTheDocGiaPage()
 
   loadLayout(_PageLayout);
   setHeader(_HeaderText);
-  setFooter(_DauSachBookFooter);
+  setFooter(_TDGBookFooter);
   drawContentView(_TheDocGiaContentView);
   runBookView(_TheDocGiaBookView, handleBookAction, loadTDGBook, handleBookSelectChange);
   clearPage(_left, _top, _right, _bottom);

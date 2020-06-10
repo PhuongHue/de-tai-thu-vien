@@ -62,6 +62,19 @@ void loadContent(BookView &book, ContentView &content)
   _DMSachContentView.lines[2] = ds->data->viTri;
 }
 
+void formatDMSach(ContentView &content)
+{
+  chuanHoa(content.lines[2]);
+}
+
+string checkDMSach(ContentView content)
+{
+  if (content.lines[2].empty()) {
+    return "Vi tri khong duoc rong.";
+  }
+  return "";
+}
+
 void updateContent(ContentView &content)
 {
   int bookIndex = getIndex(_DMSachBookView);
@@ -128,6 +141,15 @@ void handleContentAction(ContentView &content, int key, bool &breaker)
 {
   switch (key) {
   case F2:
+    formatDMSach(content);
+    string error = checkDMSach(content);
+    if (!error.empty()) {
+      clearContentView(content);
+      appPause(error, content.left, content.top);
+      drawContentView(content);
+      _gotoSelect(content);
+      return;
+    }
     updateContent(content);
     clearContentView(_DMSachContentView);
     drawContentView(_DMSachContentView);

@@ -69,12 +69,13 @@ void drawBookView(BookView &book)
 
 void clearBookView(BookView book)
 {
+  string str(book.right - book.left + 1, ' ');
   for (int i = 0; i < book.lineCount; i++) {
     gotoxy(book.left, book.top + i);
-    cout << setw(5 + book.lines[i].length()) << setfill(' ') << ' ' << setw(0);
+    cout << str;
   }
   gotoxy(book.left, book.bottom);
-  cout << setw(book.right - book.left + 1) << setfill(' ') << ' ' << setw(0);
+  cout << str;
 }
 
 void changeBookSelect(BookView &book, int select)

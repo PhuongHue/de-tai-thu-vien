@@ -77,15 +77,27 @@ void formatDauSach(ContentView &content)
 
 string checkDauSach(ContentView content)
 {
+  if (content.lines[0].empty()) {
+    return "ISBN khong duoc rong.";
+  }
+  if (content.lines[1].empty()) {
+    return "Nam XB khong duoc rong.";
+  }
+  if (content.lines[2].empty()) {
+    return "So trang khong duoc rong.";
+  }
+  if (content.lines[3].empty()) {
+    return "Tac gia khong duoc rong.";
+  }
+  if (content.lines[4].empty()) {
+    return "The loai khong duoc rong.";
+  }
   for (int i = 0; i < content.lines[0].length(); i++) {
     if (!((content.lines[0][i] >= '0' && content.lines[0][i] <= '9') || content.lines[0][i] == '-')) {
       // khong phai so va dau '-'
       return "ISBN chi duoc dung so va dau '-'.";
     }
   }
-  for (int i = 0; i < content.lines[0].length(); i++) {
-  }
-
   return "";
 }
 
@@ -171,7 +183,7 @@ void handleContentAction(ContentView &content, int key, bool &breaker)
   case F2:
     formatDauSach(content);
     string error = checkDauSach(content);
-    if (error.compare("") != 0) {
+    if (!error.empty()) {
       clearContentView(content);
       appPause(error, content.left, content.top);
       drawContentView(content);
@@ -210,6 +222,7 @@ void handleDauSachBookAction(BookView &book, int keyPressed)
     BOOK_MODE = BOOK_EDIT;
     runContentViewEditMode(_DauSachContentView, handleContentAction);
     loadDauSachBook(_DauSachBookView);
+    clearBookView(_DauSachBookView);
     drawBookView(_DauSachBookView);
     BOOK_MODE = BOOK_NORMAL;
     break;
@@ -254,7 +267,7 @@ void initDauSachPage()
   /* init _DauSachBookView, _DauSachBookView */
   _DauSachBookView.left = _left;
   _DauSachBookView.top = 5;
-  _DauSachBookView.right = 40;
+  _DauSachBookView.right = 70;
   _DauSachBookView.bottom = _bottom;
   _DauSachBookView.pageSize = 20;
   _DauSachBookView.lineCount = 20;

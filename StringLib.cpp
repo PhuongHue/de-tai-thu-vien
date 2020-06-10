@@ -60,6 +60,7 @@ time_t getDateNumber(string dateString)
 
 void chuanHoa(string &str)
 {
+  if (str.empty()) return;
   while (str[0] == ' ')
     str.erase(0, 1); // xoa khoang trang dau
   while (str[str.length() - 1] == ' ')
