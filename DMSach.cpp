@@ -174,10 +174,9 @@ void luuFile(DMSach *first, ofstream &fout)
   DMSach *p = first;
   fout << countAll(first) << endl;
   while (p != NULL) {
-    Sach *data = p->data;
-    fout << data->maSach << endl
-         << data->trangThai << endl
-         << data->viTri << endl;
+    fout << p->data->maSach << endl
+         << p->data->trangThai << endl
+         << p->data->viTri << endl;
     p = p->next;
   }
 }

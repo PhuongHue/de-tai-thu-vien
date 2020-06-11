@@ -10,10 +10,10 @@
 
 struct DauSach {
   string ISBN;
-  string ten;
+  string tenSach;
   int soTrang = 0;
   string tacGia;
-  int namXB = 1990;
+  int namXB;
   string theLoai;
   DMSach *dms = NULL;
 };
@@ -25,13 +25,11 @@ struct ListDauSach {
   int length = 0;
 } _ListDauSach_Root;
 
-typedef void (*CallBackDauSach)(DauSach *&node);
-
-void foreachListDauSach(ListDauSach &list, CallBackDauSach callBack)
+void swapDauSach(DauSach *&a, DauSach *&b)
 {
-  for (int i = 0; i < list.length; i++) {
-    callBack(list.data[i]);
-  }
+  DauSach *c = a;
+  a = b;
+  b = c;
 }
 
 DauSach *findDauSachByISBN(ListDauSach &list, string ISBN)
@@ -50,20 +48,23 @@ int findIndexDauSachByISBN(ListDauSach &list, string ISBN)
   return -1;
 }
 
-void addLast(ListDauSach &list, DauSach *ds)
+int addLast(ListDauSach &list, DauSach *ds)
 {
+  if (list.length == MAX_LIST) return 1;
   list.data[list.length] = ds;
   list.length++;
+  return 0;
 }
 
-void deleteByIndex(ListDauSach &list, int index)
+int deleteByIndex(ListDauSach &list, int index)
 {
-  if (index >= list.length) return;
+  if (index >= list.length || index < 0 || list.length == 0) return 1;
   delete list.data[index];
   for (int i = index; i < list.length - 1; i++) {
     list.data[i] = list.data[i + 1];
   }
   list.length--;
+  return 0;
 }
 
 void findAndDelete(ListDauSach &list, string ISBN)
@@ -79,7 +80,7 @@ void luuFile(ListDauSach &list)
   fout << list.length << endl;
   for (int i = 0; i < list.length; i++) {
     fout << list.data[i]->ISBN << endl
-         << list.data[i]->ten << endl
+         << list.data[i]->tenSach << endl
          << list.data[i]->soTrang << endl
          << list.data[i]->tacGia << endl
          << list.data[i]->namXB << endl
@@ -92,13 +93,13 @@ bool docFile(ListDauSach &list)
 {
   fstream fin("data/DauSach.data", fstream::in);
   if (!fin.is_open() || fin.eof()) return false;
-  int all;
-  fin >> all;
+  int count;
+  fin >> count;
   fin.ignore();
-  for (int i = 0; i < all; i++) {
+  for (int i = 0; i < count; i++) {
     DauSach *ds = new DauSach;
     getline(fin, ds->ISBN);
-    getline(fin, ds->ten);
+    getline(fin, ds->tenSach);
     fin >> ds->soTrang;
     fin.ignore();
     getline(fin, ds->tacGia);
@@ -111,11 +112,11 @@ bool docFile(ListDauSach &list)
   return true;
 }
 
-ListDauSach filterDauSach(ListDauSach list, DauSach key)
+ListDauSach filterDauSach(ListDauSach list, string key)
 {
   ListDauSach temp;
   for (int i = 0; i < list.length; i++) {
-    if (find(list.data[i]->ISBN, key.ISBN) >= 0) {
+    if (find(list.data[i]->tenSach, key) >= 0) {
       addLast(temp, list.data[i]);
     }
   }
@@ -127,9 +128,33 @@ DMSach *findMaSach(ListDauSach &list, long long key)
   DMSach *ans = NULL;
   for (int i = 0; i < list.length; i++) {
     ans = findByMaSach(list.data[i]->dms, key);
-    if(ans != NULL) break;
+    if (ans != NULL) break;
   }
   return ans;
+}
+
+int soSanhDauSach(DauSach *a, DauSach *b)
+{
+  int cmpTheLoai = a->theLoai.compare(b->theLoai);
+  if (cmpTheLoai == 0) {
+    return a->tenSach.compare(b->tenSach);
+  }
+  else
+    return cmpTheLoai;
+}
+
+void sortByTheLoaiTen(ListDauSach &list)
+{
+  for (int i = 0; i < list.length; i++) {
+    int minDS = i;
+    for (int j = i + 1; j < list.length; j++) {
+      int kq = soSanhDauSach(list.data[minDS], list.data[j]);
+      if (kq > 0) minDS = j;
+    }
+    if (minDS != i) {
+      swapDauSach(list.data[i], list.data[minDS]);
+    }
+  }
 }
 
 #endif

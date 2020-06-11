@@ -10,7 +10,7 @@ using namespace std;
 int find(string str1, string str2, int begin = 0)
 {
   if (str2.length() > str1.length()) return -1;
-  for (int i = begin; i < str1.length() - str2.length(); i++) {
+  for (int i = begin; i <= str1.length() - str2.length(); i++) {
     bool f = true;
     for (int j = 0; j < str2.length(); j++) {
       if (str1[i + j] != str2[j]) {

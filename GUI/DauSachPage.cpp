@@ -61,7 +61,7 @@ void loadDauSachContent(BookView &book, ContentView &content)
   _DauSachContentView.lines[1] = to_string(ds->namXB);
   _DauSachContentView.lines[2] = to_string(ds->soTrang);
   _DauSachContentView.lines[3] = ds->tacGia;
-  _DauSachContentView.lines[4] = ds->ten;
+  _DauSachContentView.lines[4] = ds->tenSach;
   _DauSachContentView.lines[5] = ds->theLoai;
   DMSACHPAGE::_CurrentListDauSach = ds;
   DMSACHPAGE::_CurrentNodeDMSach = ds->dms;
@@ -98,6 +98,7 @@ string checkDauSach(ContentView content)
       return "ISBN chi duoc dung so va dau '-'.";
     }
   }
+  // TODO: khong trung ISBN
   return "";
 }
 
@@ -115,13 +116,14 @@ void updateContent(ContentView &content)
   ds->namXB = stoi(content.lines[1]);
   ds->soTrang = stoi(content.lines[2]);
   ds->tacGia = content.lines[3];
-  ds->ten = content.lines[4];
+  ds->tenSach = content.lines[4];
   ds->theLoai = content.lines[5];
 
   if (BOOK_MODE == BOOK_CREATE) {
     addLast(_ListDauSach_Root, ds);
-    _ListDauSach = _ListDauSach_Root;
   }
+  sortByTheLoaiTen(_ListDauSach_Root);
+  _ListDauSach = _ListDauSach_Root;
 }
 
 /* -------------------- _DauSachBookView functions -------------------- */
@@ -139,7 +141,7 @@ void loadDauSachBook(BookView &book)
   book.lineCount = endIndex - startIndex + 1;
   // load data trang moi
   for (int i = startIndex, j = 0; i <= endIndex; i++, j++) {
-    book.lines[j] = _ListDauSach.data[i]->ISBN + " - " + _ListDauSach.data[i]->ten;
+    book.lines[j] = _ListDauSach.data[i]->ISBN + " - " + _ListDauSach.data[i]->tenSach;
     book.keys[j] = _ListDauSach.data[i]->ISBN;
   }
   // change select
@@ -163,10 +165,7 @@ void searchDauSach()
     _DauSachBookView = _defaultDauSachBookView;
   }
   else {
-    DauSach ds;
-    ds.ISBN = ds.tacGia = ds.ten = ds.theLoai = _DauSachSearchString;
-    _ListDauSach = filterDauSach(_ListDauSach_Root, ds);
-    _DauSachSearchString = "";
+    _ListDauSach = filterDauSach(_ListDauSach_Root, _DauSachSearchString);
   }
 }
 
