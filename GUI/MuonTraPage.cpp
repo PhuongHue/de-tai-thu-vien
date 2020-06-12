@@ -6,6 +6,7 @@
 #include <string>
 
 #include "../MuonTra.cpp"
+#include "../DauSach.cpp"
 #include "../StringLib.cpp"
 #include "components/BookView.cpp"
 #include "components/ContentView.cpp"
@@ -25,7 +26,7 @@ string _PageLayout = "layout/MuonTra.layout";
 
 ListMuonTra *_ListMuonTra = NULL;
 ListMuonTra *_CurrentNode = NULL;
-
+// TODO: compose primary key MaSach NgayMuon => temp array
 BookView _MuonTraBookView;
 
 ContentView _MuonTraContentView;
@@ -100,6 +101,7 @@ void handleListAction(BookView &book, int keyPressed)
   switch (keyPressed) {
   case F4:
     clearBookView(_MuonTraBookView);
+    // TODO: khong tra 2 lan => chuyen sang function rieng
     if (YesNoMenu("Ban co muon tra sach?", _MuonTraBookView.left, _MuonTraBookView.top)) {
       traSach();
     }

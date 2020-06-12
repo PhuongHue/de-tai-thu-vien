@@ -26,6 +26,13 @@ struct ListMuonTra {
   ListMuonTra *prev = NULL;
 };
 
+long long getTime()
+{
+  time_t t;
+  time(&t);
+  return t;
+}
+
 ListMuonTra *getNewListMuonTra()
 {
   ListMuonTra *lmt = new ListMuonTra;
@@ -170,6 +177,26 @@ void sortByMS(ListMuonTra *&first)
       if (i->data->maSach > j->data->maSach) swapNodeData(i, j);
     }
   }
+}
+
+long long const TIME_7_NGAY = 604800;
+
+bool checkDieuKienMuonSach(ListMuonTra *first)
+{
+  int demDangMuon = 0;
+  ListMuonTra *p = first;
+  while (p != NULL) {
+    if (p->data->ngayTra == -1) {
+      demDangMuon++;
+      consoleLog<long long>(getTime() - p->data->ngayMuon);
+      if (demDangMuon == 3 || (getTime() - p->data->ngayMuon) >= TIME_7_NGAY) {
+        return false;
+      }
+    }
+    p = p->next;
+  }
+
+  return true;
 }
 
 #endif

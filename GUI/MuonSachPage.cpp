@@ -37,8 +37,7 @@ const vector<string> _MuonSachFooter = {
     "ESC: Tro ve",
     "F1: Nhap ma TDG",
     "F2: Nhap ma DMS",
-    "F3: Muon sach",
-    "F4: Luu"};
+    "F3: Muon sach"};
 const vector<string> _EditStringFooter = {
     "ESC: Huy",
     "ENTER: Tim"};
@@ -62,8 +61,15 @@ void searchTDG()
   drawContentView(_TheDocGiaContentView);
 }
 
-void checkTDG()
+bool checkTDG()
 {
+  if (!checkDieuKienMuonSach(_CurrentTDG->lmt)) {
+    clearContentView(_TheDocGiaContentView);
+    appPause("Doc gia khong du dieu kien muon", _TheDocGiaContentView.left, _TheDocGiaContentView.top);
+    drawContentView(_TheDocGiaContentView);
+    return false;
+  }
+  return true;
 }
 
 /* -------------------- _SachContentView functions -------------------- */
@@ -76,10 +82,10 @@ void loadContentSach()
     _SachContentView.lines[1] = "Muon duoc";
     break;
   case 1:
-    _SachContentView.lines[1] = "Da duoc";
+    _SachContentView.lines[1] = "Da duoc muon";
     break;
   case 2:
-    _SachContentView.lines[1] = "Thanh ly";
+    _SachContentView.lines[1] = "Da thanh ly";
     break;
   }
   _SachContentView.lines[2] = _CurrentSach->viTri;
@@ -94,36 +100,48 @@ void searchMS()
   drawContentView(_SachContentView);
 }
 
-void checkSach()
+bool checkSach()
 {
+  if (!kiemTraDieuKienMuon(_CurrentSach)) {
+    clearContentView(_SachContentView);
+    appPause("Sach da duoc muon", _SachContentView.left, _SachContentView.top);
+    drawContentView(_SachContentView);
+    return false;
+  }
+  return true;
 }
 
 /* -------------------- DMSachPage functions -------------------- */
 void muonSach()
 {
-  if (!_CurrentSach || !_CurrentTDG) return;
+  if (!_CurrentSach || !_CurrentTDG || !checkSach() || !checkTDG()) return;
   MuonTra *mt = new MuonTra;
   mt->maSach = _CurrentSach->maSach;
-  time_t t;
-  time(&t);
-  mt->ngayMuon = t;
+  mt->ngayMuon = getTime();
   addLast(_CurrentTDG->lmt, mt);
   _CurrentSach->trangThai = 1;
+  clearContentView(_TheDocGiaContentView);
+  appPause("Muon sach thanh cong!", _TheDocGiaContentView.left, _TheDocGiaContentView.top);
+  drawContentView(_TheDocGiaContentView);
+  // update view
+  clearContentView(_SachContentView);
+  loadContentSach();
+  drawContentView(_SachContentView);
 }
 
 void initMuonSachPage()
 {
   _TheDocGiaContentView.top = _top + 2;
   _TheDocGiaContentView.left = 1;
-  _TheDocGiaContentView.right = 78;
+  _TheDocGiaContentView.right = 76;
   _TheDocGiaContentView.bottom = _top + 2 + 5;
   _TheDocGiaContentView.lineCount = 5;
-  _TheDocGiaContentView.labelColumnSize = 30;
+  _TheDocGiaContentView.labelColumnSize = 10;
   _TheDocGiaContentView.labels[0] = "Ma the";
   _TheDocGiaContentView.labels[1] = "Ho";
   _TheDocGiaContentView.labels[2] = "Ten";
-  _TheDocGiaContentView.labels[3] = "Phai (nam | nu)";
-  _TheDocGiaContentView.labels[4] = "Trang thai (0=h.dong | 1=khoa)";
+  _TheDocGiaContentView.labels[3] = "Phai";
+  _TheDocGiaContentView.labels[4] = "Trang thai";
   _TheDocGiaContentView = getInitalView(_TheDocGiaContentView);
   _TheDocGiaContentView.select = -1;
 

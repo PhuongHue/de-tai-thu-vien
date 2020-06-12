@@ -6,6 +6,7 @@
 #include <string>
 
 #include "../DMSach.cpp"
+#include "../DauSach.cpp"
 #include "../StringLib.cpp"
 #include "components/BookView.cpp"
 #include "components/ContentView.cpp"
@@ -43,8 +44,8 @@ const vector<string> _DauSachBookFooter = {
     "F2: Sua",
     "F3: Them moi",
     "F4: Xoa",
-    "F6: Chon sach",
-    "Trang thai (0=Muon duoc | 1=Da muon | 2=Thanh ly)"};
+    "F5: Thanh ly sach",
+    "F6: Chon sach"};
 
 /* -------------------- _DMSachContentView funtions -------------------- */
 void loadContent(BookView &book, ContentView &content)
@@ -58,7 +59,17 @@ void loadContent(BookView &book, ContentView &content)
   if (!ds) return;
   _CurrentNodeDMSach = ds;
   _DMSachContentView.lines[0] = to_string(ds->data->maSach);
-  _DMSachContentView.lines[1] = to_string(ds->data->trangThai);
+  switch (ds->data->trangThai) {
+  case 0:
+    _DMSachContentView.lines[1] = "Muon duoc";
+    break;
+  case 1:
+    _DMSachContentView.lines[1] = "Da duoc muon";
+    break;
+  case 2:
+    _DMSachContentView.lines[1] = "Da thanh ly";
+    break;
+  }
   _DMSachContentView.lines[2] = ds->data->viTri;
 }
 
@@ -87,11 +98,25 @@ void updateContent(ContentView &content)
   }
 
   sach->maSach = stoll(content.lines[0]);
-  sach->trangThai = stoi(content.lines[1]);
   sach->viTri = content.lines[2];
   if (MODE == CREATE) {
     addLast(_CurrentListDauSach->dms, sach);
   }
+}
+
+void thanhLySach()
+{
+  clearContentView(_DMSachContentView);
+  if (_CurrentNodeDMSach->data->trangThai == 0) {
+    if (YesNoMenu("Ban co muon thanh ly sach nay?", _DMSachContentView.left, _DMSachContentView.top)) {
+      _CurrentNodeDMSach->data->trangThai = 2;
+      loadContent(_DMSachBookView, _DMSachContentView);
+    }
+  }
+  else {
+    appPause("Sach da muon khong duoc thanh ly.", _DMSachContentView.left, _DMSachContentView.top);
+  }
+  drawContentView(_DMSachContentView);
 }
 
 /* -------------------- _DMSachBookView functions -------------------- */
@@ -198,6 +223,9 @@ void handleListAction(BookView &book, int keyPressed)
     loadList(_DMSachBookView);
     drawBookView(_DMSachBookView);
     break;
+  case F5:
+    thanhLySach();
+    break;
   case F6:
     if (_DMSachBookView.lineCount <= 0) break;
     coppyToClipboard();
@@ -235,6 +263,8 @@ void initDMSachPage()
   _DMSachContentView.isNumberType[0] = true;
   _DMSachContentView.isNumberType[1] = true;
   _DMSachContentView.isEditable[0] = false;
+  _DMSachContentView.isEditable[1] = false;
+
   /* load _DMSachBookView */
   loadContent(_DMSachBookView, _DMSachContentView);
 }

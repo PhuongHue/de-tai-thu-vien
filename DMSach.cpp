@@ -44,6 +44,11 @@ int compareData(Sach *a, Sach *b)
   }
 };
 
+bool kiemTraDieuKienMuon(Sach *sach)
+{
+  return sach->trangThai == 0;
+}
+
 struct DMSach {
   Sach *data = NULL;
   DMSach *next = NULL;
