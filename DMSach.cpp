@@ -61,17 +61,6 @@ bool kiemTraDieuKienMuon(Sach *sach)
   return sach->trangThai == 0;
 }
 
-typedef void (*CallBackDMSach)(DMSach *node);
-
-void foreachDMSach(DMSach *first, CallBackDMSach callBack)
-{
-  DMSach *p = first;
-  while (p != NULL) {
-    callBack(p);
-    p = p->next;
-  }
-}
-
 void swapNodeData(DMSach *&a, DMSach *&b)
 {
   Sach *c = a->data;

@@ -31,7 +31,9 @@ struct TreeNode {
   TheDocGia *data = NULL;
   struct TreeNode *left = NULL;
   struct TreeNode *right = NULL;
-} * _ListTheDocGia_root;
+};
+
+TreeNode *_ListTheDocGia_root = NULL;
 
 void insert(TreeNode *&node, TheDocGia *tdg)
 {
@@ -131,6 +133,10 @@ int _LNR_temp_index;
 
 void initDuyetLNR()
 {
+  for (int i = 0; i < MAX_TDG_ARRAY_LENGTH; i++) {
+    _TDGArray_temp.data[i] = NULL;
+  }
+
   _TDGArray_temp.length = 0;
   _LNR_temp_index = 0;
 }
@@ -194,9 +200,11 @@ void docFile(TheDocGia *tdg, fstream &fin)
 bool docFile(TreeNode *&node)
 {
   fstream fin("data/TheDocGia.data", fstream::in);
-  if (!fin.is_open() || fin.eof()) return false;
+  if (!fin.is_open()) return false;
   int all;
   fin >> all;
+  // file rong
+  if (fin.eof()) return true;
   fin.ignore();
   for (int i = 0; i < all; i++) {
     TheDocGia *tdg = new TheDocGia;

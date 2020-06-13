@@ -104,10 +104,16 @@ bool checkSach()
 {
   if (!kiemTraDieuKienMuon(_CurrentSach)) {
     clearContentView(_SachContentView);
-    appPause("Sach da duoc muon", _SachContentView.left, _SachContentView.top);
+    appPause("Sach da duoc muon.", _SachContentView.left, _SachContentView.top);
     drawContentView(_SachContentView);
     return false;
   }
+  // if (!kiemTraSachDaMuon(_CurrentTDG->lmt, _CurrentSach->maSach, )) {
+  //   clearContentView(_SachContentView);
+  //   appPause("Khong duoc muon sach 2 lan trong ngay.", _SachContentView.left, _SachContentView.top);
+  //   drawContentView(_SachContentView);
+  //   return false;
+  // }
   return true;
 }
 

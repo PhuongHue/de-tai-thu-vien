@@ -28,9 +28,12 @@ struct ListMuonTra {
 
 long long getTime()
 {
-  time_t t;
-  time(&t);
-  return t;
+  time_t t = time(0);
+  tm *timeTemp = localtime(&t);
+  timeTemp->tm_hour = 0;
+  timeTemp->tm_min = 0;
+  timeTemp->tm_sec = 0;
+  return mktime(timeTemp);
 }
 
 ListMuonTra *getNewListMuonTra()
@@ -195,7 +198,18 @@ bool checkDieuKienMuonSach(ListMuonTra *first)
     }
     p = p->next;
   }
+  return true;
+}
 
+bool kiemTraSachDaMuon(ListMuonTra *first, long long maSach, long long ngayMuon)
+{
+  ListMuonTra *p = first;
+  while (p != NULL) {
+    if (p->data->maSach == maSach && p->data->ngayMuon == ngayMuon) {
+      return false;
+    }
+    p = p->next;
+  }
   return true;
 }
 

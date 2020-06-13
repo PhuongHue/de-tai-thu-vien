@@ -199,6 +199,7 @@ void handleContentAction(ContentView &content, int key, bool &breaker)
       clearContentView(content);
       appPause(error, content.left, content.top);
       drawContentView(content);
+      drawFooter(content);
       _gotoSelect(content);
       return;
     }

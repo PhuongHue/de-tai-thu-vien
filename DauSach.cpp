@@ -92,9 +92,11 @@ void luuFile(ListDauSach &list)
 bool docFile(ListDauSach &list)
 {
   fstream fin("data/DauSach.data", fstream::in);
-  if (!fin.is_open() || fin.eof()) return false;
+  if (!fin.is_open()) return false;
   int count;
   fin >> count;
+  // file rong
+  if (fin.eof()) return true;
   fin.ignore();
   for (int i = 0; i < count; i++) {
     DauSach *ds = new DauSach;
