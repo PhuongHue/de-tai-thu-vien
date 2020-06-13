@@ -78,27 +78,30 @@ void formatDauSach(ContentView &content)
 string checkDauSach(ContentView content)
 {
   if (content.lines[0].empty()) {
-    return "ISBN khong duoc rong.";
+    return "ISBN khong duoc rong!";
   }
   if (content.lines[1].empty()) {
-    return "Nam XB khong duoc rong.";
+    return "Nam XB khong duoc rong!";
   }
   if (content.lines[2].empty()) {
-    return "So trang khong duoc rong.";
+    return "So trang khong duoc rong!";
   }
   if (content.lines[3].empty()) {
-    return "Tac gia khong duoc rong.";
+    return "Tac gia khong duoc rong!";
   }
   if (content.lines[4].empty()) {
-    return "The loai khong duoc rong.";
+    return "The loai khong duoc rong!";
   }
   for (int i = 0; i < content.lines[0].length(); i++) {
     if (!((content.lines[0][i] >= '0' && content.lines[0][i] <= '9') || content.lines[0][i] == '-')) {
       // khong phai so va dau '-'
-      return "ISBN chi duoc dung so va dau '-'.";
+      return "ISBN chi duoc dung so va dau '-'!";
     }
   }
-  // TODO: khong trung ISBN
+  if (findDauSachByISBN(_ListDauSach_Root, content.lines[0]) && BOOK_MODE == BOOK_CREATE) {
+    // da co ISBN
+    return "ISBN khong duoc trung!";
+  }
   return "";
 }
 
@@ -169,6 +172,16 @@ void searchDauSach()
   }
 }
 
+bool checkDeleteDauSach(string ISBN)
+{
+  DauSach *ds = findDauSachByISBN(_ListDauSach_Root, ISBN);
+  if (ds->dms != NULL) {
+    appPause("Khong the xoa dau sach da co danh muc sach!", _DauSachBookView.left, _DauSachBookView.top);
+    return false;
+  }
+  return true;
+}
+
 void deleteDauSach(string ISBN)
 {
   findAndDelete(_ListDauSach_Root, ISBN);
@@ -220,8 +233,8 @@ void handleDauSachBookAction(BookView &book, int keyPressed)
     if (_DauSachBookView.lineCount == 0) break;
     BOOK_MODE = BOOK_EDIT;
     runContentViewEditMode(_DauSachContentView, handleContentAction);
-    loadDauSachBook(_DauSachBookView);
     clearBookView(_DauSachBookView);
+    loadDauSachBook(_DauSachBookView);
     drawBookView(_DauSachBookView);
     BOOK_MODE = BOOK_NORMAL;
     break;
@@ -230,6 +243,7 @@ void handleDauSachBookAction(BookView &book, int keyPressed)
     clearContentView(_DauSachContentView);
     ContentView createCV = getEmptyView(_DauSachContentView);
     runContentViewEditMode(createCV, handleContentAction);
+    clearBookView(_DauSachBookView);
     loadDauSachBook(_DauSachBookView);
     drawBookView(_DauSachBookView);
     BOOK_MODE = BOOK_NORMAL;
@@ -237,7 +251,9 @@ void handleDauSachBookAction(BookView &book, int keyPressed)
   case F4:
     if (_DauSachBookView.lineCount == 0) break;
     clearBookView(_DauSachBookView);
-    if (YesNoMenu("Ban co muon xoa dau sach nay?", _DauSachBookView.left, _DauSachBookView.top)) {
+    if (
+        checkDeleteDauSach(book.keys[book.select]) &&
+        YesNoMenu("Ban co muon xoa dau sach nay?", _DauSachBookView.left, _DauSachBookView.top)) {
       deleteDauSach(book.keys[book.select]);
     }
     loadDauSachBook(_DauSachBookView);

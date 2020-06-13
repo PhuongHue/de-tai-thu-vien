@@ -21,6 +21,18 @@ struct Sach {
 
 Sach *clipboardSach = NULL;
 
+struct DMSach {
+  Sach *data = NULL;
+  DMSach *next = NULL;
+};
+
+DMSach *getNewDMSach()
+{
+  DMSach *dms = new DMSach;
+  dms->data = new Sach;
+  return dms;
+}
+
 long long getNewMaSach()
 {
   time_t currentTime;
@@ -48,23 +60,6 @@ bool kiemTraDieuKienMuon(Sach *sach)
 {
   return sach->trangThai == 0;
 }
-
-struct DMSach {
-  Sach *data = NULL;
-  DMSach *next = NULL;
-};
-
-DMSach *getNewDMSach()
-{
-  DMSach *dms = new DMSach;
-  dms->data = new Sach;
-  return dms;
-}
-
-struct PairNode {
-  DMSach *before = NULL;
-  DMSach *value = NULL;
-};
 
 typedef void (*CallBackDMSach)(DMSach *node);
 

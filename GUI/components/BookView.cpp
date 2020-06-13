@@ -81,11 +81,11 @@ void clearBookView(BookView book)
 void changeBookSelect(BookView &book, int select)
 {
   gotoxy(book.left, book.top + book.select);
-  setNormalText();
   printBookLine(book.pageIndex * book.pageSize + book.select + 1, book.lines[book.select]);
   gotoxy(book.left, book.top + select);
   setSelectText();
   printBookLine(book.pageIndex * book.pageSize + select + 1, book.lines[select]);
+  setNormalText();
   book.select = select;
 }
 

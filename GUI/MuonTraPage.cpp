@@ -5,8 +5,8 @@
 #include <sstream>
 #include <string>
 
-#include "../MuonTra.cpp"
 #include "../DauSach.cpp"
+#include "../MuonTra.cpp"
 #include "../StringLib.cpp"
 #include "components/BookView.cpp"
 #include "components/ContentView.cpp"
@@ -26,7 +26,9 @@ string _PageLayout = "layout/MuonTra.layout";
 
 ListMuonTra *_ListMuonTra = NULL;
 ListMuonTra *_CurrentNode = NULL;
-// TODO: compose primary key MaSach NgayMuon => temp array
+
+ListMuonTra *_LMT_Temp[20];
+
 BookView _MuonTraBookView;
 
 ContentView _MuonTraContentView;
@@ -36,16 +38,24 @@ const vector<string> _DauSachBookFooter = {
     ">>: Trang sau",
     "<<: Trang truoc",
     "F4: Tra sach"};
+const vector<string> _DauSachBookFooter_DaTra = {
+    "ESC: Tro ve",
+    ">>: Trang sau",
+    "<<: Trang truoc"};
 /* -------------------- _MuonTraContentView funtions -------------------- */
 void loadContent(BookView &book, ContentView &content)
 {
   if (book.lineCount <= 0) return;
-  ListMuonTra *node = findByMaSach(_ListMuonTra, stoll(book.keys[book.select]));
+  ListMuonTra *node = _LMT_Temp[book.select];
   _CurrentNode = node;
   _MuonTraContentView.lines[0] = to_string(node->data->maSach);
   _MuonTraContentView.lines[1] = getDateString(node->data->ngayMuon);
   _MuonTraContentView.lines[2] = getDateString(node->data->ngayTra);
   _MuonTraContentView.lines[3] = to_string(node->data->trangThai);
+  if (node->data->ngayTra != -1)
+    setFooter(_DauSachBookFooter_DaTra);
+  else
+    setFooter(_DauSachBookFooter);
 }
 
 /* -------------------- _DMSachBookView functions -------------------- */
@@ -54,8 +64,7 @@ void loadList(BookView &book)
   int dataCount = countAll(_ListMuonTra);
   int newAllPage = countAllPage(dataCount, book.pageSize);
   book.allPage = newAllPage;
-  if (book.pageIndex >= book.allPage)
-    book.pageIndex = book.allPage - 1;
+  if (book.pageIndex >= book.allPage) book.pageIndex = book.allPage - 1;
 
   int startIndex = book.pageIndex * book.pageSize;
   int endIndex = startIndex + book.pageSize - 1;
@@ -66,9 +75,8 @@ void loadList(BookView &book)
   for (ListMuonTra *i = _ListMuonTra; i != NULL; i = i->next) {
     if (j < startIndex) continue;
     if (j > endIndex) break;
-    string maSach = to_string(i->data->maSach);
-    book.lines[j - startIndex] = maSach;
-    book.keys[j - startIndex] = maSach;
+    _LMT_Temp[j] = i;
+    book.lines[j - startIndex] = to_string(i->data->maSach);
     j++;
   }
   // change select
@@ -101,8 +109,11 @@ void handleListAction(BookView &book, int keyPressed)
   switch (keyPressed) {
   case F4:
     clearBookView(_MuonTraBookView);
-    // TODO: khong tra 2 lan => chuyen sang function rieng
-    if (YesNoMenu("Ban co muon tra sach?", _MuonTraBookView.left, _MuonTraBookView.top)) {
+    if (
+        // sach chua tra
+        _CurrentNode->data->ngayTra == -1 &&
+        // dong y tra
+        YesNoMenu("Ban co muon tra sach?", _MuonTraBookView.left, _MuonTraBookView.top)) {
       traSach();
     }
     loadList(_MuonTraBookView);
@@ -122,6 +133,11 @@ void initMuonTraPage()
   _MuonTraBookView.bottom = 26;
   _MuonTraBookView.pageSize = 20;
   _MuonTraBookView.lineCount = 20;
+  // khoi tao rong NULL
+  for (int i = 0; i < 20; i++) {
+    _LMT_Temp[i] = NULL;
+  }
+
   /* init _MuonTraContentView */
   _MuonTraContentView.top = 3;
   _MuonTraContentView.left = 72;
@@ -147,7 +163,7 @@ void runMuonTraPage()
   loadList(_MuonTraBookView);
   /* load _DMSachBookView */
   loadContent(_MuonTraBookView, _MuonTraContentView);
-  
+
   loadLayout(_PageLayout);
   setHeader(_HeaderText);
   setFooter(_DauSachBookFooter);

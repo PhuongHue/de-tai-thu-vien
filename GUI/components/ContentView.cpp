@@ -87,7 +87,7 @@ void drawContentView(ContentView &content)
 
 void clearContentView(ContentView &content)
 {
-  string str(content.right - content.left, ' ');
+  string str(content.right - content.left + 1, ' ');
   setNormalText();
   for (int i = 0; i < content.lineCount; i++) {
     gotoxy(content.left, content.top + i);

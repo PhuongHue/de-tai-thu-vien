@@ -21,7 +21,7 @@ int _left = 1;
 int _right = 154;
 int _bottom = 26;
 
-string _HeaderText = "Muon sach";
+string _MuonSachHeaderText = "Muon sach";
 string _PageLayout = "layout/MuonSach.layout";
 
 TheDocGia *_CurrentTDG = NULL;
@@ -161,6 +161,7 @@ void initMuonSachPage()
 void runMuonSachPage()
 {
   loadLayout(_PageLayout);
+  setHeader(_MuonSachHeaderText);
   setFooter(_MuonSachFooter);
 
   if (clipboardTDG != NULL) {

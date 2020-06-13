@@ -198,6 +198,7 @@ void handleListAction(BookView &book, int keyPressed)
     if (_DMSachBookView.lineCount <= 0) break;
     MODE = EDIT;
     runContentViewEditMode(_DMSachContentView, handleContentAction);
+    clearBookView(_DMSachBookView);
     loadList(_DMSachBookView);
     drawBookView(_DMSachBookView);
     MODE = NORMAL;
@@ -210,6 +211,7 @@ void handleListAction(BookView &book, int keyPressed)
     createCV.lines[1] = "0";
     createCV.isEditable[1] = false;
     runContentViewEditMode(createCV, handleContentAction);
+    clearBookView(_DMSachBookView);
     loadList(_DMSachBookView);
     drawBookView(_DMSachBookView);
     MODE = NORMAL;
@@ -240,7 +242,7 @@ void initDMSachPage()
   /* init _DMSachBookView, _DMSachBookView */
   _DMSachBookView.left = 1;
   _DMSachBookView.top = 3;
-  _DMSachBookView.right = 40;
+  _DMSachBookView.right = 70;
   _DMSachBookView.bottom = 26;
   _DMSachBookView.pageSize = 20;
   _DMSachBookView.lineCount = 20;

@@ -82,6 +82,9 @@ string checkTDG(ContentView content)
   if (content.lines[3].compare("nam") != 0 && content.lines[3].compare("nu") != 0) {
     return "Phai phai la 'nam' hoac 'nu'.";
   }
+  if (content.lines[4].compare("0") != 0 && content.lines[4].compare("1") != 0) {
+    return "Trang thai chi nhan '0' (hoat dong) hoac '1' (khoa).";
+  }
   return "";
 }
 
