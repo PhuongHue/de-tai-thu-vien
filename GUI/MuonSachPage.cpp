@@ -103,6 +103,7 @@ void searchMS()
   inputText(_DMSachSearchString, 20, 94, 3, true);
   if (_DMSachSearchString.empty()) return;
   _CurrentSach = findMaSach(_ListDauSach_Root, stoll(_DMSachSearchString))->data;
+  _CurrentDauSach = clipboardDauSach;
   loadContentSach();
   drawContentView(_SachContentView);
 }

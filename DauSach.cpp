@@ -132,7 +132,10 @@ DMSach *findMaSach(ListDauSach &list, long long key)
   DMSach *ans = NULL;
   for (int i = 0; i < list.length; i++) {
     ans = findByMaSach(list.data[i]->dms, key);
-    if (ans != NULL) break;
+    if (ans != NULL) {
+      clipboardDauSach = list.data[i];
+      break;
+    }
   }
   return ans;
 }
