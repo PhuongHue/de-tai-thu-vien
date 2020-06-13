@@ -26,6 +26,7 @@ string _PageLayout = "layout/MuonSach.layout";
 
 TheDocGia *_CurrentTDG = NULL;
 Sach *_CurrentSach = NULL;
+DauSach *_CurrentDauSach = NULL;
 
 ContentView _TheDocGiaContentView;
 string _TheDocGiaSearchString;
@@ -89,6 +90,12 @@ void loadContentSach()
     break;
   }
   _SachContentView.lines[2] = _CurrentSach->viTri;
+  _SachContentView.lines[3] = _CurrentDauSach->ISBN;
+  _SachContentView.lines[4] = _CurrentDauSach->tenSach;
+  _SachContentView.lines[5] = to_string(_CurrentDauSach->soTrang);
+  _SachContentView.lines[6] = _CurrentDauSach->tacGia;
+  _SachContentView.lines[7] = to_string(_CurrentDauSach->namXB);
+  _SachContentView.lines[8] = _CurrentDauSach->theLoai;
 }
 
 void searchMS()
@@ -155,11 +162,17 @@ void initMuonSachPage()
   _SachContentView.left = 78;
   _SachContentView.right = 154;
   _SachContentView.bottom = _top + 2 + 3;
-  _SachContentView.lineCount = 3;
-  _SachContentView.labelColumnSize = 11;
+  _SachContentView.lineCount = 9;
+  _SachContentView.labelColumnSize = 10;
   _SachContentView.labels[0] = "Ma sach";
   _SachContentView.labels[1] = "Trang thai";
   _SachContentView.labels[2] = "Vi tri";
+  _SachContentView.labels[3] = "ISBN";
+  _SachContentView.labels[4] = "Ten sach";
+  _SachContentView.labels[5] = "So trang";
+  _SachContentView.labels[6] = "Tac gia";
+  _SachContentView.labels[7] = "Nam XB";
+  _SachContentView.labels[8] = "The loai";
   _SachContentView = getInitalView(_SachContentView);
   _SachContentView.select = -1;
 }
@@ -178,8 +191,9 @@ void runMuonSachPage()
     _TheDocGiaContentView = getEmptyView(_TheDocGiaContentView);
   }
 
-  if (clipboardSach != NULL) {
+  if (clipboardSach != NULL && clipboardDauSach != NULL) {
     _CurrentSach = clipboardSach;
+    _CurrentDauSach = clipboardDauSach;
     loadContentSach();
   }
   else {

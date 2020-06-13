@@ -18,6 +18,8 @@ struct DauSach {
   DMSach *dms = NULL;
 };
 
+DauSach *clipboardDauSach = NULL;
+
 #define MAX_LIST 500
 
 struct ListDauSach {

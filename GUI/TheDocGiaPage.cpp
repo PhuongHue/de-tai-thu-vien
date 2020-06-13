@@ -182,7 +182,8 @@ void handleBookAction(BookView &book, int keyPressed)
 {
   switch (keyPressed) {
   case F2:
-    if (_TheDocGiaContentView.lineCount <= 0) break;
+    // ds doc ga rong khong sua duoc
+    if (_ListTheDocGia_root == NULL) break;
     MODE = EDIT;
     runContentViewEditMode(_TheDocGiaContentView, handleContentAction);
     loadTDGBook(_TheDocGiaBookView);

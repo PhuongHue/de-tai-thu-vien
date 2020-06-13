@@ -89,9 +89,7 @@ void loadList(BookView &book)
 
 void traSach()
 {
-  time_t t;
-  time(&t);
-  _CurrentNode->data->ngayTra = t;
+  _CurrentNode->data->ngayTra = getTime();
   DMSach *dms = findMaSach(_ListDauSach_Root, _CurrentNode->data->maSach);
   dms->data->trangThai = 0;
 }

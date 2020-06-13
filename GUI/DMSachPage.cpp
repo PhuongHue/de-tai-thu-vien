@@ -157,7 +157,8 @@ void deleteDMSach(string key)
 
 void coppyToClipboard()
 {
-  if (_CurrentNodeDMSach == NULL) return;
+  if (_CurrentNodeDMSach == NULL || _CurrentListDauSach == NULL) return;
+  clipboardDauSach = _CurrentListDauSach;
   clipboardSach = _CurrentNodeDMSach->data;
 }
 
