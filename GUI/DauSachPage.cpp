@@ -144,7 +144,7 @@ void loadDauSachBook(BookView &book)
   book.lineCount = endIndex - startIndex + 1;
   // load data trang moi
   for (int i = startIndex, j = 0; i <= endIndex; i++, j++) {
-    book.lines[j] = _ListDauSach.data[i]->ISBN + " - " + _ListDauSach.data[i]->tenSach;
+    book.lines[j] = _ListDauSach.data[i]->ISBN + " * " + _ListDauSach.data[i]->tenSach;
     book.keys[j] = _ListDauSach.data[i]->ISBN;
   }
   // change select
@@ -300,7 +300,7 @@ void initDauSachPage()
   _DauSachContentView.right = _right;
   _DauSachContentView.bottom = _bottom;
   _DauSachContentView.lineCount = 6;
-  _DauSachContentView.labelColumnSize = 8;
+  _DauSachContentView.labelColumnSize = 15;
   _DauSachContentView.labels[0] = "ISBN";
   _DauSachContentView.labels[1] = "Nam XB";
   _DauSachContentView.labels[2] = "So trang";

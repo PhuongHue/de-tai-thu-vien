@@ -119,17 +119,17 @@ DMSach *findByMaSach(DMSach *first, long long key)
   return NULL;
 }
 
-void deleteAll(DMSach *&first)
-{
-  DMSach *p = first;
-  first = NULL;
-  while (p != NULL) {
-    DMSach *x = p;
-    p = p->next;
-    delete x->data;
-    delete x;
-  }
-}
+// void deleteAll(DMSach *&first)
+// {
+//   DMSach *p = first;
+//   first = NULL;
+//   while (p != NULL) {
+//     DMSach *x = p;
+//     p = p->next;
+//     delete x->data;
+//     delete x;
+//   }
+// }
 
 bool deleteByMaSach(DMSach *&first, long long key)
 {

@@ -28,18 +28,18 @@ struct BookView {
   int allPage = 0;
 };
 
-void debugBook(BookView book)
-{
-  gotoxy(0, 50);
-  cout << "allPage: " << book.allPage << endl;
-  cout << "lineCount: " << book.lineCount << endl;
-  cout << "pageSize: " << book.pageSize << endl;
-  cout << "pageIndex: " << book.pageIndex << endl;
-  cout << "select: " << book.select << endl;
-  for (int i = 0; i <= book.lineCount; i++) {
-    cout << book.lines[i] << endl;
-  }
-}
+// void debugBook(BookView book)
+// {
+//   gotoxy(0, 50);
+//   cout << "allPage: " << book.allPage << endl;
+//   cout << "lineCount: " << book.lineCount << endl;
+//   cout << "pageSize: " << book.pageSize << endl;
+//   cout << "pageIndex: " << book.pageIndex << endl;
+//   cout << "select: " << book.select << endl;
+//   for (int i = 0; i <= book.lineCount; i++) {
+//     cout << book.lines[i] << endl;
+//   }
+// }
 
 int getIndex(BookView book)
 {
@@ -61,7 +61,7 @@ void drawBookView(BookView &book)
       setNormalText();
     }
   }
-  // draw
+  // draw footer
   gotoxy(book.left, book.bottom);
   cout << "Trang " << book.pageIndex + 1 << " / " << book.allPage;
   showConsoleCursor(false);
@@ -78,15 +78,15 @@ void clearBookView(BookView book)
   cout << str;
 }
 
-void changeBookSelect(BookView &book, int select)
+void changeBookSelect(BookView &book, int newSelect)
 {
   gotoxy(book.left, book.top + book.select);
   printBookLine(book.pageIndex * book.pageSize + book.select + 1, book.lines[book.select]);
-  gotoxy(book.left, book.top + select);
+  gotoxy(book.left, book.top + newSelect);
   setSelectText();
-  printBookLine(book.pageIndex * book.pageSize + select + 1, book.lines[select]);
+  printBookLine(book.pageIndex * book.pageSize + newSelect + 1, book.lines[newSelect]);
   setNormalText();
-  book.select = select;
+  book.select = newSelect;
 }
 
 int countAllPage(int dataCount, int pageSize)
@@ -94,7 +94,6 @@ int countAllPage(int dataCount, int pageSize)
   int x = (int)ceil(dataCount * 1.0 / pageSize);
   if (x == 0) x = 1;
   return x;
-  consoleLog<int>(x);
 }
 
 void resetBookIndex(BookView &book, int dataCount)

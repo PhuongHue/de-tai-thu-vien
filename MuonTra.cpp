@@ -43,17 +43,6 @@ ListMuonTra *getNewListMuonTra()
   return lmt;
 }
 
-typedef void (*CallBackMuonTra)(ListMuonTra *node);
-
-void foreachDMSach(ListMuonTra *first, CallBackMuonTra callBack)
-{
-  ListMuonTra *p = first;
-  while (p != NULL) {
-    callBack(p);
-    p = p->next;
-  }
-}
-
 void swapNodeData(ListMuonTra *&a, ListMuonTra *&b)
 {
   MuonTra *c = a->data;
@@ -116,17 +105,17 @@ ListMuonTra *findByMaSach(ListMuonTra *first, long long key)
   return kq;
 }
 
-void deleteAll(ListMuonTra *&first)
-{
-  ListMuonTra *p = first;
-  first = NULL;
-  while (p != NULL) {
-    ListMuonTra *x = p;
-    p = p->next;
-    delete x->data;
-    delete x;
-  }
-}
+// void deleteAll(ListMuonTra *&first)
+// {
+//   ListMuonTra *p = first;
+//   first = NULL;
+//   while (p != NULL) {
+//     ListMuonTra *x = p;
+//     p = p->next;
+//     delete x->data;
+//     delete x;
+//   }
+// }
 
 bool deleteByMaSach(ListMuonTra *&first, long long key)
 {
