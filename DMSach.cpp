@@ -40,22 +40,6 @@ long long getNewMaSach()
   return currentTime;
 }
 
-int compareData(Sach *a, Sach *b)
-{
-  int cmpMaSach = a->maSach - b->maSach;
-  if (cmpMaSach != 0)
-    return cmpMaSach;
-  else {
-    int cmpTrangThai = a->trangThai - b->trangThai;
-    if (cmpTrangThai != 0)
-      return cmpTrangThai;
-    else {
-      int cmpViTri = a->viTri.compare(b->viTri);
-      return cmpViTri;
-    }
-  }
-};
-
 bool kiemTraDieuKienMuon(Sach *sach)
 {
   return sach->trangThai == 0;
@@ -119,18 +103,6 @@ DMSach *findByMaSach(DMSach *first, long long key)
   return NULL;
 }
 
-// void deleteAll(DMSach *&first)
-// {
-//   DMSach *p = first;
-//   first = NULL;
-//   while (p != NULL) {
-//     DMSach *x = p;
-//     p = p->next;
-//     delete x->data;
-//     delete x;
-//   }
-// }
-
 bool deleteByMaSach(DMSach *&first, long long key)
 {
   DMSach *p = first;
@@ -190,25 +162,6 @@ void sortByMS(DMSach *&first)
   for (DMSach *i = first; i != NULL && i->next != NULL; i = i->next) {
     for (DMSach *j = i->next; j != NULL; j = j->next) {
       if (i->data->maSach > j->data->maSach) swapNodeData(i, j);
-    }
-  }
-}
-
-int compareDataDanhMuc(Sach *a, Sach *b)
-{
-  int cmpTrangThai = a->trangThai - b->trangThai;
-  if (cmpTrangThai != 0)
-    return cmpTrangThai;
-  else {
-    return a->viTri.compare(a->viTri);
-  }
-}
-
-void sortByTTVT(DMSach *&first)
-{
-  for (DMSach *i = first; i != NULL && i->next != NULL; i = i->next) {
-    for (DMSach *j = i->next; j != NULL; j = j->next) {
-      if (compareDataDanhMuc(i->data, j->data) > 0) swapNodeData(i, j);
     }
   }
 }

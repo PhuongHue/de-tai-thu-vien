@@ -123,8 +123,7 @@ void thanhLySach()
 void loadList(BookView &book)
 {
   int dataCount = countAll(_CurrentListDauSach->dms);
-  int newAllPage = countAllPage(dataCount, book.pageSize);
-  book.allPage = newAllPage;
+  book.allPage = countAllPage(dataCount, book.pageSize);
   if (book.pageIndex >= book.allPage)
     book.pageIndex = book.allPage - 1;
 

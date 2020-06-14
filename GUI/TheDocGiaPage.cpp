@@ -57,7 +57,19 @@ void loadContent(BookView &book, ContentView &content)
   _TheDocGiaContentView.lines[1] = tdg->ho;
   _TheDocGiaContentView.lines[2] = tdg->ten;
   _TheDocGiaContentView.lines[3] = tdg->phai ? "nam" : "nu";
-  _TheDocGiaContentView.lines[4] = to_string(tdg->trangThai);
+  switch (tdg->trangThai) {
+  case TDG_TT_HOATDONG:
+    _TheDocGiaContentView.lines[4] = "Hoat dong";
+    break;
+  case TDG_TT_KHOA:
+    _TheDocGiaContentView.lines[4] = "Da khoa";
+    break;
+  case TDG_TT_DAXOA:
+    _TheDocGiaContentView.lines[4] = "Da xoa";
+    break;
+  default:
+    break;
+  }
   MUONTRAPAGE::_ListMuonTra = tdg->lmt;
   MUONTRAPAGE::_CurrentNode = tdg->lmt;
 }
@@ -82,9 +94,6 @@ string checkTDG(ContentView content)
   if (content.lines[3].compare("nam") != 0 && content.lines[3].compare("nu") != 0) {
     return "Phai phai la 'nam' hoac 'nu'.";
   }
-  if (content.lines[4].compare("0") != 0 && content.lines[4].compare("1") != 0) {
-    return "Trang thai chi nhan '0' (hoat dong) hoac '1' (khoa).";
-  }
   return "";
 }
 
@@ -102,8 +111,8 @@ void updateContent(ContentView &content)
   tdg->ho = content.lines[1];
   tdg->ten = content.lines[2];
   tdg->phai = content.lines[3].compare("nam") == 0;
-  tdg->trangThai = stoi(content.lines[4]);
   if (MODE == CREATE) {
+    tdg->trangThai = TDG_TT_HOATDONG;
     insert(_ListTheDocGia_root, tdg);
   }
 }
@@ -112,12 +121,11 @@ void updateContent(ContentView &content)
 void loadTDGBook(BookView &book)
 {
   int dataLength = countAll(_ListTheDocGia_root);
-  int newAllPage = countAllPage(dataLength, book.pageSize);
-  if (newAllPage < book.allPage) {
-    book.allPage = newAllPage;
-    if (book.pageIndex >= book.allPage)
-      book.pageIndex = book.allPage - 1;
-  }
+  book.allPage = countAllPage(dataLength, book.pageSize);
+
+  if (book.pageIndex >= book.allPage)
+    book.pageIndex = book.allPage - 1;
+
   int startIndex = book.pageIndex * book.pageSize;
   int endIndex = startIndex + book.pageSize - 1;
   if (endIndex > dataLength - 1) endIndex = dataLength - 1;
@@ -139,8 +147,12 @@ void loadTDGBook(BookView &book)
 
 void deleteTDG(long long maThe)
 {
-  bool deleted = false;
-  findAndDelete(_ListTheDocGia_root, maThe, deleted);
+  // bool deleted = false;
+  // findAndDelete(_ListTheDocGia_root, maThe, deleted);
+  TreeNode *tdg = find(_ListTheDocGia_root, maThe);
+  if (tdg != NULL) {
+    tdg->data->trangThai = TDG_TT_DAXOA;
+  }
 }
 
 void coppyToClipboard()
@@ -195,7 +207,7 @@ void handleBookAction(BookView &book, int keyPressed)
     clearContentView(_TheDocGiaContentView);
     ContentView createCV = getEmptyView(_TheDocGiaContentView);
     createCV.lines[0] = to_string(getNewMaTheDocGia());
-    createCV.lines[4] = "0";
+    createCV.lines[4] = "Hoat dong";
     createCV.isEditable[4] = false;
     runContentViewEditMode(createCV, handleContentAction);
     loadTDGBook(_TheDocGiaBookView);
@@ -246,16 +258,17 @@ void initTheDocGiaPage()
   _TheDocGiaContentView.right = 154;
   _TheDocGiaContentView.bottom = 26;
   _TheDocGiaContentView.lineCount = 5;
-  _TheDocGiaContentView.labelColumnSize = 30;
+  _TheDocGiaContentView.labelColumnSize = 15;
   _TheDocGiaContentView.labels[0] = "Ma the";
   _TheDocGiaContentView.labels[1] = "Ho";
   _TheDocGiaContentView.labels[2] = "Ten";
   _TheDocGiaContentView.labels[3] = "Phai (nam | nu)";
-  _TheDocGiaContentView.labels[4] = "Trang thai (0=h.dong | 1=khoa)";
+  _TheDocGiaContentView.labels[4] = "Trang thai";
   _TheDocGiaContentView = getInitalView(_TheDocGiaContentView);
   _TheDocGiaContentView.isNumberType[0] = true;
   _TheDocGiaContentView.isNumberType[4] = true;
   _TheDocGiaContentView.isEditable[0] = false;
+  _TheDocGiaContentView.isEditable[4] = false;
   _TheDocGiaContentView.maxLength[2] = 10;
   _TheDocGiaContentView.maxLength[3] = 3;
   _TheDocGiaContentView.maxLength[4] = 1;

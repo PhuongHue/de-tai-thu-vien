@@ -51,7 +51,20 @@ void loadContent(BookView &book, ContentView &content)
   _MuonTraContentView.lines[0] = to_string(node->data->maSach);
   _MuonTraContentView.lines[1] = getDateString(node->data->ngayMuon);
   _MuonTraContentView.lines[2] = getDateString(node->data->ngayTra);
-  _MuonTraContentView.lines[3] = to_string(node->data->trangThai);
+
+  switch (node->data->trangThai)
+  {
+  case 0:
+    _MuonTraContentView.lines[3] = "Dang muon";
+    break;
+  case 1:
+    _MuonTraContentView.lines[3] = "Da tra";
+    break;
+  case 2:
+    _MuonTraContentView.lines[3] = "Mat sach";
+    break;
+  }
+
   if (node->data->ngayTra != -1)
     setFooter(_DauSachBookFooter_DaTra);
   else
@@ -62,8 +75,7 @@ void loadContent(BookView &book, ContentView &content)
 void loadList(BookView &book)
 {
   int dataCount = countAll(_ListMuonTra);
-  int newAllPage = countAllPage(dataCount, book.pageSize);
-  book.allPage = newAllPage;
+  book.allPage = countAllPage(dataCount, book.pageSize);
   if (book.pageIndex >= book.allPage) book.pageIndex = book.allPage - 1;
 
   int startIndex = book.pageIndex * book.pageSize;
@@ -89,9 +101,17 @@ void loadList(BookView &book)
 
 void traSach()
 {
-  _CurrentNode->data->ngayTra = getTime();
+  _CurrentNode->data->ngayTra = getDate();
+  _CurrentNode->data->trangThai = 1;
   DMSach *dms = findMaSach(_ListDauSach_Root, _CurrentNode->data->maSach);
   dms->data->trangThai = 0;
+}
+
+void matSach()
+{
+  _CurrentNode->data->trangThai = 2;
+  DMSach *dms = findMaSach(_ListDauSach_Root, _CurrentNode->data->maSach);
+  dms->data->trangThai = 2;
 }
 
 /* -------------------- _DMSachBookView handles -------------------- */
@@ -113,6 +133,18 @@ void handleListAction(BookView &book, int keyPressed)
         // dong y tra
         YesNoMenu("Ban co muon tra sach?", _MuonTraBookView.left, _MuonTraBookView.top)) {
       traSach();
+    }
+    loadList(_MuonTraBookView);
+    drawBookView(_MuonTraBookView);
+    break;
+    case F5:
+    clearBookView(_MuonTraBookView);
+    if (
+        // sach chua tra
+        _CurrentNode->data->ngayTra == -1 &&
+        // dong y mat
+        YesNoMenu("Ghi chu lam mat sach?", _MuonTraBookView.left, _MuonTraBookView.top)) {
+      matSach();
     }
     loadList(_MuonTraBookView);
     drawBookView(_MuonTraBookView);
@@ -141,7 +173,7 @@ void initMuonTraPage()
   _MuonTraContentView.left = 72;
   _MuonTraContentView.right = 154;
   _MuonTraContentView.bottom = 26;
-  _MuonTraContentView.lineCount = 3;
+  _MuonTraContentView.lineCount = 4;
   _MuonTraContentView.labelColumnSize = 10;
   _MuonTraContentView.labels[0] = "Ma Sach";
   _MuonTraContentView.labels[1] = "Ngay muon";

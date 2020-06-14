@@ -9,11 +9,15 @@
 
 using namespace std;
 
+#define TDG_TT_KHOA 0
+#define TDG_TT_HOATDONG 1
+#define TDG_TT_DAXOA 2
+
 struct TheDocGia {
   long long maThe;
   string ho;
   string ten;
-  bool phai;
+  bool phai; // true=nam false=nu
   int trangThai;
   ListMuonTra *lmt = NULL;
 };
@@ -154,7 +158,7 @@ void duyetLNR(TreeNode *node, int from, int to)
   }
 }
 
-void luuFile(TheDocGia *tdg, fstream &fout)
+void luuFileTDG(TheDocGia *tdg, fstream &fout)
 {
   fout << tdg->maThe << endl
        << tdg->ho << endl
@@ -164,12 +168,12 @@ void luuFile(TheDocGia *tdg, fstream &fout)
   luuFile(tdg->lmt, fout);
 }
 
-void duyetLNRLuuFile(TreeNode *node, fstream &fout)
+void duyetNLRLuuFile(TreeNode *node, fstream &fout)
 {
   if (node != NULL) {
-    duyetLNRLuuFile(node->left, fout);
-    luuFile(node->data, fout);
-    duyetLNRLuuFile(node->right, fout);
+    luuFileTDG(node->data, fout);
+    duyetNLRLuuFile(node->left, fout);
+    duyetNLRLuuFile(node->right, fout);
   }
 }
 
@@ -178,20 +182,25 @@ void luuFile(TreeNode *node)
   fstream fout;
   fout.open("data/TheDocGia.data");
   fout << countAll(node) << endl;
-  duyetLNRLuuFile(node, fout);
+  duyetNLRLuuFile(node, fout);
   fout.close();
 }
 
-void docFile(TheDocGia *tdg, fstream &fin)
+void docFileTDG(TheDocGia *tdg, fstream &fin)
 {
-  int phai;
   fin >> tdg->maThe;
   fin.ignore();
   getline(fin, tdg->ho);
   getline(fin, tdg->ten);
+
+  int phai;
   fin >> phai;
-  tdg->phai = (phai == 1);
   fin.ignore();
+  if (phai == 1)
+    tdg->phai = true;
+  else
+    tdg->phai = false;
+
   fin >> tdg->trangThai;
   fin.ignore();
   docFile(tdg->lmt, fin);
@@ -201,14 +210,14 @@ bool docFile(TreeNode *&node)
 {
   fstream fin("data/TheDocGia.data", fstream::in);
   if (!fin.is_open()) return false;
-  int all;
-  fin >> all;
+  int n;
+  fin >> n;
   // file rong
   if (fin.eof()) return true;
   fin.ignore();
-  for (int i = 0; i < all; i++) {
+  for (int i = 0; i < n; i++) {
     TheDocGia *tdg = new TheDocGia;
-    docFile(tdg, fin);
+    docFileTDG(tdg, fin);
     insert(node, tdg);
   }
   return true;

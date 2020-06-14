@@ -132,12 +132,10 @@ void updateContent(ContentView &content)
 /* -------------------- _DauSachBookView functions -------------------- */
 void loadDauSachBook(BookView &book)
 {
-  int newAllPage = countAllPage(_ListDauSach.length, book.pageSize);
-  if (newAllPage < book.allPage) {
-    book.allPage = newAllPage;
-    if (book.pageIndex >= book.allPage)
-      book.pageIndex = book.allPage - 1;
-  }
+  book.allPage = countAllPage(_ListDauSach.length, book.pageSize);
+  if (book.pageIndex >= book.allPage)
+    book.pageIndex = book.allPage - 1;
+
   int startIndex = book.pageIndex * book.pageSize;
   int endIndex = startIndex + book.pageSize - 1;
   if (endIndex > _ListDauSach.length - 1) endIndex = _ListDauSach.length - 1;

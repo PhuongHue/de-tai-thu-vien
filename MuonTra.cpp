@@ -26,13 +26,17 @@ struct ListMuonTra {
   ListMuonTra *prev = NULL;
 };
 
-long long getTime()
+long long getDate()
 {
+  // get time vd: 15931520
   time_t t = time(0);
+  // doi time => object ngay + gio vd: 20/6/2020 16h32p
   tm *timeTemp = localtime(&t);
+  // dua ve 00h 00m vd: 20/6/2020 0h0p
   timeTemp->tm_hour = 0;
   timeTemp->tm_min = 0;
   timeTemp->tm_sec = 0;
+  // doi lai thanh so time theo giay tinh tu 1990 vd: 15911000
   return mktime(timeTemp);
 }
 
@@ -93,29 +97,14 @@ int countAll(ListMuonTra *first)
 ListMuonTra *findByMaSach(ListMuonTra *first, long long key)
 {
   ListMuonTra *p = first;
-  ListMuonTra *kq = NULL;
   while (p != NULL) {
-    MuonTra *info = p->data;
-    if (info->maSach == key) {
-      kq = p;
-      break;
+    if (p->data->maSach == key) {
+      return p;
     }
     p = p->next;
   }
-  return kq;
+  return NULL;
 }
-
-// void deleteAll(ListMuonTra *&first)
-// {
-//   ListMuonTra *p = first;
-//   first = NULL;
-//   while (p != NULL) {
-//     ListMuonTra *x = p;
-//     p = p->next;
-//     delete x->data;
-//     delete x;
-//   }
-// }
 
 bool deleteByMaSach(ListMuonTra *&first, long long key)
 {
@@ -128,11 +117,14 @@ bool deleteByMaSach(ListMuonTra *&first, long long key)
       first->prev = NULL;
     }
     else {
-      p->prev->next = p->next;
-      p->next->prev = p->prev;
-      delete p->data;
-      delete p;
+      ListMuonTra *left = p->prev;
+      ListMuonTra *right = p->next;
+      left->next = right;
+      if (right != NULL)
+        right->prev = left;
     }
+    delete p->data;
+    delete p;
     return true;
   }
 }
@@ -178,10 +170,9 @@ bool checkDieuKienMuonSach(ListMuonTra *first)
   int demDangMuon = 0;
   ListMuonTra *p = first;
   while (p != NULL) {
-    if (p->data->ngayTra == -1) {
+    if (p->data->trangThai == 0) {
       demDangMuon++;
-      consoleLog<long long>(getTime() - p->data->ngayMuon);
-      if (demDangMuon == 3 || (getTime() - p->data->ngayMuon) >= TIME_7_NGAY) {
+      if (demDangMuon == 3 || (getDate() - p->data->ngayMuon) >= TIME_7_NGAY) {
         return false;
       }
     }

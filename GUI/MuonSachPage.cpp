@@ -50,7 +50,17 @@ void loadContentTDG()
   _TheDocGiaContentView.lines[1] = _CurrentTDG->ho;
   _TheDocGiaContentView.lines[2] = _CurrentTDG->ten;
   _TheDocGiaContentView.lines[3] = _CurrentTDG->phai ? "nam" : "nu";
-  _TheDocGiaContentView.lines[4] = _CurrentTDG->trangThai == 0 ? "hoat dong" : "khoa";
+  switch (_CurrentTDG->trangThai) {
+  case TDG_TT_HOATDONG:
+    _TheDocGiaContentView.lines[4] = "Hoat dong";
+    break;
+  case TDG_TT_KHOA:
+    _TheDocGiaContentView.lines[4] = "Da khoa";
+    break;
+  case TDG_TT_DAXOA:
+    _TheDocGiaContentView.lines[4] = "Da xoa";
+    break;
+  }
 }
 
 void searchTDG()
@@ -131,7 +141,7 @@ void muonSach()
   if (!_CurrentSach || !_CurrentTDG || !checkSach() || !checkTDG()) return;
   MuonTra *mt = new MuonTra;
   mt->maSach = _CurrentSach->maSach;
-  mt->ngayMuon = getTime();
+  mt->ngayMuon = getDate();
   addLast(_CurrentTDG->lmt, mt);
   _CurrentSach->trangThai = 1;
   clearContentView(_TheDocGiaContentView);
