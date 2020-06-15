@@ -97,7 +97,7 @@ void loadContentChuaTraTable()
   _SachDaMuonTable.select = 0;
   while (sachChuaTra != NULL) {
     _SachDaMuonTable.rows[_SachDaMuonTable.length].lmtNode = sachChuaTra;
-    DauSach *ds = findDauSachByMaSach(_ListDauSach_Root, sachChuaTra->data->maSach);
+    DauSach *ds = tim_DauSach_theo_MaSach(_ListDauSach_Root, sachChuaTra->data->maSach);
     if (ds != NULL) {
       _SachDaMuonTable.rows[_SachDaMuonTable.length].ds = ds;
     }
@@ -142,7 +142,7 @@ void searchTDG()
   inputText(_TheDocGiaSearchString, 20, _TheDocGiaSearch_left, _TheDocGiaSearch_top, true);
   if (_TheDocGiaSearchString.compare("") == 0) return;
   _CurrentTDG = find(_ListTheDocGia_root, stoll(_TheDocGiaSearchString))->data;
-  
+
   loadContentTDG();
   drawContentView(_TheDocGiaContentView);
   drawTable();
@@ -189,10 +189,10 @@ void searchMS()
   inputText(_DMSachSearchString, 20, 94, 3, true);
   if (_DMSachSearchString.empty()) return;
   long long key = stoll(_DMSachSearchString);
-  DauSach *ds = findDauSachByMaSach(_ListDauSach_Root, key);
-  if (ds != NULL) {
-    _CurrentSach = findByMaSach(ds->dms, key)->data;
-    _CurrentDauSach = ds;
+  DauSachMaSach dsms = tim_DauSachMaSach_theo_MaSach(_ListDauSach_Root, key);
+  if (dsms.dauSach != NULL) {
+    _CurrentSach = dsms.dmSach->data;
+    _CurrentDauSach = dsms.dauSach;
     loadContentSach();
     drawContentView(_SachContentView);
   }

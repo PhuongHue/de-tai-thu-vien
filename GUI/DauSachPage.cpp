@@ -125,7 +125,7 @@ void updateContent(ContentView &content)
   if (BOOK_MODE == BOOK_CREATE) {
     addLast(_ListDauSach_Root, ds);
   }
-  sortByTheLoaiTen(_ListDauSach_Root);
+  sortBy_TheLoai_Ten(_ListDauSach_Root);
   _ListDauSach = _ListDauSach_Root;
 }
 

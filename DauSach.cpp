@@ -141,7 +141,7 @@ DMSach *findMaSach(ListDauSach &list, long long key)
   return ans;
 }
 
-DauSach *findDauSachByMaSach(ListDauSach &list, long long key)
+DauSach *tim_DauSach_theo_MaSach(ListDauSach &list, long long key)
 {
   for (int i = 0; i < list.length; i++) {
     DMSach *ans = findByMaSach(list.data[i]->dms, key);
@@ -150,6 +150,25 @@ DauSach *findDauSachByMaSach(ListDauSach &list, long long key)
     }
   }
   return NULL;
+}
+
+struct DauSachMaSach {
+  DauSach *dauSach = NULL;
+  DMSach *dmSach = NULL;
+};
+
+DauSachMaSach tim_DauSachMaSach_theo_MaSach(ListDauSach &list, long long key)
+{
+  DauSachMaSach temp;
+  for (int i = 0; i < list.length; i++) {
+    DMSach *dms = findByMaSach(list.data[i]->dms, key);
+    if (dms != NULL) {
+      temp.dmSach = dms;
+      temp.dauSach = list.data[i];
+      break;
+    }
+  }
+  return temp;
 }
 
 int soSanhDauSach(DauSach *a, DauSach *b)
@@ -162,7 +181,7 @@ int soSanhDauSach(DauSach *a, DauSach *b)
     return cmpTheLoai;
 }
 
-void sortByTheLoaiTen(ListDauSach &list)
+void sortBy_TheLoai_Ten(ListDauSach &list)
 {
   for (int i = 0; i < list.length; i++) {
     int minDS = i;

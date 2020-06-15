@@ -9,7 +9,7 @@ int main()
     appPause("Load du lieu loi!");
     return 0;
   };
-  sortByTheLoaiTen(_ListDauSach_Root);
+  sortBy_TheLoai_Ten(_ListDauSach_Root);
 
   appPause("Load du lieu xong!");
   // khoi tao page
