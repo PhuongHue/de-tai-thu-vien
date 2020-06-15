@@ -9,15 +9,15 @@
 #include "GUI/consolelib.h"
 using namespace std;
 
-#define CHO_MUON_DUOC 0
-#define DA_CHO_MUON 1
-#define DA_THANH_LY 2
+#define MT_TT_DANGMUON 0
+#define MT_TT_DATRA 1
+#define MT_TT_MATSACH 2
 
 struct MuonTra {
   long long maSach;
   long long ngayMuon;
   long long ngayTra = -1;
-  int trangThai = 0;
+  int trangThai = MT_TT_DANGMUON;
 };
 
 struct ListMuonTra {
@@ -170,7 +170,7 @@ bool checkDieuKienMuonSach(ListMuonTra *first)
   int demDangMuon = 0;
   ListMuonTra *p = first;
   while (p != NULL) {
-    if (p->data->trangThai == 0) {
+    if (p->data->trangThai == MT_TT_DANGMUON) {
       demDangMuon++;
       if (demDangMuon == 3 || (getDate() - p->data->ngayMuon) >= TIME_7_NGAY) {
         return false;
@@ -191,6 +191,19 @@ bool kiemTraSachDaMuon(ListMuonTra *first, long long maSach, long long ngayMuon)
     p = p->next;
   }
   return true;
+}
+
+ListMuonTra *filterSachChuaTra(ListMuonTra *first)
+{
+  ListMuonTra *temp = NULL;
+  ListMuonTra *p = first;
+  while (p != NULL) {
+    if (p->data->ngayTra == -1) {
+      addLast(temp, p->data);
+    }
+    p = p->next;
+  }
+  return temp;
 }
 
 #endif

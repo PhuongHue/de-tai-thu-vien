@@ -107,9 +107,9 @@ void updateContent(ContentView &content)
 void thanhLySach()
 {
   clearContentView(_DMSachContentView);
-  if (_CurrentNodeDMSach->data->trangThai == 0) {
+  if (_CurrentNodeDMSach->data->trangThai == SACH_TT_MUONDUOC) {
     if (YesNoMenu("Ban co muon thanh ly sach nay?", _DMSachContentView.left, _DMSachContentView.top)) {
-      _CurrentNodeDMSach->data->trangThai = 2;
+      _CurrentNodeDMSach->data->trangThai = SACH_TT_THANHLY;
       loadContent(_DMSachBookView, _DMSachContentView);
     }
   }

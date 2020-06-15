@@ -141,6 +141,17 @@ DMSach *findMaSach(ListDauSach &list, long long key)
   return ans;
 }
 
+DauSach *findDauSachByMaSach(ListDauSach &list, long long key)
+{
+  for (int i = 0; i < list.length; i++) {
+    DMSach *ans = findByMaSach(list.data[i]->dms, key);
+    if (ans != NULL) {
+      return list.data[i];
+    }
+  }
+  return NULL;
+}
+
 int soSanhDauSach(DauSach *a, DauSach *b)
 {
   int cmpTheLoai = a->theLoai.compare(b->theLoai);

@@ -311,6 +311,7 @@ void initDauSachPage()
   _DauSachContentView.maxLength[0] = 13;
   _DauSachContentView.maxLength[1] = 4;
   _DauSachContentView.maxLength[2] = 4;
+  _DauSachContentView.maxLength[4] = 30;
 
   /* load _DauSachBookView */
   loadDauSachContent(_DauSachBookView, _DauSachContentView);

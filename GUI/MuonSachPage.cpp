@@ -30,18 +30,81 @@ DauSach *_CurrentDauSach = NULL;
 
 ContentView _TheDocGiaContentView;
 string _TheDocGiaSearchString;
+int _TheDocGiaSearch_left = 14;
+int _TheDocGiaSearch_top = 3;
 
 ContentView _SachContentView;
 string _DMSachSearchString;
+
+struct SachDangMuonRow {
+  ListMuonTra *lmtNode;
+  DauSach *ds;
+};
+
+struct SachDangMuonTable {
+  SachDangMuonRow rows[3];
+  int left = 1, top = 16, right = 77, bottom = 26;
+  int columns[4] = {0, 15, 28, 45};
+  int select = 0;
+  int length;
+} _SachDaMuonTable;
 
 const vector<string> _MuonSachFooter = {
     "ESC: Tro ve",
     "F1: Nhap ma TDG",
     "F2: Nhap ma DMS",
-    "F3: Muon sach"};
+    "F3: Muon sach",
+    "F4: Tra sach"};
 const vector<string> _EditStringFooter = {
     "ESC: Huy",
     "ENTER: Tim"};
+
+/* -------------------- _SachDangMuonTable funtions ------------------- */
+void drawTable()
+{
+  for (int i = 0; i < _SachDaMuonTable.length; i++) {
+    if (i == _SachDaMuonTable.select) setSelectText();
+    gotoxy(_SachDaMuonTable.left + _SachDaMuonTable.columns[0], _SachDaMuonTable.top + i);
+    cout << _SachDaMuonTable.rows[i].lmtNode->data->maSach;
+    gotoxy(_SachDaMuonTable.left + _SachDaMuonTable.columns[1], _SachDaMuonTable.top + i);
+    cout << getDateString(_SachDaMuonTable.rows[i].lmtNode->data->ngayMuon);
+    gotoxy(_SachDaMuonTable.left + _SachDaMuonTable.columns[2], _SachDaMuonTable.top + i);
+    cout << _SachDaMuonTable.rows[i].ds->ISBN;
+    gotoxy(_SachDaMuonTable.left + _SachDaMuonTable.columns[3], _SachDaMuonTable.top + i);
+    cout << _SachDaMuonTable.rows[i].ds->tenSach;
+    if (i == _SachDaMuonTable.select) setNormalText();
+  }
+}
+
+void clearTable()
+{
+  for (int i = 0; i < _SachDaMuonTable.length; i++) {
+    gotoxy(_SachDaMuonTable.left + _SachDaMuonTable.columns[0], _SachDaMuonTable.top + i);
+    cout << string(14, ' ');
+    gotoxy(_SachDaMuonTable.left + _SachDaMuonTable.columns[1], _SachDaMuonTable.top + i);
+    cout << string(12, ' ');
+    gotoxy(_SachDaMuonTable.left + _SachDaMuonTable.columns[2], _SachDaMuonTable.top + i);
+    cout << string(16, ' ');
+    gotoxy(_SachDaMuonTable.left + _SachDaMuonTable.columns[3], _SachDaMuonTable.top + i);
+    cout << string(30, ' ');
+  }
+}
+
+void loadContentChuaTraTable()
+{
+  ListMuonTra *sachChuaTra = filterSachChuaTra(_CurrentTDG->lmt);
+  _SachDaMuonTable.length = 0;
+  _SachDaMuonTable.select = 0;
+  while (sachChuaTra != NULL) {
+    _SachDaMuonTable.rows[_SachDaMuonTable.length].lmtNode = sachChuaTra;
+    DauSach *ds = findDauSachByMaSach(_ListDauSach_Root, sachChuaTra->data->maSach);
+    if (ds != NULL) {
+      _SachDaMuonTable.rows[_SachDaMuonTable.length].ds = ds;
+    }
+    _SachDaMuonTable.length++;
+    sachChuaTra = sachChuaTra->next;
+  }
+}
 /* -------------------- _TheDocGiaContentView funtions -------------------- */
 void loadContentTDG()
 {
@@ -61,15 +124,18 @@ void loadContentTDG()
     _TheDocGiaContentView.lines[4] = "Da xoa";
     break;
   }
+  // load danh sach dang muon
+  loadContentChuaTraTable();
 }
 
 void searchTDG()
 {
-  inputText(_TheDocGiaSearchString, 20, 13, 3, true);
+  inputText(_TheDocGiaSearchString, 20, _TheDocGiaSearch_left, _TheDocGiaSearch_top, true);
   if (_TheDocGiaSearchString.compare("") == 0) return;
   _CurrentTDG = find(_ListTheDocGia_root, stoll(_TheDocGiaSearchString))->data;
   loadContentTDG();
   drawContentView(_TheDocGiaContentView);
+  drawTable();
 }
 
 bool checkTDG()
@@ -112,10 +178,14 @@ void searchMS()
 {
   inputText(_DMSachSearchString, 20, 94, 3, true);
   if (_DMSachSearchString.empty()) return;
-  _CurrentSach = findMaSach(_ListDauSach_Root, stoll(_DMSachSearchString))->data;
-  _CurrentDauSach = clipboardDauSach;
-  loadContentSach();
-  drawContentView(_SachContentView);
+  long long key = stoll(_DMSachSearchString);
+  DauSach *ds = findDauSachByMaSach(_ListDauSach_Root, key);
+  if (ds != NULL) {
+    _CurrentSach = findByMaSach(ds->dms, key)->data;
+    _CurrentDauSach = ds;
+    loadContentSach();
+    drawContentView(_SachContentView);
+  }
 }
 
 bool checkSach()
@@ -126,16 +196,16 @@ bool checkSach()
     drawContentView(_SachContentView);
     return false;
   }
-  // if (!kiemTraSachDaMuon(_CurrentTDG->lmt, _CurrentSach->maSach, )) {
-  //   clearContentView(_SachContentView);
-  //   appPause("Khong duoc muon sach 2 lan trong ngay.", _SachContentView.left, _SachContentView.top);
-  //   drawContentView(_SachContentView);
-  //   return false;
-  // }
+  if (!kiemTraSachDaMuon(_CurrentTDG->lmt, _CurrentSach->maSach, getDate())) {
+    clearContentView(_SachContentView);
+    appPause("Khong duoc muon sach 2 lan trong ngay.", _SachContentView.left, _SachContentView.top);
+    drawContentView(_SachContentView);
+    return false;
+  }
   return true;
 }
 
-/* -------------------- DMSachPage functions -------------------- */
+/* -------------------- MuonSachPage functions -------------------- */
 void muonSach()
 {
   if (!_CurrentSach || !_CurrentTDG || !checkSach() || !checkTDG()) return;
@@ -143,7 +213,7 @@ void muonSach()
   mt->maSach = _CurrentSach->maSach;
   mt->ngayMuon = getDate();
   addLast(_CurrentTDG->lmt, mt);
-  _CurrentSach->trangThai = 1;
+  _CurrentSach->trangThai = SACH_TT_DAMUON;
   clearContentView(_TheDocGiaContentView);
   appPause("Muon sach thanh cong!", _TheDocGiaContentView.left, _TheDocGiaContentView.top);
   drawContentView(_TheDocGiaContentView);
@@ -151,6 +221,26 @@ void muonSach()
   clearContentView(_SachContentView);
   loadContentSach();
   drawContentView(_SachContentView);
+}
+
+void traSach()
+{
+  if (_SachDaMuonTable.length == 0) return;
+  clearContentView(_TheDocGiaContentView);
+  bool kq = YesNoMenu("Ban co chac chan muon tra sach?", _TheDocGiaContentView.left, _TheDocGiaContentView.top);
+  drawContentView(_TheDocGiaContentView);
+  // ket qua chon khong => return
+  if (!kq) return;
+  // set ngay tra, chuyen trang thai
+  ListMuonTra *node = _SachDaMuonTable.rows[_SachDaMuonTable.select].lmtNode;
+  node->data->ngayTra = getDate();
+  node->data->trangThai = MT_TT_DATRA;
+  // set trang thai sach
+  Sach *sach = findByMaSach(_SachDaMuonTable.rows[_SachDaMuonTable.select].ds->dms, node->data->maSach)->data;
+  sach->trangThai = SACH_TT_MUONDUOC;
+  clearTable();
+  loadContentChuaTraTable();
+  drawTable();
 }
 
 void initMuonSachPage()
@@ -197,6 +287,7 @@ void runMuonSachPage()
   if (clipboardTDG != NULL) {
     _CurrentTDG = clipboardTDG;
     loadContentTDG();
+    drawTable();
   }
   else {
     _TheDocGiaContentView = getEmptyView(_TheDocGiaContentView);
@@ -220,8 +311,24 @@ void runMuonSachPage()
     if (key == 0 || key == 224) key = getch();
     showConsoleCursor(false);
     switch (key) {
+    case ARROW_DOWN:
+      _SachDaMuonTable.select = (_SachDaMuonTable.select + 1) % _SachDaMuonTable.length;
+      drawTable();
+      break;
+    case ARROW_UP:
+      _SachDaMuonTable.select = (_SachDaMuonTable.length + _SachDaMuonTable.select - 1) % _SachDaMuonTable.length;
+      drawTable();
+      break;
     case F1:
       setFooter(_EditStringFooter);
+      // clear view
+      clearContentView(_TheDocGiaContentView);
+      _TheDocGiaContentView = getEmptyView(_TheDocGiaContentView);
+      drawContentView(_TheDocGiaContentView);
+      clearTable();
+      _SachDaMuonTable.length = 0;
+      _SachDaMuonTable.select = 0;
+
       searchTDG();
       break;
     case F2:
@@ -230,6 +337,9 @@ void runMuonSachPage()
       break;
     case F3:
       muonSach();
+      break;
+    case F4:
+      traSach();
       break;
     case ESC:
       ret = true;

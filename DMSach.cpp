@@ -9,9 +9,9 @@
 #include "GUI/consolelib.h"
 using namespace std;
 
-#define CHO_MUON_DUOC 0
-#define DA_CHO_MUON 1
-#define DA_THANH_LY 2
+#define SACH_TT_MUONDUOC 0
+#define SACH_TT_DAMUON 1
+#define SACH_TT_THANHLY 2
 
 struct Sach {
   long long maSach;
@@ -42,7 +42,7 @@ long long getNewMaSach()
 
 bool kiemTraDieuKienMuon(Sach *sach)
 {
-  return sach->trangThai == 0;
+  return sach->trangThai == SACH_TT_MUONDUOC;
 }
 
 void swapNodeData(DMSach *&a, DMSach *&b)

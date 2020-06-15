@@ -54,13 +54,13 @@ void loadContent(BookView &book, ContentView &content)
 
   switch (node->data->trangThai)
   {
-  case 0:
+  case MT_TT_DANGMUON:
     _MuonTraContentView.lines[3] = "Dang muon";
     break;
-  case 1:
+  case MT_TT_DATRA:
     _MuonTraContentView.lines[3] = "Da tra";
     break;
-  case 2:
+  case MT_TT_MATSACH:
     _MuonTraContentView.lines[3] = "Mat sach";
     break;
   }
@@ -102,16 +102,16 @@ void loadList(BookView &book)
 void traSach()
 {
   _CurrentNode->data->ngayTra = getDate();
-  _CurrentNode->data->trangThai = 1;
+  _CurrentNode->data->trangThai = MT_TT_DATRA;
   DMSach *dms = findMaSach(_ListDauSach_Root, _CurrentNode->data->maSach);
-  dms->data->trangThai = 0;
+  dms->data->trangThai = SACH_TT_MUONDUOC;
 }
 
 void matSach()
 {
-  _CurrentNode->data->trangThai = 2;
+  _CurrentNode->data->trangThai = MT_TT_MATSACH;
   DMSach *dms = findMaSach(_ListDauSach_Root, _CurrentNode->data->maSach);
-  dms->data->trangThai = 2;
+  dms->data->trangThai = SACH_TT_THANHLY;
 }
 
 /* -------------------- _DMSachBookView handles -------------------- */
