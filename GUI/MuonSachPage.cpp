@@ -130,9 +130,19 @@ void loadContentTDG()
 
 void searchTDG()
 {
+  setFooter(_EditStringFooter);
+  // clear view
+  clearContentView(_TheDocGiaContentView);
+  _TheDocGiaContentView = getEmptyView(_TheDocGiaContentView);
+  drawContentView(_TheDocGiaContentView);
+  clearTable();
+  _SachDaMuonTable.length = 0;
+  _SachDaMuonTable.select = 0;
+
   inputText(_TheDocGiaSearchString, 20, _TheDocGiaSearch_left, _TheDocGiaSearch_top, true);
   if (_TheDocGiaSearchString.compare("") == 0) return;
   _CurrentTDG = find(_ListTheDocGia_root, stoll(_TheDocGiaSearchString))->data;
+  
   loadContentTDG();
   drawContentView(_TheDocGiaContentView);
   drawTable();
@@ -320,15 +330,6 @@ void runMuonSachPage()
       drawTable();
       break;
     case F1:
-      setFooter(_EditStringFooter);
-      // clear view
-      clearContentView(_TheDocGiaContentView);
-      _TheDocGiaContentView = getEmptyView(_TheDocGiaContentView);
-      drawContentView(_TheDocGiaContentView);
-      clearTable();
-      _SachDaMuonTable.length = 0;
-      _SachDaMuonTable.select = 0;
-
       searchTDG();
       break;
     case F2:
