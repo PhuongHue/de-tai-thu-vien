@@ -100,6 +100,7 @@ void updateContent(ContentView &content)
   sach->maSach = stoll(content.lines[0]);
   sach->viTri = content.lines[2];
   if (MODE == CREATE) {
+    sach->trangThai = SACH_TT_MUONDUOC;
     addLast(_CurrentListDauSach->dms, sach);
   }
 }
@@ -209,7 +210,7 @@ void handleListAction(BookView &book, int keyPressed)
     clearContentView(_DMSachContentView);
     ContentView createCV = getEmptyView(_DMSachContentView);
     createCV.lines[0] = to_string(getNewMaSach());
-    createCV.lines[1] = "0";
+    createCV.lines[1] = "Muon duoc";
     createCV.isEditable[1] = false;
     runContentViewEditMode(createCV, handleContentAction);
     clearBookView(_DMSachBookView);

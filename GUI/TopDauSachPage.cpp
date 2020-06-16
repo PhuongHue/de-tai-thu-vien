@@ -10,12 +10,15 @@
 using namespace std;
 
 namespace TOPDAUSACHPAGE {
+
 int _top = 3;
 int _left = 1;
 int _right = 154;
 int _bottom = 26;
 
 string _HeaderText = "Top dau sach duoc muon";
+string _PageLayout = "layout/TopDauSach.layout";
+
 const vector<string> _PageFooter = {
     "ESC: Tro ve",
     ">>: Trang sau",
@@ -94,12 +97,18 @@ void thongKeDauSach()
   }
   if (_TopData_Root.length > 10) {
     int lastIndex = 10;
-    while (lastIndex < _TopData_Root.length - 1 && _TopData_Root.data[lastIndex].count == _TopData_Root.data[lastIndex + 1].count) {
+    while (
+        lastIndex < _TopData_Root.length - 1 &&
+        _TopData_Root.data[lastIndex].count == _TopData_Root.data[lastIndex + 1].count) {
       // neu thg sau co cung luot doc tang lastIndex len ~ lay 10+
+      // vd: 1 2 3 4 5 6 7 8 9 10 10 10 11 12
+      //                             ^
+      //                           lastIndex
       lastIndex++;
     }
     // dat lai gioi han ve last index ~ xoa nhung thang ngoai top 10
     _TopData_Root.length = lastIndex + 1;
+    // kq: 1 2 3 4 5 6 7 8 9 10 10 10
   }
 }
 /* ---------- view table -------------------*/
@@ -107,6 +116,8 @@ void thongKeDauSach()
 const int MAX_PAGE_SIZE = 100;
 
 struct Table {
+  int left, top, right , bottom;
+  int columns[7] = {0}; // TODO: chua xong bang chua draw
   Row row[MAX_PAGE_SIZE];
   int left, top, right, bottom;
   int length = 0;
@@ -132,12 +143,12 @@ void loadTable()
   }
 }
 
-void drawTable(){
-
+void drawTable()
+{
 }
 
-void clearTable(){
-  
+void clearTable()
+{
 }
 
 void initTopDauSachPage()

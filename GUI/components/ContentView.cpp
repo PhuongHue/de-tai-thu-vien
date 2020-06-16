@@ -111,12 +111,14 @@ void editLine(ContentView &content, int key)
     cout << BELL;
     return;
   }
+  // edit duoc
   if (key == BACKSPACE) {
     if (content.cursor == 0) return;
     string right = "";
     if (content.cursor < content.lines[select].length()) {
       right = content.lines[select].substr(content.cursor);
     }
+    // di lui 1
     cout << (char)BACKSPACE << right << ' ';
     content.cursor--;
     _gotoSelect(content);
@@ -130,6 +132,7 @@ void editLine(ContentView &content, int key)
     }
     // quy dinh so nhung nhap chu
     if (content.isNumberType[select] && !(key >= '0' && key <= '9')) return;
+    // insert key vao chuoi
     content.lines[select].insert(content.lines[select].begin() + content.cursor, (char)key);
     string right = "";
     if (content.cursor < content.lines[select].length()) {
@@ -190,7 +193,7 @@ void runContentViewEditMode(ContentView &content, ContentAction onAction)
       }
     }
     else if (padKey == 0) {
-      // f1 f2 f3 f4
+      // f1 f2 f3 f4...
       if (onAction) onAction(content, key, ret);
     }
     else
@@ -199,7 +202,7 @@ void runContentViewEditMode(ContentView &content, ContentAction onAction)
         changeContentLineSelect(content, (content.select + 1) % content.lineCount);
         break;
       case ARROW_UP:
-        changeContentLineSelect(content, (content.select + content.lineCount - 1) % content.lineCount);
+        changeContentLineSelect(content, (content.select - 1 + content.lineCount) % content.lineCount);
         break;
       case ARROW_RIGHT:
         changeCursor(content, key);

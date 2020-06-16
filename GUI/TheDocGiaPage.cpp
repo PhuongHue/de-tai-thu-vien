@@ -56,7 +56,7 @@ void loadContent(BookView &book, ContentView &content)
   _TheDocGiaContentView.lines[0] = to_string(tdg->maThe);
   _TheDocGiaContentView.lines[1] = tdg->ho;
   _TheDocGiaContentView.lines[2] = tdg->ten;
-  _TheDocGiaContentView.lines[3] = tdg->phai ? "nam" : "nu";
+  _TheDocGiaContentView.lines[3] = tdg->phai ? "Nam" : "Nu";
   switch (tdg->trangThai) {
   case TDG_TT_HOATDONG:
     _TheDocGiaContentView.lines[4] = "Hoat dong";
@@ -91,7 +91,8 @@ string checkTDG(ContentView content)
   if (content.lines[3].empty()) {
     return "Phai khong duoc rong.";
   }
-  if (content.lines[3].compare("nam") != 0 && content.lines[3].compare("nu") != 0) {
+  string phai = toUpperCase(content.lines[3]);
+  if (phai.compare("NAM") != 0 && phai.compare("NU") != 0) {
     return "Phai phai la 'nam' hoac 'nu'.";
   }
   return "";
@@ -110,7 +111,11 @@ void updateContent(ContentView &content)
   }
   tdg->ho = content.lines[1];
   tdg->ten = content.lines[2];
-  tdg->phai = content.lines[3].compare("nam") == 0;
+  if (toUpperCase(content.lines[3]).compare("NAM") == 0)
+    tdg->phai = true;
+  else
+    tdg->phai = false;
+
   if (MODE == CREATE) {
     tdg->trangThai = TDG_TT_HOATDONG;
     insert(_ListTheDocGia_root, tdg);
