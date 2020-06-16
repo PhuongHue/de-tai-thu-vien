@@ -150,8 +150,8 @@ void deleteTDG()
   clearBookView(_TheDocGiaBookView);
   if (_CurrentTDG->lmt != NULL) {
     appPause("Doc gia da muon sach. Khong duoc xoa!", _TheDocGiaBookView.left, _TheDocGiaBookView.top);
-     drawBookView(_TheDocGiaBookView);
-     return;
+    drawBookView(_TheDocGiaBookView);
+    return;
   }
 
   if (YesNoMenu("Ban co muon xoa dau sach nay?", _TheDocGiaBookView.left, _TheDocGiaBookView.top)) {
@@ -231,6 +231,15 @@ void handleBookAction(BookView &book, int keyPressed)
     break;
   case ENTER:
     if (_TheDocGiaContentView.lineCount <= 0) break;
+    if (_CurrentTDG->lmt == NULL) {
+      clearBookView(_TheDocGiaBookView);
+      appPause(
+          _CurrentTDG->ho + " " + _CurrentTDG->ten + " chua muon sach nao!",
+          _TheDocGiaBookView.left,
+          _TheDocGiaBookView.top);
+      drawBookView(_TheDocGiaBookView);
+      break;
+    }
     clearPage(_left, _top, _right, _bottom);
     MUONTRAPAGE::initMuonTraPage();
     MUONTRAPAGE::runMuonTraPage();

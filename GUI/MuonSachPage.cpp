@@ -293,7 +293,6 @@ void runMuonSachPage()
   loadLayout(_PageLayout);
   setHeader(_MuonSachHeaderText);
   setFooter(_MuonSachFooter);
-
   if (clipboardTDG != NULL) {
     _CurrentTDG = clipboardTDG;
     loadContentTDG();
@@ -314,7 +313,6 @@ void runMuonSachPage()
 
   drawContentView(_TheDocGiaContentView);
   drawContentView(_SachContentView);
-
   bool ret = false;
   while (!ret) {
     int key = getch();
@@ -322,10 +320,12 @@ void runMuonSachPage()
     showConsoleCursor(false);
     switch (key) {
     case ARROW_DOWN:
+      if (_SachDaMuonTable.length == 0) break;
       _SachDaMuonTable.select = (_SachDaMuonTable.select + 1) % _SachDaMuonTable.length;
       drawTable();
       break;
     case ARROW_UP:
+      if (_SachDaMuonTable.length == 0) break;
       _SachDaMuonTable.select = (_SachDaMuonTable.length + _SachDaMuonTable.select - 1) % _SachDaMuonTable.length;
       drawTable();
       break;

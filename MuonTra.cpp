@@ -198,7 +198,7 @@ ListMuonTra *filterSachChuaTra(ListMuonTra *first)
   ListMuonTra *temp = NULL;
   ListMuonTra *p = first;
   while (p != NULL) {
-    if (p->data->ngayTra == -1) {
+    if (p->data->trangThai == MT_TT_DANGMUON) {
       addLast(temp, p->data);
     }
     p = p->next;

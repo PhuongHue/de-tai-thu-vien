@@ -26,9 +26,7 @@ TheDocGia *clipboardTDG = NULL;
 
 long long getNewMaTheDocGia()
 {
-  time_t currentTime;
-  time(&currentTime);
-  return currentTime;
+  return time(0);
 }
 
 struct TreeNode {
@@ -57,6 +55,19 @@ void insert(TreeNode *&node, TheDocGia *tdg)
   }
 }
 
+TreeNode *rp;
+
+void deleteCase3(TreeNode *&r)
+{
+  if (r->left != NULL)
+    deleteCase3(r->left);
+  else {
+    rp->data = r->data;
+    rp = r;
+    r = rp->right;
+  }
+}
+
 void findAndDelete(TreeNode *&node, long long maThe, bool &deleted)
 {
   if (node == NULL) return;
@@ -65,31 +76,21 @@ void findAndDelete(TreeNode *&node, long long maThe, bool &deleted)
   else if (maThe > node->data->maThe)
     findAndDelete(node->right, maThe, deleted);
   else {
+    rp = node;
     if (node->right == NULL) {
-      node = node->left;
+      node = rp->left;
     }
     else if (node->left == NULL) {
-      node = node->right;
+      node = rp->right;
     }
     else {
-      if (node->data == clipboardTDG) clipboardTDG = NULL;
-      delete node->data;
-      TreeNode *pParent = node;
-      TreeNode *p = node->right;
+      // xoa bo nho copy tam
+      if (node->data == clipboardTDG)
+        clipboardTDG = NULL;
 
-      while (p->left != NULL) {
-        pParent = p;
-        p = p->left;
-      }
-      if (p != node) {
-        pParent->left = p->right;
-      }
-      else {
-        pParent->right = p->right;
-      }
-      delete p;
-      deleted = true;
+      deleteCase3(rp->right);
     }
+    delete rp;
   }
 }
 
@@ -107,22 +108,13 @@ TreeNode *find(TreeNode *&node, long long maThe)
 
 int countAll(TreeNode *&node)
 {
-  int c = 1;
   if (node == NULL)
     return 0;
   else {
+    int c = 1;
     c += countAll(node->left);
     c += countAll(node->right);
     return c;
-  }
-}
-
-void consoleLogLNR(TreeNode *node)
-{
-  if (node != NULL) {
-    consoleLogLNR(node->left);
-    consoleLog<string>(to_string(node->data->maThe) + ": " + node->data->ho + ' ' + node->data->ten);
-    consoleLogLNR(node->right);
   }
 }
 
@@ -149,11 +141,13 @@ void duyetLNR(TreeNode *node, int from, int to)
 {
   if (node != NULL) {
     duyetLNR(node->left, from, to);
+
     if (_LNR_temp_index >= from && _LNR_temp_index <= to) {
       _TDGArray_temp.data[_TDGArray_temp.length] = node->data;
       _TDGArray_temp.length++;
     }
     _LNR_temp_index++;
+    
     duyetLNR(node->right, from, to);
   }
 }
