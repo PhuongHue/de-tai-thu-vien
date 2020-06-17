@@ -65,36 +65,35 @@ void thongKeDauSach()
     _TopData_Root.data[_TopData_Root.length].count = 0;
     _TopData_Root.length++;
   }
-  duyetTDG(_ListTheDocGia_root);
 
-  // bo dau sach khong co nguoi doc
-  for (int i = 0; i < _TopData_Root.length; i++) {
-    if (_TopData_Root.data[i].count == 0) {
-      // xoa khoi mang
-      for (int j = i; i < _TopData_Root.length - 1; i++) {
-        _TopData_Root.data[j] = _TopData_Root.data[j + 1];
-      }
-      _TopData_Root.length--;
-    }
-  }
+  duyetTDG(_ListTheDocGia_root);
 
   // sort lai mang
   for (int i = 0; i < _TopData_Root.length; i++) {
-    int max = _TopData_Root.data[i + 1].count;
-    int maxIndex = i + 1;
-    for (int j = i + 2; i < _TopData_Root.length; i++) {
+    int max = _TopData_Root.data[i].count;
+    int maxIndex = i;
+    for (int j = i + 1; j < _TopData_Root.length; j++) {
       if (_TopData_Root.data[j].count > max) {
         max = _TopData_Root.data[j].count;
         maxIndex = j;
       }
     }
-    if (_TopData_Root.data[i].count < max) {
+    if (maxIndex != i) {
       // swap
       Row c = _TopData_Root.data[i];
       _TopData_Root.data[i] = _TopData_Root.data[maxIndex];
       _TopData_Root.data[maxIndex] = c;
     }
   }
+
+  // bo dau sach khong co nguoi doc
+  for (int i = 0; i < _TopData_Root.length; i++) {
+    if (_TopData_Root.data[i].count == 0) {
+      _TopData_Root.length = i;
+      break;
+    }
+  }
+
   if (_TopData_Root.length > 10) {
     int lastIndex = 10;
     while (
@@ -116,14 +115,12 @@ void thongKeDauSach()
 const int MAX_PAGE_SIZE = 100;
 
 struct Table {
-  int left, top, right , bottom;
-  int columns[7] = {0}; // TODO: chua xong bang chua draw
-  Row row[MAX_PAGE_SIZE];
   int left, top, right, bottom;
-  int length = 0;
+  int columns[6] = {0, 21, 52, 78, 104, 125}; // TODO: chua xong bang chua draw
+  Row rows[MAX_PAGE_SIZE];
   int pageIndex = 0;
   int pageSize = 20;
-  int allPage;
+  int allPage = 0;
   int lineCount;
 } _TopDauSachTable;
 
@@ -139,24 +136,95 @@ void loadTable()
   _TopDauSachTable.lineCount = endIndex - startIndex + 1;
 
   for (int i = startIndex, j = 0; i <= endIndex; i++, j++) {
-    _TopDauSachTable.row[j] = _TopData_Root.data[i];
+    _TopDauSachTable.rows[j] = _TopData_Root.data[i];
   }
 }
 
 void drawTable()
 {
+  for (int i = 0; i < _TopDauSachTable.lineCount; i++) {
+    gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[0], _TopDauSachTable.top + i);
+    cout << _TopDauSachTable.rows[i].ds->ISBN;
+    gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[1], _TopDauSachTable.top + i);
+    cout << _TopDauSachTable.rows[i].ds->tenSach;
+    gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[2], _TopDauSachTable.top + i);
+    cout << _TopDauSachTable.rows[i].ds->theLoai;
+    gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[3], _TopDauSachTable.top + i);
+    cout << _TopDauSachTable.rows[i].ds->tacGia;
+    gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[4], _TopDauSachTable.top + i);
+    cout << _TopDauSachTable.rows[i].ds->namXB;
+    gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[5], _TopDauSachTable.top + i);
+    cout << _TopDauSachTable.rows[i].count;
+  }
+  gotoxy(_TopDauSachTable.left, _TopDauSachTable.bottom);
+  cout << "trang " << _TopDauSachTable.pageIndex + 1 << '/' << _TopDauSachTable.allPage;
 }
 
 void clearTable()
 {
+  for (int i = 0; i < _TopDauSachTable.lineCount; i++) {
+    gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[0], _TopDauSachTable.top + i);
+    cout << string(20, ' ');
+    gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[1], _TopDauSachTable.top + i);
+    cout << string(30, ' ');
+    gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[2], _TopDauSachTable.top + i);
+    cout << string(25, ' ');
+    gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[3], _TopDauSachTable.top + i);
+    cout << string(25, ' ');
+    gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[4], _TopDauSachTable.top + i);
+    cout << string(20, ' ');
+    gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[5], _TopDauSachTable.top + i);
+    cout << string(29, ' ');
+  }
+  gotoxy(_TopDauSachTable.left, _TopDauSachTable.bottom);
+  cout << string(_TopDauSachTable.right - _TopDauSachTable.left, ' ');
 }
 
 void initTopDauSachPage()
 {
+  _TopDauSachTable.left = _left;
+  _TopDauSachTable.top = _top + 2;
+  _TopDauSachTable.right = _right;
+  _TopDauSachTable.bottom = _bottom - 1;
+
+  thongKeDauSach();
+  loadTable();
 }
 
 void runTopDauSachPage()
 {
+  loadLayout(_PageLayout);
+  setHeader(_HeaderText);
+  setFooter(_PageFooter);
+  drawTable();
+  bool ret = false;
+  while (!ret) {
+    int key = getch();
+    if (key == 0 || key == 224) key = getch();
+    showConsoleCursor(false);
+    switch (key) {
+    case ARROW_RIGHT:
+      if (_TopDauSachTable.allPage > 0) {
+        clearTable();
+        _TopDauSachTable.pageIndex = (_TopDauSachTable.pageIndex + 1) % _TopDauSachTable.allPage;
+        loadTable();
+        drawTable();
+      }
+      break;
+    case ARROW_LEFT:
+      if (_TopDauSachTable.allPage > 0) {
+        clearTable();
+        _TopDauSachTable.pageIndex = (_TopDauSachTable.pageIndex + _TopDauSachTable.allPage - 1) % _TopDauSachTable.allPage;
+        loadTable();
+        drawTable();
+      }
+      break;
+    case ESC:
+      ret = true;
+      break;
+    }
+  }
+  clearPage(_left, _top, _right, _bottom);
 }
 
 } // namespace TOPDAUSACHPAGE

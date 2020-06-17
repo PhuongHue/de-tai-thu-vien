@@ -4,6 +4,7 @@
 #include "DauSachPage.cpp"
 #include "MuonSachPage.cpp"
 #include "TheDocGiaPage.cpp"
+#include "TopDauSachPage.cpp"
 #include "components/Menu.cpp"
 
 using namespace std;
@@ -42,7 +43,10 @@ void mainPageAction(MenuView &menu, int keyPressed, bool &ret)
     clearMenu(menu);
     appPause("Da luu vao file!", _left, _top);
     break;
-  default:
+  case 4:
+    clearMenu(menu);
+    TOPDAUSACHPAGE::initTopDauSachPage();
+    TOPDAUSACHPAGE::runTopDauSachPage();
     break;
   }
   setHeader(_HeaderText);
@@ -55,12 +59,12 @@ void initMainMenu()
   _MainMenuView.left = _left;
   _MainMenuView.top = _top;
   _MainMenuView.right = _right;
-  _MainMenuView.count = 4;
+  _MainMenuView.count = 5;
   _MainMenuView.options[0] = "Quan ly dau sach.";
   _MainMenuView.options[1] = "Quan ly the doc gia.";
   _MainMenuView.options[2] = "Muon sach.";
   _MainMenuView.options[3] = "Luu file.";
-  // _MainMenuView.options[4] = "";
+  _MainMenuView.options[4] = "Top 10 dau sach.";
   // _MainMenuView.options[5] = "";
   // _MainMenuView.options[6] = "";
   // _MainMenuView.options[7] = "";
