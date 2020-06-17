@@ -1,6 +1,5 @@
 #ifndef _TOPDAUSACHPAGE_CPP_
 #define _TOPDAUSACHPAGE_CPP_
-// TODO: trang top dau sach
 
 #include "../DauSach.cpp"
 #include "../TheDocGia.cpp"
@@ -116,7 +115,7 @@ const int MAX_PAGE_SIZE = 100;
 
 struct Table {
   int left, top, right, bottom;
-  int columns[7] = {0, 8, 29, 60, 86, 112, 133}; // TODO: chua xong bang chua draw
+  int columns[7] = {0, 8, 29, 60, 86, 112, 133};
   Row rows[MAX_PAGE_SIZE];
   int pageIndex = 0;
   int pageSize = 20;
