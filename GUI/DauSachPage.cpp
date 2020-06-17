@@ -24,6 +24,7 @@ string _HeaderText = "Quan ly dau sach";
 string _PageLayout = "layout/DauSach.layout";
 
 ListDauSach _ListDauSach;
+DauSach *_DauSachTemp;
 
 BookView _DauSachBookView;
 BookView _defaultDauSachBookView;
@@ -98,7 +99,12 @@ string checkDauSach(ContentView content)
       return "ISBN chi duoc dung so va dau '-'!";
     }
   }
-  if (findDauSachByISBN(_ListDauSach_Root, content.lines[0]) && BOOK_MODE == BOOK_CREATE) {
+  DauSach *ds = findDauSachByISBN(_ListDauSach_Root, content.lines[0]);
+  if (ds && BOOK_MODE == BOOK_CREATE) {
+    // da co ISBN
+    return "ISBN khong duoc trung!";
+  }
+  if (ds != _DauSachTemp && BOOK_MODE == BOOK_EDIT) {
     // da co ISBN
     return "ISBN khong duoc trung!";
   }
@@ -231,10 +237,12 @@ void handleDauSachBookAction(BookView &book, int keyPressed)
   case F2:
     if (_DauSachBookView.lineCount == 0) break;
     BOOK_MODE = BOOK_EDIT;
+    _DauSachTemp = findDauSachByISBN(_ListDauSach, _DauSachBookView.keys[_DauSachBookView.select]);
     runContentViewEditMode(_DauSachContentView, handleContentAction);
     clearBookView(_DauSachBookView);
     loadDauSachBook(_DauSachBookView);
     drawBookView(_DauSachBookView);
+    _DauSachTemp = NULL;
     BOOK_MODE = BOOK_NORMAL;
     break;
   case F3: {

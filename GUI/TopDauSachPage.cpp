@@ -116,7 +116,7 @@ const int MAX_PAGE_SIZE = 100;
 
 struct Table {
   int left, top, right, bottom;
-  int columns[6] = {0, 21, 52, 78, 104, 125}; // TODO: chua xong bang chua draw
+  int columns[7] = {0, 8, 29, 60, 86, 112, 133}; // TODO: chua xong bang chua draw
   Row rows[MAX_PAGE_SIZE];
   int pageIndex = 0;
   int pageSize = 20;
@@ -140,20 +140,26 @@ void loadTable()
   }
 }
 
+int getIndex(int lineNumber){
+  return _TopDauSachTable.pageIndex * _TopDauSachTable.pageSize + lineNumber + 1;
+}
+
 void drawTable()
 {
   for (int i = 0; i < _TopDauSachTable.lineCount; i++) {
     gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[0], _TopDauSachTable.top + i);
-    cout << _TopDauSachTable.rows[i].ds->ISBN;
+    cout <<right <<setw(4) << getIndex(i);
     gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[1], _TopDauSachTable.top + i);
-    cout << _TopDauSachTable.rows[i].ds->tenSach;
+    cout << _TopDauSachTable.rows[i].ds->ISBN;
     gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[2], _TopDauSachTable.top + i);
-    cout << _TopDauSachTable.rows[i].ds->theLoai;
+    cout << _TopDauSachTable.rows[i].ds->tenSach;
     gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[3], _TopDauSachTable.top + i);
-    cout << _TopDauSachTable.rows[i].ds->tacGia;
+    cout << _TopDauSachTable.rows[i].ds->theLoai;
     gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[4], _TopDauSachTable.top + i);
-    cout << _TopDauSachTable.rows[i].ds->namXB;
+    cout << _TopDauSachTable.rows[i].ds->tacGia;
     gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[5], _TopDauSachTable.top + i);
+    cout << _TopDauSachTable.rows[i].ds->namXB;
+    gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[6], _TopDauSachTable.top + i);
     cout << _TopDauSachTable.rows[i].count;
   }
   gotoxy(_TopDauSachTable.left, _TopDauSachTable.bottom);
@@ -164,16 +170,18 @@ void clearTable()
 {
   for (int i = 0; i < _TopDauSachTable.lineCount; i++) {
     gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[0], _TopDauSachTable.top + i);
-    cout << string(20, ' ');
+    cout << string(7, ' ');
     gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[1], _TopDauSachTable.top + i);
-    cout << string(30, ' ');
+    cout << string(20, ' ');
     gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[2], _TopDauSachTable.top + i);
-    cout << string(25, ' ');
+    cout << string(30, ' ');
     gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[3], _TopDauSachTable.top + i);
     cout << string(25, ' ');
     gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[4], _TopDauSachTable.top + i);
-    cout << string(20, ' ');
+    cout << string(25, ' ');
     gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[5], _TopDauSachTable.top + i);
+    cout << string(20, ' ');
+    gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[6], _TopDauSachTable.top + i);
     cout << string(29, ' ');
   }
   gotoxy(_TopDauSachTable.left, _TopDauSachTable.bottom);

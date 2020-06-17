@@ -55,18 +55,17 @@ void drawBookView(BookView &book)
   // draw book's lines
   for (int i = 0; i < book.lineCount; i++) {
     gotoxy(book.left, book.top + i);
-    if (i == book.select % book.lineCount) {
+    if (i == book.select) {
       setSelectText();
     }
     printBookLine(book.pageIndex * book.pageSize + i + 1, book.lines[i]);
-    if (i == book.select % book.lineCount) {
+    if (i == book.select) {
       setNormalText();
     }
   }
   // draw footer
   gotoxy(book.left, book.bottom);
   cout << "Trang " << book.pageIndex + 1 << " / " << book.allPage;
-  showConsoleCursor(false);
 }
 
 void clearBookView(BookView book)
@@ -82,8 +81,11 @@ void clearBookView(BookView book)
 
 void changeBookSelect(BookView &book, int newSelect)
 {
+  // clear select console
   gotoxy(book.left, book.top + book.select);
   printBookLine(book.pageIndex * book.pageSize + book.select + 1, book.lines[book.select]);
+  
+  // in dong select moi
   gotoxy(book.left, book.top + newSelect);
   setSelectText();
   printBookLine(book.pageIndex * book.pageSize + newSelect + 1, book.lines[newSelect]);
@@ -104,7 +106,9 @@ void resetBookIndex(BookView &book, int dataCount)
   book.allPage = countAllPage(dataCount, book.pageSize);
 }
 
+// bat phim bam
 typedef void (*BookKeyPressedHandle)(BookView &book, int keyPressed);
+// bat trang thai
 typedef void (*BookAction)(BookView &book);
 
 void runBookView(BookView &book, BookKeyPressedHandle onPressed, BookAction load, BookAction onChange)
@@ -142,7 +146,7 @@ void runBookView(BookView &book, BookKeyPressedHandle onPressed, BookAction load
       ret = true;
       break;
     default:
-      // nhan nhung phim con lai F1, F2, F3, F4
+      // nhan nhung phim con lai F1, F2, F3, F4...
       onPressed(book, key);
     }
     onChange(book);

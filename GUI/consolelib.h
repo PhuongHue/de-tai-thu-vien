@@ -103,8 +103,8 @@ void clrscr() { system("cls"); }
 
 void setSelectText()
 {
-  SetColor(7);
-  SetBGColor(8);
+  SetColor(15);
+  SetBGColor(26);
 }
 
 void setNormalText()
