@@ -120,9 +120,6 @@ void loadContentTDG()
   case TDG_TT_KHOA:
     _TheDocGiaContentView.lines[4] = "Da khoa";
     break;
-  case TDG_TT_DAXOA:
-    _TheDocGiaContentView.lines[4] = "Da xoa";
-    break;
   }
   // load danh sach dang muon
   loadContentChuaTraTable();

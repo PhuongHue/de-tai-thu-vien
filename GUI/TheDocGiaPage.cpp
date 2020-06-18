@@ -64,11 +64,6 @@ void loadContent(BookView &book, ContentView &content)
   case TDG_TT_KHOA:
     _TheDocGiaContentView.lines[4] = "Da khoa";
     break;
-  case TDG_TT_DAXOA:
-    _TheDocGiaContentView.lines[4] = "Da xoa";
-    break;
-  default:
-    break;
   }
   MUONTRAPAGE::_ListMuonTra = tdg->lmt;
   MUONTRAPAGE::_CurrentNode = tdg->lmt;

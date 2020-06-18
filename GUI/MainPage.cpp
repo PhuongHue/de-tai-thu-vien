@@ -3,6 +3,7 @@
 
 #include "DauSachPage.cpp"
 #include "MuonSachPage.cpp"
+#include "TDGQuaHanPAge.cpp"
 #include "TheDocGiaPage.cpp"
 #include "TopDauSachPage.cpp"
 #include "components/Menu.cpp"
@@ -48,24 +49,29 @@ void mainPageAction(MenuView &menu, int keyPressed, bool &ret)
     TOPDAUSACHPAGE::initTopDauSachPage();
     TOPDAUSACHPAGE::runTopDauSachPage();
     break;
+  case 5:
+    clearMenu(menu);
+    TDGQUAHANPAGE::initTDGQuaHanPage();
+    TDGQUAHANPAGE::runTDGQuaHanPage();
+    break;
   }
   setHeader(_HeaderText);
   setFooter(_MainMenuFooter);
   drawMenu(menu);
-}
+} // namespace MAINPAGE
 
 void initMainMenu()
 {
   _MainMenuView.left = _left;
   _MainMenuView.top = _top;
   _MainMenuView.right = _right;
-  _MainMenuView.count = 5;
+  _MainMenuView.count = 6;
   _MainMenuView.options[0] = "Quan ly dau sach.";
   _MainMenuView.options[1] = "Quan ly the doc gia.";
   _MainMenuView.options[2] = "Muon sach.";
   _MainMenuView.options[3] = "Luu file.";
   _MainMenuView.options[4] = "Top 10 dau sach.";
-  // _MainMenuView.options[5] = "";
+  _MainMenuView.options[5] = "Danh sach qua han.";
   // _MainMenuView.options[6] = "";
   // _MainMenuView.options[7] = "";
   // _MainMenuView.options[8] = "";

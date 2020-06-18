@@ -33,7 +33,22 @@ T convert(string str)
   return x;
 }
 
-#define VNM 7
+long long getDate()
+{
+  // get time vd: 15931520
+  time_t t = time(0);
+  // doi time => object ngay + gio vd: 20/6/2020 16h32p
+  tm *timeTemp = localtime(&t);
+  // dua ve 00h 00m vd: 20/6/2020 0h0p
+  timeTemp->tm_hour = 0;
+  timeTemp->tm_min = 0;
+  timeTemp->tm_sec = 0;
+  // doi lai thanh so time theo giay tinh tu 1990 vd: 15911000
+  return mktime(timeTemp);
+}
+
+long long const TIME_7_NGAY = 604800;
+long long const TIME_1_NGAY = 86400;
 
 string getDateString(long long dateNumber)
 {

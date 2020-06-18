@@ -11,7 +11,6 @@ using namespace std;
 
 #define TDG_TT_KHOA 0
 #define TDG_TT_HOATDONG 1
-#define TDG_TT_DAXOA 2
 
 struct TheDocGia {
   long long maThe;
@@ -147,7 +146,7 @@ void duyetLNR(TreeNode *node, int from, int to)
       _TDGArray_temp.length++;
     }
     _LNR_temp_index++;
-    
+
     duyetLNR(node->right, from, to);
   }
 }
@@ -215,6 +214,25 @@ bool docFile(TreeNode *&node)
     insert(node, tdg);
   }
   return true;
+}
+
+long long countQuaHan(TheDocGia *tdg)
+{
+  long long date = -1;
+  long long currentDate = getDate();
+  ListMuonTra *p = tdg->lmt;
+  while (p != NULL) {
+    if (p->data->trangThai == MT_TT_DANGMUON) {
+      // qua 7 ngay
+      if (currentDate - p->data->ngayMuon >= TIME_7_NGAY)
+        // tim min => ngay muon chua tra lau nhat
+        if (date == -1 || date > p->data->ngayMuon) {
+          date = p->data->ngayMuon;
+        }
+    }
+    p = p->next;
+  }
+  return date;
 }
 
 #endif
