@@ -54,10 +54,7 @@ string getDateString(long long dateNumber)
 {
   if (dateNumber < 0) return "";
   tm *t = localtime(&dateNumber);
-  stringstream ss;
-  ss << t->tm_mday << '/' << t->tm_mon + 1 << '/' << t->tm_year + 1900;
-  string dateString;
-  ss >> dateString;
+  string dateString = to_string(t->tm_mday) + '/' + to_string(t->tm_mon + 1) + '/' + to_string(t->tm_year + 1900);
   return dateString;
 }
 

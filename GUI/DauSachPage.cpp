@@ -27,7 +27,7 @@ ListDauSach _ListDauSach;
 DauSach *_DauSachTemp;
 
 BookView _DauSachBookView;
-BookView _defaultDauSachBookView;
+BookView _defaultDauSachBookView; // TODO: bo cai nay
 
 ContentView _DauSachContentView;
 
@@ -53,7 +53,7 @@ const vector<string> _DauSachBookSearchFooter = {"ESC: Huy", "ENTER: Tim kiem"};
 /* -------------------- _DauSachContentView funtions -------------------- */
 void loadDauSachContent(BookView &book, ContentView &content)
 {
-  if (book.lineCount <= 0) {
+  if (book.lineCount == 0) {
     _DauSachContentView = getEmptyView(_DauSachContentView);
     return;
   }
@@ -100,11 +100,11 @@ string checkDauSach(ContentView content)
     }
   }
   DauSach *ds = findDauSachByISBN(_ListDauSach_Root, content.lines[0]);
-  if (ds && BOOK_MODE == BOOK_CREATE) {
+  if (ds != NULL && BOOK_MODE == BOOK_CREATE) {
     // da co ISBN
     return "ISBN khong duoc trung!";
   }
-  if (ds != _DauSachTemp && BOOK_MODE == BOOK_EDIT) {
+  if (BOOK_MODE == BOOK_EDIT && ds != NULL && ds != _DauSachTemp) {
     // da co ISBN
     return "ISBN khong duoc trung!";
   }
@@ -119,8 +119,9 @@ void updateContent(ContentView &content)
     ds = _ListDauSach.data[bookIndex];
     _DauSachBookView.keys[_DauSachBookView.select] = content.lines[0];
   }
-  if (BOOK_MODE == BOOK_CREATE) ds = new DauSach;
-
+  if (BOOK_MODE == BOOK_CREATE) {
+    ds = new DauSach;
+  }
   ds->ISBN = content.lines[0];
   ds->namXB = stoi(content.lines[1]);
   ds->soTrang = stoi(content.lines[2]);
@@ -161,8 +162,8 @@ void loadDauSachBook(BookView &book)
 
 void searchDauSach()
 {
-  gotoxy(11, 3);
-  cout << setw(20) << setfill(' ') << ' ' << setw(0);
+  // gotoxy(11, 3);
+  // cout << setw(20) << setfill(' ') << ' ' << setw(0);
   gotoxy(11, 3);
   inputText(_DauSachSearchString, 20, 11, 3);
   if (_DauSachSearchString.compare("") == 0) {
@@ -205,12 +206,13 @@ void handleContentAction(ContentView &content, int key, bool &breaker)
       drawContentView(content);
       drawFooter(content);
       _gotoSelect(content);
-      return;
     }
-    updateContent(content);
-    clearContentView(_DauSachContentView);
-    drawContentView(_DauSachContentView);
-    breaker = true;
+    else {
+      updateContent(content);
+      clearContentView(_DauSachContentView);
+      drawContentView(_DauSachContentView);
+      breaker = true;
+    }
     break;
   }
 }
