@@ -23,8 +23,6 @@ BookView _TheDocGiaBookView;
 
 ContentView _TheDocGiaContentView;
 
-string _DauSachSearchString;
-
 TheDocGia *_CurrentTDG = NULL;
 
 #define NORMAL 0
@@ -47,7 +45,7 @@ const vector<string> _TDGBookSearchFooter = {"ESC: Huy", "ENTER: Tim kiem"};
 /* -------------------- _TheDocGiaContentView funtions -------------------- */
 void loadContent(BookView &book, ContentView &content)
 {
-  if (book.lineCount <= 0) {
+  if (book.lineCount == 0) {
     _TheDocGiaContentView = getEmptyView(_TheDocGiaContentView);
     return;
   }
@@ -98,7 +96,6 @@ void updateContent(ContentView &content)
   TheDocGia *tdg;
   if (MODE == EDIT) {
     tdg = _CurrentTDG;
-    _TheDocGiaBookView.keys[_TheDocGiaBookView.select] = content.lines[0];
   }
   if (MODE == CREATE) {
     tdg = new TheDocGia;

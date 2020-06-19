@@ -50,7 +50,7 @@ const vector<string> _DauSachBookFooter = {
 /* -------------------- _DMSachContentView funtions -------------------- */
 void loadContent(BookView &book, ContentView &content)
 {
-  if (book.lineCount <= 0) {
+  if (book.lineCount == 0) {
     _CurrentNodeDMSach = NULL;
     _DMSachContentView = getEmptyView(_DMSachContentView);
     return;
@@ -60,13 +60,13 @@ void loadContent(BookView &book, ContentView &content)
   _CurrentNodeDMSach = ds;
   _DMSachContentView.lines[0] = to_string(ds->data->maSach);
   switch (ds->data->trangThai) {
-  case 0:
+  case SACH_TT_MUONDUOC:
     _DMSachContentView.lines[1] = "Muon duoc";
     break;
-  case 1:
+  case SACH_TT_DAMUON:
     _DMSachContentView.lines[1] = "Da duoc muon";
     break;
-  case 2:
+  case SACH_TT_THANHLY:
     _DMSachContentView.lines[1] = "Da thanh ly";
     break;
   }
@@ -83,6 +83,7 @@ string checkDMSach(ContentView content)
   if (content.lines[2].empty()) {
     return "Vi tri khong duoc rong.";
   }
+  // TODO: khong xoa khi co lich su muon
   return "";
 }
 
@@ -115,7 +116,12 @@ void thanhLySach()
     }
   }
   else {
-    appPause("Sach da muon khong duoc thanh ly.", _DMSachContentView.left, _DMSachContentView.top);
+    if (_CurrentNodeDMSach->data->trangThai == SACH_TT_DAMUON) {
+      appPause("Sach da muon khong duoc thanh ly.", _DMSachContentView.left, _DMSachContentView.top);
+    }
+    else {
+      appPause("Sach nay da duoc thanh ly roi, khong duoc thanh ly nua!", _DMSachContentView.left, _DMSachContentView.top);
+    }
   }
   drawContentView(_DMSachContentView);
 }
@@ -134,13 +140,13 @@ void loadList(BookView &book)
   book.lineCount = endIndex - startIndex + 1;
   // load data trang moi
   int j = 0;
-  for (DMSach *i = _CurrentListDauSach->dms; i != NULL; i = i->next) {
-    if (j < startIndex) continue;
-    if (j > endIndex) break;
-    string maSach = to_string(i->data->maSach);
-    book.lines[j - startIndex] = maSach;
-    book.keys[j - startIndex] = maSach;
-    j++;
+  for (DMSach *i = _CurrentListDauSach->dms; i != NULL; i = i->next, j++) {
+    if (j >= startIndex) {
+      if (j > endIndex) break;
+      string maSach = to_string(i->data->maSach);
+      book.lines[j - startIndex] = maSach;
+      book.keys[j - startIndex] = maSach;
+    }
   }
   // change select
   if (book.lineCount == 0) {
@@ -197,7 +203,7 @@ void handleListAction(BookView &book, int keyPressed)
 {
   switch (keyPressed) {
   case F2:
-    if (_DMSachBookView.lineCount <= 0) break;
+    if (_DMSachBookView.lineCount == 0) break;
     MODE = EDIT;
     runContentViewEditMode(_DMSachContentView, handleContentAction);
     clearBookView(_DMSachBookView);
@@ -217,9 +223,10 @@ void handleListAction(BookView &book, int keyPressed)
     loadList(_DMSachBookView);
     drawBookView(_DMSachBookView);
     MODE = NORMAL;
-  } break;
+    break;
+  }
   case F4:
-    if (_DMSachBookView.lineCount <= 0) break;
+    if (_DMSachBookView.lineCount == 0) break;
     clearBookView(_DMSachBookView);
     if (YesNoMenu("Ban co muon xoa sach nay?", _DMSachBookView.left, _DMSachBookView.top)) {
       deleteDMSach(book.keys[book.select]);
@@ -231,7 +238,7 @@ void handleListAction(BookView &book, int keyPressed)
     thanhLySach();
     break;
   case F6:
-    if (_DMSachBookView.lineCount <= 0) break;
+    if (_DMSachBookView.lineCount == 0) break;
     coppyToClipboard();
     break;
   }
@@ -264,8 +271,6 @@ void initDMSachPage()
   _DMSachContentView.labels[1] = "Trang thai";
   _DMSachContentView.labels[2] = "Vi tri";
   _DMSachContentView = getInitalView(_DMSachContentView);
-  _DMSachContentView.isNumberType[0] = true;
-  _DMSachContentView.isNumberType[1] = true;
   _DMSachContentView.isEditable[0] = false;
   _DMSachContentView.isEditable[1] = false;
 

@@ -35,9 +35,7 @@ DMSach *getNewDMSach()
 
 long long getNewMaSach()
 {
-  time_t currentTime;
-  time(&currentTime);
-  return currentTime;
+  return time(0);
 }
 
 bool kiemTraDieuKienMuon(Sach *sach)

@@ -20,7 +20,7 @@ int main()
     t->tm_mday = day;
     t->tm_mon = month - 1;
     t->tm_year = year - 1900;
-    time_t time = mktime(t);
+    long long time = mktime(t);
     cout << time << endl;
     delete t;
   }

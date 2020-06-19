@@ -52,8 +52,7 @@ void loadContent(BookView &book, ContentView &content)
   _MuonTraContentView.lines[1] = getDateString(node->data->ngayMuon);
   _MuonTraContentView.lines[2] = getDateString(node->data->ngayTra);
 
-  switch (node->data->trangThai)
-  {
+  switch (node->data->trangThai) {
   case MT_TT_DANGMUON:
     _MuonTraContentView.lines[3] = "Dang muon";
     break;
@@ -84,12 +83,12 @@ void loadList(BookView &book)
   book.lineCount = endIndex - startIndex + 1;
   // load data trang moi
   int j = 0;
-  for (ListMuonTra *i = _ListMuonTra; i != NULL; i = i->next) {
-    if (j < startIndex) continue;
-    if (j > endIndex) break;
-    _LMT_Temp[j] = i;
-    book.lines[j - startIndex] = to_string(i->data->maSach);
-    j++;
+  for (ListMuonTra *i = _ListMuonTra; i != NULL; i = i->next, j++) {
+    if (j >= startIndex) {
+      if (j > endIndex) break;
+      _LMT_Temp[j] = i;
+      book.lines[j - startIndex] = to_string(i->data->maSach);
+    }
   }
   // change select
   if (book.lineCount == 0) {
@@ -137,7 +136,7 @@ void handleListAction(BookView &book, int keyPressed)
     loadList(_MuonTraBookView);
     drawBookView(_MuonTraBookView);
     break;
-    case F5:
+  case F5:
     clearBookView(_MuonTraBookView);
     if (
         // sach chua tra
