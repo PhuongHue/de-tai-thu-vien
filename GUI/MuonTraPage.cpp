@@ -12,6 +12,7 @@
 #include "components/ContentView.cpp"
 #include "components/YesNoMenu.cpp"
 
+
 using namespace std;
 
 namespace MUONTRAPAGE {
@@ -37,7 +38,8 @@ const vector<string> _DauSachBookFooter = {
     "ESC: Tro ve",
     ">>: Trang sau",
     "<<: Trang truoc",
-    "F4: Tra sach"};
+    "F4: Tra sach",
+    "F5: Mat Sach"};
 const vector<string> _DauSachBookFooter_DaTra = {
     "ESC: Tro ve",
     ">>: Trang sau",
@@ -45,7 +47,7 @@ const vector<string> _DauSachBookFooter_DaTra = {
 /* -------------------- _MuonTraContentView funtions -------------------- */
 void loadContent(BookView &book, ContentView &content)
 {
-  if (book.lineCount <= 0) return;
+  if (book.lineCount == 0) return;
   ListMuonTra *node = _LMT_Temp[book.select];
   _CurrentNode = node;
   _MuonTraContentView.lines[0] = to_string(node->data->maSach);
@@ -64,7 +66,7 @@ void loadContent(BookView &book, ContentView &content)
     break;
   }
 
-  if (node->data->ngayTra != -1)
+  if (node->data->trangThai == MT_TT_DANGMUON)
     setFooter(_DauSachBookFooter_DaTra);
   else
     setFooter(_DauSachBookFooter);
@@ -75,7 +77,6 @@ void loadList(BookView &book)
 {
   int dataCount = countAll(_ListMuonTra);
   book.allPage = countAllPage(dataCount, book.pageSize);
-  if (book.pageIndex >= book.allPage) book.pageIndex = book.allPage - 1;
 
   int startIndex = book.pageIndex * book.pageSize;
   int endIndex = startIndex + book.pageSize - 1;
@@ -90,12 +91,6 @@ void loadList(BookView &book)
       book.lines[j - startIndex] = to_string(i->data->maSach);
     }
   }
-  // change select
-  if (book.lineCount == 0) {
-    book.select = 0;
-    return;
-  }
-  if (book.select > book.lineCount - 1) book.select = book.lineCount - 1;
 }
 
 void traSach()
@@ -128,7 +123,7 @@ void handleListAction(BookView &book, int keyPressed)
     clearBookView(_MuonTraBookView);
     if (
         // sach chua tra
-        _CurrentNode->data->ngayTra == -1 &&
+        _CurrentNode->data->trangThai == MT_TT_DANGMUON &&
         // dong y tra
         YesNoMenu("Ban co muon tra sach?", _MuonTraBookView.left, _MuonTraBookView.top)) {
       traSach();
@@ -140,7 +135,7 @@ void handleListAction(BookView &book, int keyPressed)
     clearBookView(_MuonTraBookView);
     if (
         // sach chua tra
-        _CurrentNode->data->ngayTra == -1 &&
+        _CurrentNode->data->trangThai == MT_TT_DANGMUON &&
         // dong y mat
         YesNoMenu("Ghi chu lam mat sach?", _MuonTraBookView.left, _MuonTraBookView.top)) {
       matSach();

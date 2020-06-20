@@ -30,6 +30,7 @@ struct Row {
   long long maSach;
   string tenSach;
   long long ngayMuon;
+  int ngayQuaHan;
 };
 
 const int MAX_QUAHAN_DATA_SIZE = 1000;
@@ -41,15 +42,21 @@ struct TopData {
 
 void addLast(TheDocGia *tdg, ListMuonTra *quaHan)
 {
-  if (_QuaHanData_Root.length == MAX_QUAHAN_DATA_SIZE) return;
   ListMuonTra *p = quaHan;
   while (p != NULL) {
+    if (_QuaHanData_Root.length == MAX_QUAHAN_DATA_SIZE) return;
     _QuaHanData_Root.data[_QuaHanData_Root.length].mathe = tdg->maThe;
     _QuaHanData_Root.data[_QuaHanData_Root.length].hoTen = tdg->ho + ' ' + tdg->ten;
     _QuaHanData_Root.data[_QuaHanData_Root.length].maSach = p->data->maSach;
     _QuaHanData_Root.data[_QuaHanData_Root.length].ngayMuon = p->data->ngayMuon;
     DauSach *ds = tim_DauSach_theo_MaSach(_ListDauSach_Root, p->data->maSach);
     _QuaHanData_Root.data[_QuaHanData_Root.length].tenSach = ds->tenSach;
+    if (p->data->trangThai == MT_TT_DANGMUON) {
+      _QuaHanData_Root.data[_QuaHanData_Root.length].ngayQuaHan = (getDate() - p->data->ngayMuon) / TIME_1_NGAY;
+    }
+    else {
+      _QuaHanData_Root.data[_QuaHanData_Root.length].ngayQuaHan = (p->data->ngayTra - p->data->ngayMuon) / TIME_1_NGAY;
+    }
     _QuaHanData_Root.length++;
     p = p->next;
   }
@@ -91,7 +98,7 @@ void thongKeQuaHan()
 {
   _QuaHanData_Root.length = 0;
   duyetTDG(_ListTheDocGia_root);
-  // sortTDGQuaHan();
+  sortTDGQuaHan();
 }
 
 /* ---------- view table -------------------*/
@@ -145,8 +152,7 @@ void drawTable()
     gotoxy(_QuaHanTable.left + _QuaHanTable.columns[5], _QuaHanTable.top + i);
     cout << getDateString(_QuaHanTable.rows[i].ngayMuon);
     gotoxy(_QuaHanTable.left + _QuaHanTable.columns[6], _QuaHanTable.top + i);
-    int soNgayQuaHan = (getDate() - _QuaHanTable.rows[i].ngayMuon) / TIME_1_NGAY;
-    cout << soNgayQuaHan;
+    cout << _QuaHanTable.rows[i].ngayQuaHan;
   }
   gotoxy(_QuaHanTable.left, _QuaHanTable.bottom);
   cout << "trang " << _QuaHanTable.pageIndex + 1 << '/' << _QuaHanTable.allPage;
@@ -167,7 +173,7 @@ void clearTable()
     cout << string(30, ' ');
     gotoxy(_QuaHanTable.left + _QuaHanTable.columns[5], _QuaHanTable.top + i);
     cout << string(20, ' ');
-     gotoxy(_QuaHanTable.left + _QuaHanTable.columns[6], _QuaHanTable.top + i);
+    gotoxy(_QuaHanTable.left + _QuaHanTable.columns[6], _QuaHanTable.top + i);
     cout << string(21, ' ');
   }
   gotoxy(_QuaHanTable.left, _QuaHanTable.bottom);

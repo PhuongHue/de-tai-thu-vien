@@ -200,6 +200,9 @@ ListMuonTra *filterQuaHan(ListMuonTra *first)
     if (p->data->trangThai == MT_TT_DANGMUON && t - p->data->ngayMuon >= TIME_7_NGAY) {
       addLast(temp, p->data);
     }
+    else if (p->data->trangThai == MT_TT_DATRA && p->data->ngayTra - p->data->ngayMuon >= TIME_7_NGAY) {
+      addLast(temp, p->data);
+    }
     p = p->next;
   }
   return temp;

@@ -29,12 +29,14 @@ Sach *_CurrentSach = NULL;
 DauSach *_CurrentDauSach = NULL;
 
 ContentView _TheDocGiaContentView;
-string _TheDocGiaSearchString;
+string _TheDocGiaSearchString; //TODO: vo lai chua show
 int _TheDocGiaSearch_left = 14;
 int _TheDocGiaSearch_top = 3;
 
 ContentView _SachContentView;
 string _DMSachSearchString;
+int _DMSachSearch_left = 94;
+int _DMSachSearch_top = 3;
 
 struct SachDangMuonRow {
   ListMuonTra *lmtNode;
@@ -58,6 +60,14 @@ const vector<string> _MuonSachFooter = {
 const vector<string> _EditStringFooter = {
     "ESC: Huy",
     "ENTER: Tim"};
+
+void drawSeachString()
+{
+  gotoxy(_TheDocGiaSearch_left, _TheDocGiaSearch_top);
+  cout << _TheDocGiaSearchString;
+  gotoxy(_DMSachSearch_left, _DMSachSearch_top);
+  cout << _DMSachSearchString;
+}
 
 /* -------------------- _SachDangMuonTable funtions ------------------- */
 void drawTable()
@@ -189,7 +199,7 @@ void loadContentSach()
 
 void searchMS()
 {
-  inputText(_DMSachSearchString, 20, 94, 3, true);
+  inputText(_DMSachSearchString, 20, _DMSachSearch_left, _DMSachSearch_top, true);
   if (_DMSachSearchString.empty()) return;
   long long key = stoll(_DMSachSearchString);
   DauSachMaSach dsms = tim_DauSachMaSach_theo_MaSach(_ListDauSach_Root, key);
@@ -296,6 +306,7 @@ void runMuonSachPage()
   loadLayout(_PageLayout);
   setHeader(_MuonSachHeaderText);
   setFooter(_MuonSachFooter);
+  drawSeachString();
   if (clipboardTDG != NULL) {
     _CurrentTDG = clipboardTDG;
     loadContentTDG();
