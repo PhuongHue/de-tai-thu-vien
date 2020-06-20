@@ -235,4 +235,16 @@ long long countQuaHan(TheDocGia *tdg)
   return date;
 }
 
+bool kiemTraXoaDMSach(TreeNode *node, long long maSach)
+{
+  if (node == NULL) {
+    return true;
+  }
+  else {
+    ListMuonTra *mt = findByMaSach(node->data->lmt, maSach);
+    if (mt != NULL) return false;
+    return kiemTraXoaDMSach(node->left, maSach) && kiemTraXoaDMSach(node->right, maSach);
+  }
+}
+
 #endif

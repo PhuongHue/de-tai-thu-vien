@@ -8,6 +8,7 @@
 #include "../DMSach.cpp"
 #include "../DauSach.cpp"
 #include "../StringLib.cpp"
+#include "../TheDocGia.cpp"
 #include "components/BookView.cpp"
 #include "components/ContentView.cpp"
 #include "components/YesNoMenu.cpp"
@@ -83,7 +84,6 @@ string checkDMSach(ContentView content)
   if (content.lines[2].empty()) {
     return "Vi tri khong duoc rong.";
   }
-  // TODO: khong xoa khi co lich su muon
   return "";
 }
 
@@ -158,7 +158,12 @@ void loadList(BookView &book)
 
 void deleteDMSach(string key)
 {
-  deleteByMaSach(_CurrentListDauSach->dms, stoll(key));
+  if (!kiemTraXoaDMSach(_ListTheDocGia_root, stoll(key))) {
+    appPause("Sach da co lich su muon. Khong duoc xoa!", _DMSachBookView.left, _DMSachBookView.top);
+  }
+  else if (YesNoMenu("Ban co muon xoa sach nay?", _DMSachBookView.left, _DMSachBookView.top)) {
+    deleteByMaSach(_CurrentListDauSach->dms, stoll(key));
+  }
 }
 
 void coppyToClipboard()
@@ -228,9 +233,7 @@ void handleListAction(BookView &book, int keyPressed)
   case F4:
     if (_DMSachBookView.lineCount == 0) break;
     clearBookView(_DMSachBookView);
-    if (YesNoMenu("Ban co muon xoa sach nay?", _DMSachBookView.left, _DMSachBookView.top)) {
-      deleteDMSach(book.keys[book.select]);
-    }
+    deleteDMSach(book.keys[book.select]);
     loadList(_DMSachBookView);
     drawBookView(_DMSachBookView);
     break;

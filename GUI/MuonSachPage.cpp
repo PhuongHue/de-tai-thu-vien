@@ -138,8 +138,14 @@ void searchTDG()
 
   inputText(_TheDocGiaSearchString, 20, _TheDocGiaSearch_left, _TheDocGiaSearch_top, true);
   if (_TheDocGiaSearchString.compare("") == 0) return;
-  _CurrentTDG = find(_ListTheDocGia_root, stoll(_TheDocGiaSearchString))->data;
-
+  TreeNode *tdgNode = find(_ListTheDocGia_root, stoll(_TheDocGiaSearchString));
+  if (tdgNode == NULL) {
+    clearContentView(_TheDocGiaContentView);
+    appPause("The doc gia khong ton tai!", _TheDocGiaContentView.left, _TheDocGiaContentView.top);
+    drawContentView(_TheDocGiaContentView);
+    return;
+  }
+  _CurrentTDG = tdgNode->data;
   loadContentTDG();
   drawContentView(_TheDocGiaContentView);
   drawTable();
