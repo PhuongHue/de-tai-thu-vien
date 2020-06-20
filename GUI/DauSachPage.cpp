@@ -27,11 +27,12 @@ ListDauSach _ListDauSach;
 DauSach *_DauSachTemp;
 
 BookView _DauSachBookView;
-BookView _defaultDauSachBookView; // TODO: bo cai nay
 
 ContentView _DauSachContentView;
 
 string _DauSachSearchString;
+int _Search_top = 3;
+int _Search_left = 11;
 
 #define BOOK_NORMAL 0
 #define BOOK_CREATE 1
@@ -49,6 +50,12 @@ const vector<string> _DauSachBookFooter = {
     "F4: Xoa",
     "ENTER: Xem Danh muc sach"};
 const vector<string> _DauSachBookSearchFooter = {"ESC: Huy", "ENTER: Tim kiem"};
+
+void drawSearchString()
+{
+  gotoxy(_Search_left, _Search_top);
+  cout << _DauSachSearchString;
+}
 
 /* -------------------- _DauSachContentView funtions -------------------- */
 void loadDauSachContent(BookView &book, ContentView &content)
@@ -162,15 +169,10 @@ void loadDauSachBook(BookView &book)
 
 void searchDauSach()
 {
-  // gotoxy(11, 3);
-  // cout << setw(20) << setfill(' ') << ' ' << setw(0);
-  gotoxy(11, 3);
-  inputText(_DauSachSearchString, 20, 11, 3);
+  inputText(_DauSachSearchString, 20, _Search_left, _Search_top);
   if (_DauSachSearchString.compare("") == 0) {
     // reset data
     _ListDauSach = _ListDauSach_Root;
-    // reset view
-    _DauSachBookView = _defaultDauSachBookView;
   }
   else {
     _ListDauSach = filterDauSach(_ListDauSach_Root, _DauSachSearchString);
@@ -275,6 +277,7 @@ void handleDauSachBookAction(BookView &book, int keyPressed)
     DMSACHPAGE::runDMSachPage();
     loadLayout(_PageLayout);
     setHeader(_HeaderText);
+    drawSearchString();
     drawBookView(_DauSachBookView);
     drawContentView(_DauSachContentView);
     break;
@@ -299,8 +302,6 @@ void initDauSachPage()
   resetBookIndex(_DauSachBookView, _ListDauSach.length);
   /* load _DauSachBookView */
   loadDauSachBook(_DauSachBookView);
-  // backup
-  _defaultDauSachBookView = _DauSachBookView;
 
   /* init _DauSachContentView */
   _DauSachContentView.left = 72;
@@ -332,6 +333,7 @@ void runDauSachPage()
   loadLayout(_PageLayout);
   setHeader(_HeaderText);
   setFooter(_DauSachBookFooter);
+  drawSearchString();
   drawBookView(_DauSachBookView);
   drawContentView(_DauSachContentView);
   runBookView(_DauSachBookView, handleDauSachBookAction, loadDauSachBook, handleBookSelectChange);

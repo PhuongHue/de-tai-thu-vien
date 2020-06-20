@@ -191,4 +191,18 @@ ListMuonTra *filterSachChuaTra(ListMuonTra *first)
   return temp;
 }
 
+ListMuonTra *filterQuaHan(ListMuonTra *first)
+{
+  ListMuonTra *temp = NULL;
+  ListMuonTra *p = first;
+  long long t = getDate();
+  while (p != NULL) {
+    if (p->data->trangThai == MT_TT_DANGMUON && t - p->data->ngayMuon >= TIME_7_NGAY) {
+      addLast(temp, p->data);
+    }
+    p = p->next;
+  }
+  return temp;
+}
+
 #endif

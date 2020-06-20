@@ -25,8 +25,11 @@ const vector<string> _PageFooter = {
 
 /* ---------- thong ke data ----------------*/
 struct Row {
-  TheDocGia *tdg;
-  long long time;
+  long long mathe;
+  string hoTen;
+  long long maSach;
+  string tenSach;
+  long long ngayMuon;
 };
 
 const int MAX_QUAHAN_DATA_SIZE = 1000;
@@ -36,20 +39,28 @@ struct TopData {
   int length = 0;
 } _QuaHanData_Root;
 
-void addLast(TheDocGia *tdg, long long time)
+void addLast(TheDocGia *tdg, ListMuonTra *quaHan)
 {
   if (_QuaHanData_Root.length == MAX_QUAHAN_DATA_SIZE) return;
-  _QuaHanData_Root.data[_QuaHanData_Root.length].tdg = tdg;
-  _QuaHanData_Root.data[_QuaHanData_Root.length].time = time;
-  _QuaHanData_Root.length++;
+  ListMuonTra *p = quaHan;
+  while (p != NULL) {
+    _QuaHanData_Root.data[_QuaHanData_Root.length].mathe = tdg->maThe;
+    _QuaHanData_Root.data[_QuaHanData_Root.length].hoTen = tdg->ho + ' ' + tdg->ten;
+    _QuaHanData_Root.data[_QuaHanData_Root.length].maSach = p->data->maSach;
+    _QuaHanData_Root.data[_QuaHanData_Root.length].ngayMuon = p->data->ngayMuon;
+    DauSach *ds = tim_DauSach_theo_MaSach(_ListDauSach_Root, p->data->maSach);
+    _QuaHanData_Root.data[_QuaHanData_Root.length].tenSach = ds->tenSach;
+    _QuaHanData_Root.length++;
+    p = p->next;
+  }
 }
 
 void duyetTDG(TreeNode *node)
 {
   if (node != NULL) {
-    long long time = countQuaHan(node->data);
-    if (time != -1) {
-      addLast(node->data, time);
+    ListMuonTra *quaHan = filterQuaHan(node->data->lmt);
+    if (quaHan != NULL) {
+      addLast(node->data, quaHan);
     }
     duyetTDG(node->left);
     duyetTDG(node->right);
@@ -59,19 +70,19 @@ void duyetTDG(TreeNode *node)
 void sortTDGQuaHan()
 {
   for (int i = 0; i < _QuaHanData_Root.length; i++) {
-    Row min = _QuaHanData_Root.data[i];
-    int minIndex = i;
+    Row max = _QuaHanData_Root.data[i];
+    int maxIndex = i;
     for (int j = i + 1; j < _QuaHanData_Root.length; j++) {
-      if (_QuaHanData_Root.data[j].time < min.time) {
-        min = _QuaHanData_Root.data[j];
-        minIndex = j;
+      if (_QuaHanData_Root.data[j].ngayMuon > max.ngayMuon) {
+        max = _QuaHanData_Root.data[j];
+        maxIndex = j;
       }
     }
     // swap
-    if (minIndex != i) {
+    if (maxIndex != i) {
       Row c = _QuaHanData_Root.data[i];
-      _QuaHanData_Root.data[i] = min;
-      _QuaHanData_Root.data[minIndex] = c;
+      _QuaHanData_Root.data[i] = max;
+      _QuaHanData_Root.data[maxIndex] = c;
     }
   }
 }
@@ -80,7 +91,7 @@ void thongKeQuaHan()
 {
   _QuaHanData_Root.length = 0;
   duyetTDG(_ListTheDocGia_root);
-  sortTDGQuaHan();
+  // sortTDGQuaHan();
 }
 
 /* ---------- view table -------------------*/
@@ -89,7 +100,7 @@ const int MAX_PAGE_SIZE = 100;
 
 struct Table {
   int left, top, right, bottom;
-  int columns[7] = {0, 8, 29, 70, 86, 107, 130};
+  int columns[7] = {0, 8, 29, 60, 81, 112, 133};
   Row rows[MAX_PAGE_SIZE];
   int pageIndex = 0;
   int pageSize = 20;
@@ -124,24 +135,18 @@ void drawTable()
     gotoxy(_QuaHanTable.left + _QuaHanTable.columns[0], _QuaHanTable.top + i);
     cout << right << setw(4) << getIndex(i);
     gotoxy(_QuaHanTable.left + _QuaHanTable.columns[1], _QuaHanTable.top + i);
-    cout << _QuaHanTable.rows[i].tdg->maThe;
+    cout << _QuaHanTable.rows[i].mathe;
     gotoxy(_QuaHanTable.left + _QuaHanTable.columns[2], _QuaHanTable.top + i);
-    cout << _QuaHanTable.rows[i].tdg->ho << ' ' << _QuaHanTable.rows[i].tdg->ten;
+    cout << _QuaHanTable.rows[i].hoTen;
     gotoxy(_QuaHanTable.left + _QuaHanTable.columns[3], _QuaHanTable.top + i);
-    cout << _QuaHanTable.rows[i].tdg->phai ? "Nam" : "Nu";
+    cout << _QuaHanTable.rows[i].maSach;
     gotoxy(_QuaHanTable.left + _QuaHanTable.columns[4], _QuaHanTable.top + i);
-    switch (_QuaHanTable.rows[i].tdg->trangThai) {
-    case TDG_TT_HOATDONG:
-      cout << "Hoat dong";
-      break;
-    case TDG_TT_KHOA:
-      cout << "Da khoa";
-      break;
-    }
+    cout << _QuaHanTable.rows[i].tenSach;
     gotoxy(_QuaHanTable.left + _QuaHanTable.columns[5], _QuaHanTable.top + i);
-    cout << setprecision(2) << (getDate() - _QuaHanTable.rows[i].time) * 1.0 / TIME_1_NGAY << " ngay";
+    cout << getDateString(_QuaHanTable.rows[i].ngayMuon);
     gotoxy(_QuaHanTable.left + _QuaHanTable.columns[6], _QuaHanTable.top + i);
-    cout << getDateString(_QuaHanTable.rows[i].time);
+    int soNgayQuaHan = (getDate() - _QuaHanTable.rows[i].ngayMuon) / TIME_1_NGAY;
+    cout << soNgayQuaHan;
   }
   gotoxy(_QuaHanTable.left, _QuaHanTable.bottom);
   cout << "trang " << _QuaHanTable.pageIndex + 1 << '/' << _QuaHanTable.allPage;
@@ -157,11 +162,13 @@ void clearTable()
     gotoxy(_QuaHanTable.left + _QuaHanTable.columns[2], _QuaHanTable.top + i);
     cout << string(30, ' ');
     gotoxy(_QuaHanTable.left + _QuaHanTable.columns[3], _QuaHanTable.top + i);
-    cout << string(25, ' ');
+    cout << string(20, ' ');
     gotoxy(_QuaHanTable.left + _QuaHanTable.columns[4], _QuaHanTable.top + i);
-    cout << string(25, ' ');
+    cout << string(30, ' ');
     gotoxy(_QuaHanTable.left + _QuaHanTable.columns[5], _QuaHanTable.top + i);
     cout << string(20, ' ');
+     gotoxy(_QuaHanTable.left + _QuaHanTable.columns[6], _QuaHanTable.top + i);
+    cout << string(21, ' ');
   }
   gotoxy(_QuaHanTable.left, _QuaHanTable.bottom);
   cout << string(_QuaHanTable.right - _QuaHanTable.left, ' ');
