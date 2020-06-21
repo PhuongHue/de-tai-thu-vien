@@ -102,6 +102,7 @@ int countAllPage(int dataCount, int pageSize)
 
 void resetBookIndex(BookView &book, int dataCount)
 {
+  book.select = 0;
   book.pageIndex = 0;
   book.allPage = countAllPage(dataCount, book.pageSize);
 }

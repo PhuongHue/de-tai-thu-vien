@@ -127,6 +127,8 @@ void handleListAction(BookView &book, int keyPressed)
 {
   switch (keyPressed) {
   case F4:
+    // trang bookview rong 
+    if (book.lineCount == 0) break;
     clearBookView(_MuonTraBookView);
     if (
         // sach chua tra
@@ -139,11 +141,13 @@ void handleListAction(BookView &book, int keyPressed)
     drawBookView(_MuonTraBookView);
     break;
   case F5:
+    // trang bookview rong
+    if (book.lineCount == 0) break;
     clearBookView(_MuonTraBookView);
     if (
         // sach chua tra
         _CurrentNode->data.trangThai == MT_TT_DANGMUON &&
-        // dong y mat
+        // dong y mat sach
         YesNoMenu("Ghi chu lam mat sach?", _MuonTraBookView.left, _MuonTraBookView.top)) {
       matSach();
     }

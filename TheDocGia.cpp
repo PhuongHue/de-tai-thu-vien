@@ -223,7 +223,7 @@ bool kiemTraXoaDMSach(NodeTheDocGia *node, long long maSach)
     return true;
   }
   else {
-    ListMuonTra *mt = find_LMT_By_MaSach(node->data.lmt, maSach);
+    ListMuonTra *mt = check_MaSach_DaTonTai(node->data.lmt, maSach);
     if (mt != NULL) return false;
     return kiemTraXoaDMSach(node->left, maSach) && kiemTraXoaDMSach(node->right, maSach);
   }

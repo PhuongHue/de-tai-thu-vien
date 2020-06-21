@@ -74,11 +74,11 @@ int countAll(ListMuonTra *first)
   return count;
 }
 
-ListMuonTra *find_LMT_By_MaSach(ListMuonTra *first, long long key)
+ListMuonTra *check_MaSach_DaTonTai(ListMuonTra *first, long long maSach)
 {
   ListMuonTra *p = first;
   while (p != NULL) {
-    if (p->data.maSach == key) {
+    if (p->data.maSach == maSach) {
       return p;
     }
     p = p->next;
@@ -86,27 +86,18 @@ ListMuonTra *find_LMT_By_MaSach(ListMuonTra *first, long long key)
   return NULL;
 }
 
-bool deleteByMaSach(ListMuonTra *&first, long long key)
+ListMuonTra *find_LMT_by_MaSach_NgayMuon(ListMuonTra *first, long long maSach, long long ngayMuon)
 {
-  ListMuonTra *p = find_LMT_By_MaSach(first, key);
-  if (p == NULL)
-    return false;
-  else {
-    if (p->prev == NULL) {
-      first = first->next;
-      first->prev = NULL;
+  ListMuonTra *p = first;
+  while (p != NULL) {
+    if (p->data.maSach == maSach && p->data.ngayMuon == ngayMuon) {
+      return p;
     }
-    else {
-      ListMuonTra *left = p->prev;
-      ListMuonTra *right = p->next;
-      left->next = right;
-      if (right != NULL)
-        right->prev = left;
-    }
-    delete p;
-    return true;
+    p = p->next;
   }
+  return NULL;
 }
+
 void luuFileLMT(ListMuonTra *first, fstream &fout)
 {
   ListMuonTra *p = first;

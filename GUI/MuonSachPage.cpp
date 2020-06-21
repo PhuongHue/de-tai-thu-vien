@@ -38,13 +38,13 @@ string _DMSachSearchString;
 int _DMSachSearch_left = 94;
 int _DMSachSearch_top = 3;
 
-struct SachDangMuonRow {
+struct Row {
   ListMuonTra *lmtNode;
   DauSach *ds;
 };
-const int MAX_SachDangMuonTable = 3; 
+const int MAX_SachDangMuonTable = 3;
 struct SachDangMuonTable {
-  SachDangMuonRow rows[MAX_SachDangMuonTable];
+  Row rows[MAX_SachDangMuonTable];
   int left = 1, top = 16, right = 77, bottom = 26;
   int columns[4] = {0, 15, 28, 45};
   int select = 0;
@@ -100,26 +100,36 @@ void clearTable()
   }
 }
 
-void loadContentChuaTraTable()
+void addRow(ListMuonTra *lmt)
 {
-  ListMuonTra *sachChuaTra = filterSachChuaTra(_CurrentNodeTDG->data.lmt);
+  // tao row
+  Row row;
+  DauSach *ds = tim_DauSach_theo_MaSach(_ListDauSach_Root, lmt->data.maSach);
+  // gan data
+  row.lmtNode = lmt;
+  row.ds = ds;
+  // them vao table
+  _SachDaMuonTable.rows[_SachDaMuonTable.length] = row;
+  _SachDaMuonTable.length++;
+}
+
+void loadTableChuaTra()
+{
   // clear data
   _SachDaMuonTable.length = 0;
   _SachDaMuonTable.select = 0;
-  while (sachChuaTra != NULL) {
-    _SachDaMuonTable.rows[_SachDaMuonTable.length].lmtNode = sachChuaTra;
-    DauSach *ds = tim_DauSach_theo_MaSach(_ListDauSach_Root, sachChuaTra->data.maSach);
-    if (ds != NULL) {
-      _SachDaMuonTable.rows[_SachDaMuonTable.length].ds = ds;
-    }
-    _SachDaMuonTable.length++;
-    sachChuaTra = sachChuaTra->next;
+  ListMuonTra *sachChuaTra = filterSachChuaTra(_CurrentNodeTDG->data.lmt);
+  ListMuonTra *p = sachChuaTra;
+  while (p != NULL) {
+    // them vao bang data
+    addRow(p);
+    p = p->next;
   }
 }
 /* -------------------- _TheDocGiaContentView funtions -------------------- */
 void loadContentTDG()
 {
-  if (!_CurrentNodeTDG) return;
+  if (_CurrentNodeTDG == NULL) return;
   _TheDocGiaContentView.lines[0] = to_string(_CurrentNodeTDG->data.maThe);
   _TheDocGiaContentView.lines[1] = _CurrentNodeTDG->data.ho;
   _TheDocGiaContentView.lines[2] = _CurrentNodeTDG->data.ten;
@@ -133,7 +143,7 @@ void loadContentTDG()
     break;
   }
   // load danh sach dang muon
-  loadContentChuaTraTable();
+  loadTableChuaTra();
 }
 
 void searchTDG()
@@ -176,7 +186,7 @@ bool checkTDG()
 /* -------------------- _SachContentView functions -------------------- */
 void loadContentSach()
 {
-  if (!_CurrentDMSach) return;
+  if (_CurrentDMSach == NULL) return;
   _SachContentView.lines[0] = to_string(_CurrentDMSach->data.maSach);
   switch (_CurrentDMSach->data.trangThai) {
   case 0:
@@ -250,9 +260,14 @@ void muonSach()
   clearContentView(_TheDocGiaContentView);
   appPause("Muon sach thanh cong!", _TheDocGiaContentView.left, _TheDocGiaContentView.top);
   drawContentView(_TheDocGiaContentView);
-  // update view
-  clearContentView(_SachContentView);
+  // clear table view
+  clearTable();
+  // load data
+  loadContentTDG();
   loadContentSach();
+  // update view
+  drawTable();
+  clearContentView(_SachContentView);
   drawContentView(_SachContentView);
 }
 
@@ -263,17 +278,23 @@ void traSach()
   bool kq = YesNoMenu("Ban co chac chan muon tra sach?", _TheDocGiaContentView.left, _TheDocGiaContentView.top);
   drawContentView(_TheDocGiaContentView);
   // ket qua chon khong => return
-  if (!kq) return;
-  // set ngay tra, chuyen trang thai
-  ListMuonTra *node = _SachDaMuonTable.rows[_SachDaMuonTable.select].lmtNode;
-  node->data.ngayTra = getDate();
-  node->data.trangThai = MT_TT_DATRA;
-  // set trang thai sach
-  DMSach *sach = findByMaSach(_SachDaMuonTable.rows[_SachDaMuonTable.select].ds->dms, node->data.maSach);
-  sach->data.trangThai = SACH_TT_MUONDUOC;
-  clearTable();
-  loadContentChuaTraTable();
-  drawTable();
+  if (kq == true) {
+    // set ngay tra, chuyen trang thai
+    ListMuonTra *currentTableLMT = _SachDaMuonTable.rows[_SachDaMuonTable.select].lmtNode;
+    ListMuonTra *node = find_LMT_by_MaSach_NgayMuon(
+        _CurrentNodeTDG->data.lmt, currentTableLMT->data.maSach,
+        currentTableLMT->data.ngayMuon);
+    node->data.ngayTra = getDate();
+    node->data.trangThai = MT_TT_DATRA;
+    // set trang thai sach
+    DMSach *sach = findByMaSach(
+        _SachDaMuonTable.rows[_SachDaMuonTable.select].ds->dms,
+        node->data.maSach);
+    sach->data.trangThai = SACH_TT_MUONDUOC;
+    clearTable();
+    loadTableChuaTra();
+    drawTable();
+  }
 }
 
 void initMuonSachPage()
@@ -317,28 +338,28 @@ void runMuonSachPage()
   setHeader(_MuonSachHeaderText);
   setFooter(_MuonSachFooter);
   drawSeachString();
+  // da chon TDG
   if (clipboardNodeTDG != NULL) {
     _CurrentNodeTDG = clipboardNodeTDG;
     clipboardNodeTDG = NULL;
-    loadContentTDG();
-    drawTable();
   }
-  else if (_CurrentNodeTDG == NULL) {
-    _TheDocGiaContentView = getEmptyView(_TheDocGiaContentView);
-  }
-
+  // else if (_CurrentNodeTDG == NULL) {
+  //   _TheDocGiaContentView = getEmptyView(_TheDocGiaContentView);
+  // }
+  // da chon sach
   if (clipboardDMSach != NULL && clipboardDauSach != NULL) {
     _CurrentDMSach = clipboardDMSach;
     _CurrentDauSach = clipboardDauSach;
     clipboardDMSach = NULL;
     clipboardDauSach = NULL;
-    loadContentSach();
   }
-  else if (_CurrentDMSach == NULL) {
-    _SachContentView = getEmptyView(_SachContentView);
-  }
-
+  // else if (_CurrentDMSach == NULL) {
+  //   _SachContentView = getEmptyView(_SachContentView);
+  // }
+  loadContentTDG();
+  loadContentSach();
   drawContentView(_TheDocGiaContentView);
+  drawTable();
   drawContentView(_SachContentView);
   bool ret = false;
   while (!ret) {
