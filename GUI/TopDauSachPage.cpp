@@ -36,11 +36,11 @@ struct TopData {
   int length = 0;
 } _TopData_Root;
 
-void duyetTDG(TreeNode *node)
+void duyetTDG(NodeTheDocGia *node)
 {
   if (node != NULL) {
     // duyet list muon tra
-    ListMuonTra *p = node->data->lmt;
+    ListMuonTra *p = node->data.lmt;
     while (p != NULL) {
       // duyet mang top data tang count
       for (int i = 0; i < _TopData_Root.length; i++) {

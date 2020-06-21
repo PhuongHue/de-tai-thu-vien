@@ -24,7 +24,7 @@ int _bottom = 26;
 string _MuonSachHeaderText = "Muon sach";
 string _PageLayout = "layout/MuonSach.layout";
 
-TheDocGia *_CurrentTDG = NULL;
+NodeTheDocGia *_CurrentNodeTDG = NULL;
 DMSach *_CurrentDMSach = NULL;
 DauSach *_CurrentDauSach = NULL;
 
@@ -102,7 +102,7 @@ void clearTable()
 
 void loadContentChuaTraTable()
 {
-  ListMuonTra *sachChuaTra = filterSachChuaTra(_CurrentTDG->lmt);
+  ListMuonTra *sachChuaTra = filterSachChuaTra(_CurrentNodeTDG->data.lmt);
   _SachDaMuonTable.length = 0;
   _SachDaMuonTable.select = 0;
   while (sachChuaTra != NULL) {
@@ -118,12 +118,12 @@ void loadContentChuaTraTable()
 /* -------------------- _TheDocGiaContentView funtions -------------------- */
 void loadContentTDG()
 {
-  if (!_CurrentTDG) return;
-  _TheDocGiaContentView.lines[0] = to_string(_CurrentTDG->maThe);
-  _TheDocGiaContentView.lines[1] = _CurrentTDG->ho;
-  _TheDocGiaContentView.lines[2] = _CurrentTDG->ten;
-  _TheDocGiaContentView.lines[3] = _CurrentTDG->phai ? "nam" : "nu";
-  switch (_CurrentTDG->trangThai) {
+  if (!_CurrentNodeTDG) return;
+  _TheDocGiaContentView.lines[0] = to_string(_CurrentNodeTDG->data.maThe);
+  _TheDocGiaContentView.lines[1] = _CurrentNodeTDG->data.ho;
+  _TheDocGiaContentView.lines[2] = _CurrentNodeTDG->data.ten;
+  _TheDocGiaContentView.lines[3] = _CurrentNodeTDG->data.phai ? "nam" : "nu";
+  switch (_CurrentNodeTDG->data.trangThai) {
   case TDG_TT_HOATDONG:
     _TheDocGiaContentView.lines[4] = "Hoat dong";
     break;
@@ -148,14 +148,14 @@ void searchTDG()
 
   inputText(_TheDocGiaSearchString, 20, _TheDocGiaSearch_left, _TheDocGiaSearch_top, true);
   if (_TheDocGiaSearchString.compare("") == 0) return;
-  TreeNode *tdgNode = find(_ListTheDocGia_root, stoll(_TheDocGiaSearchString));
+  NodeTheDocGia *tdgNode = find(_ListTheDocGia_root, stoll(_TheDocGiaSearchString));
   if (tdgNode == NULL) {
     clearContentView(_TheDocGiaContentView);
     appPause("The doc gia khong ton tai!", _TheDocGiaContentView.left, _TheDocGiaContentView.top);
     drawContentView(_TheDocGiaContentView);
     return;
   }
-  _CurrentTDG = tdgNode->data;
+  _CurrentNodeTDG = tdgNode;
   loadContentTDG();
   drawContentView(_TheDocGiaContentView);
   drawTable();
@@ -163,7 +163,7 @@ void searchTDG()
 
 bool checkTDG()
 {
-  if (!checkDieuKienMuonSach(_CurrentTDG->lmt)) {
+  if (!checkDieuKienMuonSach(_CurrentNodeTDG->data.lmt)) {
     clearContentView(_TheDocGiaContentView);
     appPause("Doc gia khong du dieu kien muon", _TheDocGiaContentView.left, _TheDocGiaContentView.top);
     drawContentView(_TheDocGiaContentView);
@@ -219,7 +219,7 @@ bool checkSach()
     drawContentView(_SachContentView);
     return false;
   }
-  if (!kiemTraSachDaMuon(_CurrentTDG->lmt, _CurrentDMSach->data.maSach, getDate())) {
+  if (!kiemTraSachDaMuon(_CurrentNodeTDG->data.lmt, _CurrentDMSach->data.maSach, getDate())) {
     clearContentView(_SachContentView);
     appPause("Khong duoc muon sach 2 lan trong ngay.", _SachContentView.left, _SachContentView.top);
     drawContentView(_SachContentView);
@@ -231,11 +231,11 @@ bool checkSach()
 /* -------------------- MuonSachPage functions -------------------- */
 void muonSach()
 {
-  if (!_CurrentDMSach || !_CurrentTDG || !checkSach() || !checkTDG()) return;
+  if (!_CurrentDMSach || !_CurrentNodeTDG || !checkSach() || !checkTDG()) return;
   MuonTra mt;
   mt.maSach = _CurrentDMSach->data.maSach;
   mt.ngayMuon = getDate();
-  addLast(_CurrentTDG->lmt, mt);
+  addLast(_CurrentNodeTDG->data.lmt, mt);
   _CurrentDMSach->data.trangThai = SACH_TT_DAMUON;
   clearContentView(_TheDocGiaContentView);
   appPause("Muon sach thanh cong!", _TheDocGiaContentView.left, _TheDocGiaContentView.top);
@@ -307,8 +307,8 @@ void runMuonSachPage()
   setHeader(_MuonSachHeaderText);
   setFooter(_MuonSachFooter);
   drawSeachString();
-  if (clipboardTDG != NULL) {
-    _CurrentTDG = clipboardTDG;
+  if (clipboardNodeTDG != NULL) {
+    _CurrentNodeTDG = clipboardNodeTDG;
     loadContentTDG();
     drawTable();
   }

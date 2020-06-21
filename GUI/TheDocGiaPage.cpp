@@ -23,7 +23,7 @@ BookView _TheDocGiaBookView;
 
 ContentView _TheDocGiaContentView;
 
-TheDocGia *_CurrentTDG = NULL;
+NodeTheDocGia *_CurrentNodeTDG = NULL;
 
 #define NORMAL 0
 #define CREATE 1
@@ -49,13 +49,13 @@ void loadContent(BookView &book, ContentView &content)
     _TheDocGiaContentView = getEmptyView(_TheDocGiaContentView);
     return;
   }
-  TheDocGia *tdg = find(_ListTheDocGia_root, stoll(book.keys[book.select]))->data;
-  _CurrentTDG = tdg;
-  _TheDocGiaContentView.lines[0] = to_string(tdg->maThe);
-  _TheDocGiaContentView.lines[1] = tdg->ho;
-  _TheDocGiaContentView.lines[2] = tdg->ten;
-  _TheDocGiaContentView.lines[3] = tdg->phai ? "Nam" : "Nu";
-  switch (tdg->trangThai) {
+  NodeTheDocGia *tdg = find(_ListTheDocGia_root, stoll(book.keys[book.select]));
+  _CurrentNodeTDG = tdg;
+  _TheDocGiaContentView.lines[0] = to_string(tdg->data.maThe);
+  _TheDocGiaContentView.lines[1] = tdg->data.ho;
+  _TheDocGiaContentView.lines[2] = tdg->data.ten;
+  _TheDocGiaContentView.lines[3] = tdg->data.phai ? "Nam" : "Nu";
+  switch (tdg->data.trangThai) {
   case TDG_TT_HOATDONG:
     _TheDocGiaContentView.lines[4] = "Hoat dong";
     break;
@@ -63,8 +63,8 @@ void loadContent(BookView &book, ContentView &content)
     _TheDocGiaContentView.lines[4] = "Da khoa";
     break;
   }
-  MUONTRAPAGE::_ListMuonTra = tdg->lmt;
-  MUONTRAPAGE::_CurrentNode = tdg->lmt;
+  MUONTRAPAGE::_ListMuonTra = tdg->data.lmt;
+  MUONTRAPAGE::_CurrentNode = tdg->data.lmt;
 }
 
 void formatTDG(ContentView &content)
@@ -93,23 +93,24 @@ string checkTDG(ContentView content)
 
 void updateContent(ContentView &content)
 {
-  TheDocGia *tdg;
   if (MODE == EDIT) {
-    tdg = _CurrentTDG;
+    _CurrentNodeTDG->data.ho = content.lines[1];
+    _CurrentNodeTDG->data.ten = content.lines[2];
+    if (toUpperCase(content.lines[3]).compare("NAM") == 0)
+      _CurrentNodeTDG->data.phai = true;
+    else
+      _CurrentNodeTDG->data.phai = false;
   }
-  if (MODE == CREATE) {
-    tdg = new TheDocGia;
-    tdg->maThe = stoll(content.lines[0]);
-  }
-  tdg->ho = content.lines[1];
-  tdg->ten = content.lines[2];
-  if (toUpperCase(content.lines[3]).compare("NAM") == 0)
-    tdg->phai = true;
-  else
-    tdg->phai = false;
-
-  if (MODE == CREATE) {
-    tdg->trangThai = TDG_TT_HOATDONG;
+  else {
+    TheDocGia tdg;
+    tdg.maThe = stoll(content.lines[0]);
+    tdg.ho = content.lines[1];
+    tdg.ten = content.lines[2];
+    if (toUpperCase(content.lines[3]).compare("NAM") == 0)
+      tdg.phai = true;
+    else
+      tdg.phai = false;
+    tdg.trangThai = TDG_TT_HOATDONG;
     insert(_ListTheDocGia_root, tdg);
   }
 }
@@ -131,8 +132,8 @@ void loadTDGBook(BookView &book)
   initDuyetLNR();
   duyetLNR(_ListTheDocGia_root, startIndex, endIndex);
   for (int i = 0; i < _TDGArray_temp.length; i++) {
-    book.lines[i] = to_string(_TDGArray_temp.data[i]->maThe) + ": " + _TDGArray_temp.data[i]->ho + ' ' + _TDGArray_temp.data[i]->ten;
-    book.keys[i] = to_string(_TDGArray_temp.data[i]->maThe);
+    book.lines[i] = to_string(_TDGArray_temp.data[i]->data.maThe) + ": " + _TDGArray_temp.data[i]->data.ho + ' ' + _TDGArray_temp.data[i]->data.ten;
+    book.keys[i] = to_string(_TDGArray_temp.data[i]->data.maThe);
   }
   // change select
   if (book.lineCount == 0) {
@@ -145,7 +146,7 @@ void loadTDGBook(BookView &book)
 void deleteTDG()
 {
   clearBookView(_TheDocGiaBookView);
-  if (_CurrentTDG->lmt != NULL) {
+  if (_CurrentNodeTDG->data.lmt != NULL) {
     appPause("Doc gia da muon sach. Khong duoc xoa!", _TheDocGiaBookView.left, _TheDocGiaBookView.top);
     drawBookView(_TheDocGiaBookView);
     return;
@@ -153,7 +154,7 @@ void deleteTDG()
 
   if (YesNoMenu("Ban co muon xoa dau sach nay?", _TheDocGiaBookView.left, _TheDocGiaBookView.top)) {
     bool deleted = false;
-    findAndDelete(_ListTheDocGia_root, _CurrentTDG->maThe, deleted);
+    findAndDelete(_ListTheDocGia_root, _CurrentNodeTDG->data.maThe, deleted);
   }
   loadTDGBook(_TheDocGiaBookView);
   drawBookView(_TheDocGiaBookView);
@@ -161,7 +162,7 @@ void deleteTDG()
 
 void coppyToClipboard()
 {
-  clipboardTDG = _CurrentTDG;
+  clipboardNodeTDG = _CurrentNodeTDG;
 }
 /* -------------------- _TDGContentView handles -------------------- */
 void handleContentAction(ContentView &content, int key, bool &breaker)
@@ -228,10 +229,10 @@ void handleBookAction(BookView &book, int keyPressed)
     break;
   case ENTER:
     if (_TheDocGiaContentView.lineCount <= 0) break;
-    if (_CurrentTDG->lmt == NULL) {
+    if (_CurrentNodeTDG->data.lmt == NULL) {
       clearBookView(_TheDocGiaBookView);
       appPause(
-          _CurrentTDG->ho + " " + _CurrentTDG->ten + " chua muon sach nao!",
+          _CurrentNodeTDG->data.ho + " " + _CurrentNodeTDG->data.ten + " chua muon sach nao!",
           _TheDocGiaBookView.left,
           _TheDocGiaBookView.top);
       drawBookView(_TheDocGiaBookView);

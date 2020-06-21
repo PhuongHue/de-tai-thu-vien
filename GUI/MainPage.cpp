@@ -3,7 +3,7 @@
 
 #include "DauSachPage.cpp"
 #include "MuonSachPage.cpp"
-#include "TDGQuaHanPAge.cpp"
+#include "TDGQuaHanPage.cpp"
 #include "TheDocGiaPage.cpp"
 #include "TopDauSachPage.cpp"
 #include "components/Menu.cpp"

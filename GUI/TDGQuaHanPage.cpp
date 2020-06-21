@@ -40,13 +40,13 @@ struct TopData {
   int length = 0;
 } _QuaHanData_Root;
 
-void addLast(TheDocGia *tdg, ListMuonTra *quaHan)
+void addLast(TheDocGia tdg, ListMuonTra *quaHan)
 {
   ListMuonTra *p = quaHan;
   while (p != NULL) {
     if (_QuaHanData_Root.length == MAX_QUAHAN_DATA_SIZE) return;
-    _QuaHanData_Root.data[_QuaHanData_Root.length].mathe = tdg->maThe;
-    _QuaHanData_Root.data[_QuaHanData_Root.length].hoTen = tdg->ho + ' ' + tdg->ten;
+    _QuaHanData_Root.data[_QuaHanData_Root.length].mathe = tdg.maThe;
+    _QuaHanData_Root.data[_QuaHanData_Root.length].hoTen = tdg.ho + ' ' + tdg.ten;
     _QuaHanData_Root.data[_QuaHanData_Root.length].maSach = p->data.maSach;
     _QuaHanData_Root.data[_QuaHanData_Root.length].ngayMuon = p->data.ngayMuon;
     DauSach *ds = tim_DauSach_theo_MaSach(_ListDauSach_Root, p->data.maSach);
@@ -62,10 +62,10 @@ void addLast(TheDocGia *tdg, ListMuonTra *quaHan)
   }
 }
 
-void duyetTDG(TreeNode *node)
+void duyetTDG(NodeTheDocGia *node)
 {
   if (node != NULL) {
-    ListMuonTra *quaHan = filterQuaHan(node->data->lmt);
+    ListMuonTra *quaHan = filterQuaHan(node->data.lmt);
     if (quaHan != NULL) {
       addLast(node->data, quaHan);
     }

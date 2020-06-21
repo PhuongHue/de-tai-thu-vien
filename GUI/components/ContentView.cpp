@@ -132,6 +132,8 @@ void editLine(ContentView &content, int key)
     }
     // quy dinh so nhung nhap chu
     if (content.isNumberType[select] && !(key >= '0' && key <= '9')) return;
+    // khong phai ky tu
+    if (key < ' ' || key > 'z') return;
     // insert key vao chuoi
     content.lines[select].insert(content.lines[select].begin() + content.cursor, (char)key);
     string right = "";

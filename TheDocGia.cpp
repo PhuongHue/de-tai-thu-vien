@@ -21,32 +21,32 @@ struct TheDocGia {
   ListMuonTra *lmt = NULL;
 };
 
-TheDocGia *clipboardTDG = NULL;
-
 long long getNewMaTheDocGia()
 {
   return time(0);
 }
 
-struct TreeNode {
-  TheDocGia *data = NULL;
-  TreeNode *left = NULL;
-  TreeNode *right = NULL;
+struct NodeTheDocGia {
+  TheDocGia data;
+  NodeTheDocGia *left = NULL;
+  NodeTheDocGia *right = NULL;
 };
 
-TreeNode *_ListTheDocGia_root = NULL;
+NodeTheDocGia *_ListTheDocGia_root = NULL;
 
-void insert(TreeNode *&node, TheDocGia *tdg)
+NodeTheDocGia *clipboardNodeTDG = NULL;
+
+void insert(NodeTheDocGia *&node, TheDocGia tdg)
 {
   if (node == NULL) {
-    node = new TreeNode;
+    node = new NodeTheDocGia;
     node->data = tdg;
     return;
   }
-  if (tdg->maThe < node->data->maThe) {
+  if (tdg.maThe < node->data.maThe) {
     insert(node->left, tdg);
   }
-  else if (tdg->maThe > node->data->maThe) {
+  else if (tdg.maThe > node->data.maThe) {
     insert(node->right, tdg);
   }
   else {
@@ -54,9 +54,9 @@ void insert(TreeNode *&node, TheDocGia *tdg)
   }
 }
 
-TreeNode *rp;
+NodeTheDocGia *rp;
 
-void deleteCase3(TreeNode *&r)
+void deleteCase3(NodeTheDocGia *&r)
 {
   if (r->left != NULL)
     deleteCase3(r->left);
@@ -67,12 +67,12 @@ void deleteCase3(TreeNode *&r)
   }
 }
 
-void findAndDelete(TreeNode *&node, long long maThe, bool &deleted)
+void findAndDelete(NodeTheDocGia *&node, long long maThe, bool &deleted)
 {
   if (node == NULL) return;
-  if (maThe < node->data->maThe)
+  if (maThe < node->data.maThe)
     findAndDelete(node->left, maThe, deleted);
-  else if (maThe > node->data->maThe)
+  else if (maThe > node->data.maThe)
     findAndDelete(node->right, maThe, deleted);
   else {
     rp = node;
@@ -84,8 +84,8 @@ void findAndDelete(TreeNode *&node, long long maThe, bool &deleted)
     }
     else {
       // xoa bo nho copy tam
-      if (node->data == clipboardTDG)
-        clipboardTDG = NULL;
+      if (node == clipboardNodeTDG)
+        clipboardNodeTDG = NULL;
 
       deleteCase3(rp->right);
     }
@@ -93,19 +93,19 @@ void findAndDelete(TreeNode *&node, long long maThe, bool &deleted)
   }
 }
 
-TreeNode *find(TreeNode *&node, long long maThe)
+NodeTheDocGia *find(NodeTheDocGia *&node, long long maThe)
 {
   if (node == NULL) return NULL;
-  if (maThe < node->data->maThe)
+  if (maThe < node->data.maThe)
     return find(node->left, maThe);
-  else if (maThe > node->data->maThe)
+  else if (maThe > node->data.maThe)
     return find(node->right, maThe);
   else {
     return node;
   }
 }
 
-int countAll(TreeNode *&node)
+int countAll(NodeTheDocGia *&node)
 {
   if (node == NULL)
     return 0;
@@ -120,7 +120,7 @@ int countAll(TreeNode *&node)
 #define MAX_TDG_ARRAY_LENGTH 50
 
 struct TDGArray {
-  TheDocGia *data[MAX_TDG_ARRAY_LENGTH];
+  NodeTheDocGia *data[MAX_TDG_ARRAY_LENGTH];
   int length;
 } _TDGArray_temp;
 
@@ -136,13 +136,13 @@ void initDuyetLNR()
   _LNR_temp_index = 0;
 }
 
-void duyetLNR(TreeNode *node, int from, int to)
+void duyetLNR(NodeTheDocGia *node, int from, int to)
 {
   if (node != NULL) {
     duyetLNR(node->left, from, to);
 
     if (_LNR_temp_index >= from && _LNR_temp_index <= to) {
-      _TDGArray_temp.data[_TDGArray_temp.length] = node->data;
+      _TDGArray_temp.data[_TDGArray_temp.length] = node;
       _TDGArray_temp.length++;
     }
     _LNR_temp_index++;
@@ -151,17 +151,17 @@ void duyetLNR(TreeNode *node, int from, int to)
   }
 }
 
-void luuFileNodeTDG(TheDocGia *tdg, fstream &fout)
+void luuFileNodeTDG(TheDocGia tdg, fstream &fout)
 {
-  fout << tdg->maThe << endl
-       << tdg->ho << endl
-       << tdg->ten << endl
-       << (tdg->phai ? 1 : 0) << endl
-       << tdg->trangThai << endl;
-  luuFileLMT(tdg->lmt, fout);
+  fout << tdg.maThe << endl
+       << tdg.ho << endl
+       << tdg.ten << endl
+       << (tdg.phai ? 1 : 0) << endl
+       << tdg.trangThai << endl;
+  luuFileLMT(tdg.lmt, fout);
 }
 
-void duyetNLRLuuFile(TreeNode *node, fstream &fout)
+void duyetNLRLuuFile(NodeTheDocGia *node, fstream &fout)
 {
   if (node != NULL) {
     luuFileNodeTDG(node->data, fout);
@@ -170,7 +170,7 @@ void duyetNLRLuuFile(TreeNode *node, fstream &fout)
   }
 }
 
-void luuFileTDG(TreeNode *node)
+void luuFileTDG(NodeTheDocGia *node)
 {
   fstream fout;
   fout.open("data/TheDocGia.data");
@@ -179,27 +179,27 @@ void luuFileTDG(TreeNode *node)
   fout.close();
 }
 
-void docFileNodeTDG(TheDocGia *tdg, fstream &fin)
+void docFileNodeTDG(TheDocGia &tdg, fstream &fin)
 {
-  fin >> tdg->maThe;
+  fin >> tdg.maThe;
   fin.ignore();
-  getline(fin, tdg->ho);
-  getline(fin, tdg->ten);
+  getline(fin, tdg.ho);
+  getline(fin, tdg.ten);
 
   int phai;
   fin >> phai;
   fin.ignore();
   if (phai == 1)
-    tdg->phai = true;
+    tdg.phai = true;
   else
-    tdg->phai = false;
+    tdg.phai = false;
 
-  fin >> tdg->trangThai;
+  fin >> tdg.trangThai;
   fin.ignore();
-  docFileLMT(tdg->lmt, fin);
+  docFileLMT(tdg.lmt, fin);
 }
 
-bool docFileTDG(TreeNode *&tree)
+bool docFileTDG(NodeTheDocGia *&tree)
 {
   fstream fin("data/TheDocGia.data", fstream::in);
   if (!fin.is_open()) return false;
@@ -209,7 +209,7 @@ bool docFileTDG(TreeNode *&tree)
   if (fin.eof()) return true;
   fin.ignore();
   for (int i = 0; i < n; i++) {
-    TheDocGia *tdg = new TheDocGia;
+    TheDocGia tdg;
     docFileNodeTDG(tdg, fin);
     insert(tree, tdg);
   }
@@ -217,13 +217,13 @@ bool docFileTDG(TreeNode *&tree)
 }
 
 // for DMSach page
-bool kiemTraXoaDMSach(TreeNode *node, long long maSach)  
+bool kiemTraXoaDMSach(NodeTheDocGia *node, long long maSach)  
 {
   if (node == NULL) {
     return true;
   }
   else {
-    ListMuonTra *mt = find_LMT_By_MaSach(node->data->lmt, maSach);
+    ListMuonTra *mt = find_LMT_By_MaSach(node->data.lmt, maSach);
     if (mt != NULL) return false;
     return kiemTraXoaDMSach(node->left, maSach) && kiemTraXoaDMSach(node->right, maSach);
   }
