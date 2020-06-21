@@ -47,15 +47,15 @@ void addLast(TheDocGia *tdg, ListMuonTra *quaHan)
     if (_QuaHanData_Root.length == MAX_QUAHAN_DATA_SIZE) return;
     _QuaHanData_Root.data[_QuaHanData_Root.length].mathe = tdg->maThe;
     _QuaHanData_Root.data[_QuaHanData_Root.length].hoTen = tdg->ho + ' ' + tdg->ten;
-    _QuaHanData_Root.data[_QuaHanData_Root.length].maSach = p->data->maSach;
-    _QuaHanData_Root.data[_QuaHanData_Root.length].ngayMuon = p->data->ngayMuon;
-    DauSach *ds = tim_DauSach_theo_MaSach(_ListDauSach_Root, p->data->maSach);
+    _QuaHanData_Root.data[_QuaHanData_Root.length].maSach = p->data.maSach;
+    _QuaHanData_Root.data[_QuaHanData_Root.length].ngayMuon = p->data.ngayMuon;
+    DauSach *ds = tim_DauSach_theo_MaSach(_ListDauSach_Root, p->data.maSach);
     _QuaHanData_Root.data[_QuaHanData_Root.length].tenSach = ds->tenSach;
-    if (p->data->trangThai == MT_TT_DANGMUON) {
-      _QuaHanData_Root.data[_QuaHanData_Root.length].ngayQuaHan = (getDate() - p->data->ngayMuon) / TIME_1_NGAY;
+    if (p->data.trangThai == MT_TT_DANGMUON) {
+      _QuaHanData_Root.data[_QuaHanData_Root.length].ngayQuaHan = (getDate() - p->data.ngayMuon) / TIME_1_NGAY;
     }
     else {
-      _QuaHanData_Root.data[_QuaHanData_Root.length].ngayQuaHan = (p->data->ngayTra - p->data->ngayMuon) / TIME_1_NGAY;
+      _QuaHanData_Root.data[_QuaHanData_Root.length].ngayQuaHan = (p->data.ngayTra - p->data.ngayMuon) / TIME_1_NGAY;
     }
     _QuaHanData_Root.length++;
     p = p->next;

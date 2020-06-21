@@ -50,11 +50,11 @@ void loadContent(BookView &book, ContentView &content)
   if (book.lineCount == 0) return;
   ListMuonTra *node = _LMT_Temp[book.select];
   _CurrentNode = node;
-  _MuonTraContentView.lines[0] = to_string(node->data->maSach);
-  _MuonTraContentView.lines[1] = getDateString(node->data->ngayMuon);
-  _MuonTraContentView.lines[2] = getDateString(node->data->ngayTra);
+  _MuonTraContentView.lines[0] = to_string(node->data.maSach);
+  _MuonTraContentView.lines[1] = getDateString(node->data.ngayMuon);
+  _MuonTraContentView.lines[2] = getDateString(node->data.ngayTra);
 
-  switch (node->data->trangThai) {
+  switch (node->data.trangThai) {
   case MT_TT_DANGMUON:
     _MuonTraContentView.lines[3] = "Dang muon";
     break;
@@ -66,7 +66,7 @@ void loadContent(BookView &book, ContentView &content)
     break;
   }
 
-  if (node->data->trangThai == MT_TT_DANGMUON)
+  if (node->data.trangThai == MT_TT_DANGMUON)
     setFooter(_DauSachBookFooter_DaTra);
   else
     setFooter(_DauSachBookFooter);
@@ -88,23 +88,23 @@ void loadList(BookView &book)
     if (j >= startIndex) {
       if (j > endIndex) break;
       _LMT_Temp[j] = i;
-      book.lines[j - startIndex] = to_string(i->data->maSach);
+      book.lines[j - startIndex] = to_string(i->data.maSach);
     }
   }
 }
 
 void traSach()
 {
-  _CurrentNode->data->ngayTra = getDate();
-  _CurrentNode->data->trangThai = MT_TT_DATRA;
-  DMSach *dms = findMaSach(_ListDauSach_Root, _CurrentNode->data->maSach);
+  _CurrentNode->data.ngayTra = getDate();
+  _CurrentNode->data.trangThai = MT_TT_DATRA;
+  DMSach *dms = findMaSach(_ListDauSach_Root, _CurrentNode->data.maSach);
   dms->data.trangThai = SACH_TT_MUONDUOC;
 }
 
 void matSach()
 {
-  _CurrentNode->data->trangThai = MT_TT_MATSACH;
-  DMSach *dms = findMaSach(_ListDauSach_Root, _CurrentNode->data->maSach);
+  _CurrentNode->data.trangThai = MT_TT_MATSACH;
+  DMSach *dms = findMaSach(_ListDauSach_Root, _CurrentNode->data.maSach);
   dms->data.trangThai = SACH_TT_THANHLY;
 }
 
@@ -123,7 +123,7 @@ void handleListAction(BookView &book, int keyPressed)
     clearBookView(_MuonTraBookView);
     if (
         // sach chua tra
-        _CurrentNode->data->trangThai == MT_TT_DANGMUON &&
+        _CurrentNode->data.trangThai == MT_TT_DANGMUON &&
         // dong y tra
         YesNoMenu("Ban co muon tra sach?", _MuonTraBookView.left, _MuonTraBookView.top)) {
       traSach();
@@ -135,7 +135,7 @@ void handleListAction(BookView &book, int keyPressed)
     clearBookView(_MuonTraBookView);
     if (
         // sach chua tra
-        _CurrentNode->data->trangThai == MT_TT_DANGMUON &&
+        _CurrentNode->data.trangThai == MT_TT_DANGMUON &&
         // dong y mat
         YesNoMenu("Ghi chu lam mat sach?", _MuonTraBookView.left, _MuonTraBookView.top)) {
       matSach();

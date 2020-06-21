@@ -75,9 +75,9 @@ void drawTable()
   for (int i = 0; i < _SachDaMuonTable.length; i++) {
     if (i == _SachDaMuonTable.select) setSelectText();
     gotoxy(_SachDaMuonTable.left + _SachDaMuonTable.columns[0], _SachDaMuonTable.top + i);
-    cout << _SachDaMuonTable.rows[i].lmtNode->data->maSach;
+    cout << _SachDaMuonTable.rows[i].lmtNode->data.maSach;
     gotoxy(_SachDaMuonTable.left + _SachDaMuonTable.columns[1], _SachDaMuonTable.top + i);
-    cout << getDateString(_SachDaMuonTable.rows[i].lmtNode->data->ngayMuon);
+    cout << getDateString(_SachDaMuonTable.rows[i].lmtNode->data.ngayMuon);
     gotoxy(_SachDaMuonTable.left + _SachDaMuonTable.columns[2], _SachDaMuonTable.top + i);
     cout << _SachDaMuonTable.rows[i].ds->ISBN;
     gotoxy(_SachDaMuonTable.left + _SachDaMuonTable.columns[3], _SachDaMuonTable.top + i);
@@ -107,7 +107,7 @@ void loadContentChuaTraTable()
   _SachDaMuonTable.select = 0;
   while (sachChuaTra != NULL) {
     _SachDaMuonTable.rows[_SachDaMuonTable.length].lmtNode = sachChuaTra;
-    DauSach *ds = tim_DauSach_theo_MaSach(_ListDauSach_Root, sachChuaTra->data->maSach);
+    DauSach *ds = tim_DauSach_theo_MaSach(_ListDauSach_Root, sachChuaTra->data.maSach);
     if (ds != NULL) {
       _SachDaMuonTable.rows[_SachDaMuonTable.length].ds = ds;
     }
@@ -232,9 +232,9 @@ bool checkSach()
 void muonSach()
 {
   if (!_CurrentDMSach || !_CurrentTDG || !checkSach() || !checkTDG()) return;
-  MuonTra *mt = new MuonTra;
-  mt->maSach = _CurrentDMSach->data.maSach;
-  mt->ngayMuon = getDate();
+  MuonTra mt;
+  mt.maSach = _CurrentDMSach->data.maSach;
+  mt.ngayMuon = getDate();
   addLast(_CurrentTDG->lmt, mt);
   _CurrentDMSach->data.trangThai = SACH_TT_DAMUON;
   clearContentView(_TheDocGiaContentView);
@@ -256,10 +256,10 @@ void traSach()
   if (!kq) return;
   // set ngay tra, chuyen trang thai
   ListMuonTra *node = _SachDaMuonTable.rows[_SachDaMuonTable.select].lmtNode;
-  node->data->ngayTra = getDate();
-  node->data->trangThai = MT_TT_DATRA;
+  node->data.ngayTra = getDate();
+  node->data.trangThai = MT_TT_DATRA;
   // set trang thai sach
-  DMSach *sach = findByMaSach(_SachDaMuonTable.rows[_SachDaMuonTable.select].ds->dms, node->data->maSach);
+  DMSach *sach = findByMaSach(_SachDaMuonTable.rows[_SachDaMuonTable.select].ds->dms, node->data.maSach);
   sach->data.trangThai = SACH_TT_MUONDUOC;
   clearTable();
   loadContentChuaTraTable();

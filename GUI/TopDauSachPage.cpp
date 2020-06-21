@@ -44,7 +44,7 @@ void duyetTDG(TreeNode *node)
     while (p != NULL) {
       // duyet mang top data tang count
       for (int i = 0; i < _TopData_Root.length; i++) {
-        DMSach *sach = findByMaSach(_TopData_Root.data[i].ds->dms, p->data->maSach);
+        DMSach *sach = findByMaSach(_TopData_Root.data[i].ds->dms, p->data.maSach);
         if (sach != NULL) _TopData_Root.data[i].count++;
       }
       // next
