@@ -19,31 +19,32 @@ struct Sach {
   string viTri;
 };
 
-Sach *clipboardSach = NULL;
 
 struct DMSach {
-  Sach *data = NULL;
+  Sach data;
   DMSach *next = NULL;
 };
+
+DMSach *clipboardDMSach = NULL;
 
 long long getNewMaSach()
 {
   return time(0);
 }
 
-bool kiemTraDieuKienMuon(Sach *sach)
+bool kiemTraDieuKienMuon(DMSach *sach)
 {
-  return sach->trangThai == SACH_TT_MUONDUOC;
+  return sach->data.trangThai == SACH_TT_MUONDUOC;
 }
 
 void swapNodeData(DMSach *&a, DMSach *&b)
 {
-  Sach *c = a->data;
+  Sach c = a->data;
   a->data = b->data;
   b->data = c;
 }
 
-void addFirst(DMSach *&first, Sach *info)
+void addFirst(DMSach *&first, Sach info)
 {
   if (first == NULL) {
     first = new DMSach;
@@ -56,7 +57,7 @@ void addFirst(DMSach *&first, Sach *info)
   first = p;
 }
 
-void addLast(DMSach *&first, Sach *info)
+void addLast(DMSach *&first, Sach info)
 {
   if (first == NULL) {
     first = new DMSach;
@@ -86,7 +87,7 @@ DMSach *findByMaSach(DMSach *first, long long key)
 {
   DMSach *p = first;
   while (p != NULL) {
-    if (p->data->maSach == key) {
+    if (p->data.maSach == key) {
       return p;
     }
     p = p->next;
@@ -99,7 +100,7 @@ bool deleteByMaSach(DMSach *&first, long long key)
   DMSach *p = first;
   DMSach *q = NULL;
   while (p != NULL) {
-    if (p->data->maSach == key) {
+    if (p->data.maSach == key) {
       if (q == NULL) {
         // delete first
         if (first->next == NULL) {
@@ -112,7 +113,7 @@ bool deleteByMaSach(DMSach *&first, long long key)
       else {
         q->next = p->next;
       }
-      if (p->data == clipboardSach) clipboardSach = NULL;
+      if (p == clipboardDMSach) clipboardDMSach = NULL;
       delete p;
       return true;
     }
@@ -126,9 +127,9 @@ void luuFileDMS(DMSach *first, ofstream &fout)
   DMSach *p = first;
   fout << countAll(first) << endl;
   while (p != NULL) {
-    fout << p->data->maSach << endl
-         << p->data->trangThai << endl
-         << p->data->viTri << endl;
+    fout << p->data.maSach << endl
+         << p->data.trangThai << endl
+         << p->data.viTri << endl;
     p = p->next;
   }
 }
@@ -140,10 +141,10 @@ void docFileDMS(DMSach *&list, fstream &fin)
   fin.ignore();
   if (n == 0) return;
   for (int i = 0; i < n; i++) {
-    Sach *data = new Sach;
-    fin >> data->maSach >> data->trangThai;
+    Sach data;
+    fin >> data.maSach >> data.trangThai;
     fin.ignore();
-    getline(fin, data->viTri);
+    getline(fin, data.viTri);
     addLast(list, data);
   }
 }
@@ -152,7 +153,7 @@ void sortByMS(DMSach *&first)
 {
   for (DMSach *i = first; i != NULL && i->next != NULL; i = i->next) {
     for (DMSach *j = i->next; j != NULL; j = j->next) {
-      if (i->data->maSach > j->data->maSach) swapNodeData(i, j);
+      if (i->data.maSach > j->data.maSach) swapNodeData(i, j);
     }
   }
 }

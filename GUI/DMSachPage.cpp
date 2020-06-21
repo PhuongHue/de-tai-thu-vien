@@ -59,8 +59,8 @@ void loadContent(BookView &book, ContentView &content)
   DMSach *ds = findByMaSach(_CurrentListDauSach->dms, stoll(book.keys[book.select]));
   if (!ds) return;
   _CurrentNodeDMSach = ds;
-  _DMSachContentView.lines[0] = to_string(ds->data->maSach);
-  switch (ds->data->trangThai) {
+  _DMSachContentView.lines[0] = to_string(ds->data.maSach);
+  switch (ds->data.trangThai) {
   case SACH_TT_MUONDUOC:
     _DMSachContentView.lines[1] = "Muon duoc";
     break;
@@ -71,7 +71,7 @@ void loadContent(BookView &book, ContentView &content)
     _DMSachContentView.lines[1] = "Da thanh ly";
     break;
   }
-  _DMSachContentView.lines[2] = ds->data->viTri;
+  _DMSachContentView.lines[2] = ds->data.viTri;
 }
 
 void formatDMSach(ContentView &content)
@@ -90,18 +90,14 @@ string checkDMSach(ContentView content)
 void updateContent(ContentView &content)
 {
   int bookIndex = getIndex(_DMSachBookView);
-  Sach *sach;
   if (MODE == EDIT) {
-    sach = _CurrentNodeDMSach->data;
+    _CurrentNodeDMSach->data.viTri = content.lines[2];
   }
-  if (MODE == CREATE) {
-    sach = new Sach;
-  }
-
-  sach->maSach = stoll(content.lines[0]);
-  sach->viTri = content.lines[2];
-  if (MODE == CREATE) {
-    sach->trangThai = SACH_TT_MUONDUOC;
+  else {
+    Sach sach;
+    sach.maSach = stoll(content.lines[0]);
+    sach.viTri = content.lines[2];
+    sach.trangThai = SACH_TT_MUONDUOC;
     addLast(_CurrentListDauSach->dms, sach);
   }
 }
@@ -109,14 +105,14 @@ void updateContent(ContentView &content)
 void thanhLySach()
 {
   clearContentView(_DMSachContentView);
-  if (_CurrentNodeDMSach->data->trangThai == SACH_TT_MUONDUOC) {
+  if (_CurrentNodeDMSach->data.trangThai == SACH_TT_MUONDUOC) {
     if (YesNoMenu("Ban co muon thanh ly sach nay?", _DMSachContentView.left, _DMSachContentView.top)) {
-      _CurrentNodeDMSach->data->trangThai = SACH_TT_THANHLY;
+      _CurrentNodeDMSach->data.trangThai = SACH_TT_THANHLY;
       loadContent(_DMSachBookView, _DMSachContentView);
     }
   }
   else {
-    if (_CurrentNodeDMSach->data->trangThai == SACH_TT_DAMUON) {
+    if (_CurrentNodeDMSach->data.trangThai == SACH_TT_DAMUON) {
       appPause("Sach da muon khong duoc thanh ly.", _DMSachContentView.left, _DMSachContentView.top);
     }
     else {
@@ -143,7 +139,7 @@ void loadList(BookView &book)
   for (DMSach *i = _CurrentListDauSach->dms; i != NULL; i = i->next, j++) {
     if (j >= startIndex) {
       if (j > endIndex) break;
-      string maSach = to_string(i->data->maSach);
+      string maSach = to_string(i->data.maSach);
       book.lines[j - startIndex] = maSach;
       book.keys[j - startIndex] = maSach;
     }
@@ -170,7 +166,7 @@ void coppyToClipboard()
 {
   if (_CurrentNodeDMSach == NULL || _CurrentListDauSach == NULL) return;
   clipboardDauSach = _CurrentListDauSach;
-  clipboardSach = _CurrentNodeDMSach->data;
+  clipboardDMSach = _CurrentNodeDMSach;
 }
 
 /* -------------------- _DMSachContentView handles -------------------- */

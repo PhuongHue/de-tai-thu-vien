@@ -25,7 +25,7 @@ string _MuonSachHeaderText = "Muon sach";
 string _PageLayout = "layout/MuonSach.layout";
 
 TheDocGia *_CurrentTDG = NULL;
-Sach *_CurrentSach = NULL;
+DMSach *_CurrentDMSach = NULL;
 DauSach *_CurrentDauSach = NULL;
 
 ContentView _TheDocGiaContentView;
@@ -175,9 +175,9 @@ bool checkTDG()
 /* -------------------- _SachContentView functions -------------------- */
 void loadContentSach()
 {
-  if (!_CurrentSach) return;
-  _SachContentView.lines[0] = to_string(_CurrentSach->maSach);
-  switch (_CurrentSach->trangThai) {
+  if (!_CurrentDMSach) return;
+  _SachContentView.lines[0] = to_string(_CurrentDMSach->data.maSach);
+  switch (_CurrentDMSach->data.trangThai) {
   case 0:
     _SachContentView.lines[1] = "Muon duoc";
     break;
@@ -188,7 +188,7 @@ void loadContentSach()
     _SachContentView.lines[1] = "Da thanh ly";
     break;
   }
-  _SachContentView.lines[2] = _CurrentSach->viTri;
+  _SachContentView.lines[2] = _CurrentDMSach->data.viTri;
   _SachContentView.lines[3] = _CurrentDauSach->ISBN;
   _SachContentView.lines[4] = _CurrentDauSach->tenSach;
   _SachContentView.lines[5] = to_string(_CurrentDauSach->soTrang);
@@ -204,7 +204,7 @@ void searchMS()
   long long key = stoll(_DMSachSearchString);
   DauSachMaSach dsms = tim_DauSachMaSach_theo_MaSach(_ListDauSach_Root, key);
   if (dsms.dauSach != NULL) {
-    _CurrentSach = dsms.dmSach->data;
+    _CurrentDMSach = dsms.dmSach;
     _CurrentDauSach = dsms.dauSach;
     loadContentSach();
     drawContentView(_SachContentView);
@@ -213,13 +213,13 @@ void searchMS()
 
 bool checkSach()
 {
-  if (!kiemTraDieuKienMuon(_CurrentSach)) {
+  if (!kiemTraDieuKienMuon(_CurrentDMSach)) {
     clearContentView(_SachContentView);
     appPause("Sach da duoc muon.", _SachContentView.left, _SachContentView.top);
     drawContentView(_SachContentView);
     return false;
   }
-  if (!kiemTraSachDaMuon(_CurrentTDG->lmt, _CurrentSach->maSach, getDate())) {
+  if (!kiemTraSachDaMuon(_CurrentTDG->lmt, _CurrentDMSach->data.maSach, getDate())) {
     clearContentView(_SachContentView);
     appPause("Khong duoc muon sach 2 lan trong ngay.", _SachContentView.left, _SachContentView.top);
     drawContentView(_SachContentView);
@@ -231,12 +231,12 @@ bool checkSach()
 /* -------------------- MuonSachPage functions -------------------- */
 void muonSach()
 {
-  if (!_CurrentSach || !_CurrentTDG || !checkSach() || !checkTDG()) return;
+  if (!_CurrentDMSach || !_CurrentTDG || !checkSach() || !checkTDG()) return;
   MuonTra *mt = new MuonTra;
-  mt->maSach = _CurrentSach->maSach;
+  mt->maSach = _CurrentDMSach->data.maSach;
   mt->ngayMuon = getDate();
   addLast(_CurrentTDG->lmt, mt);
-  _CurrentSach->trangThai = SACH_TT_DAMUON;
+  _CurrentDMSach->data.trangThai = SACH_TT_DAMUON;
   clearContentView(_TheDocGiaContentView);
   appPause("Muon sach thanh cong!", _TheDocGiaContentView.left, _TheDocGiaContentView.top);
   drawContentView(_TheDocGiaContentView);
@@ -259,8 +259,8 @@ void traSach()
   node->data->ngayTra = getDate();
   node->data->trangThai = MT_TT_DATRA;
   // set trang thai sach
-  Sach *sach = findByMaSach(_SachDaMuonTable.rows[_SachDaMuonTable.select].ds->dms, node->data->maSach)->data;
-  sach->trangThai = SACH_TT_MUONDUOC;
+  DMSach *sach = findByMaSach(_SachDaMuonTable.rows[_SachDaMuonTable.select].ds->dms, node->data->maSach);
+  sach->data.trangThai = SACH_TT_MUONDUOC;
   clearTable();
   loadContentChuaTraTable();
   drawTable();
@@ -316,8 +316,8 @@ void runMuonSachPage()
     _TheDocGiaContentView = getEmptyView(_TheDocGiaContentView);
   }
 
-  if (clipboardSach != NULL && clipboardDauSach != NULL) {
-    _CurrentSach = clipboardSach;
+  if (clipboardDMSach != NULL && clipboardDauSach != NULL) {
+    _CurrentDMSach = clipboardDMSach;
     _CurrentDauSach = clipboardDauSach;
     loadContentSach();
   }
