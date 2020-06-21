@@ -29,7 +29,7 @@ DMSach *_CurrentDMSach = NULL;
 DauSach *_CurrentDauSach = NULL;
 
 ContentView _TheDocGiaContentView;
-string _TheDocGiaSearchString; //TODO: vo lai chua show
+string _TheDocGiaSearchString;
 int _TheDocGiaSearch_left = 14;
 int _TheDocGiaSearch_top = 3;
 
@@ -42,9 +42,9 @@ struct SachDangMuonRow {
   ListMuonTra *lmtNode;
   DauSach *ds;
 };
-
+const int MAX_SachDangMuonTable = 3; 
 struct SachDangMuonTable {
-  SachDangMuonRow rows[3];
+  SachDangMuonRow rows[MAX_SachDangMuonTable];
   int left = 1, top = 16, right = 77, bottom = 26;
   int columns[4] = {0, 15, 28, 45};
   int select = 0;
@@ -103,6 +103,7 @@ void clearTable()
 void loadContentChuaTraTable()
 {
   ListMuonTra *sachChuaTra = filterSachChuaTra(_CurrentNodeTDG->data.lmt);
+  // clear data
   _SachDaMuonTable.length = 0;
   _SachDaMuonTable.select = 0;
   while (sachChuaTra != NULL) {
@@ -199,11 +200,20 @@ void loadContentSach()
 
 void searchMS()
 {
+  // clear data
+  _CurrentDMSach = NULL;
+  _CurrentDauSach = NULL;
+  // clear view
+  clearContentView(_SachContentView);
+  _SachContentView = getEmptyView(_SachContentView);
+  drawContentView(_SachContentView);
+  // nhap ma
   inputText(_DMSachSearchString, 20, _DMSachSearch_left, _DMSachSearch_top, true);
   if (_DMSachSearchString.empty()) return;
+  // search
   long long key = stoll(_DMSachSearchString);
   DauSachMaSach dsms = tim_DauSachMaSach_theo_MaSach(_ListDauSach_Root, key);
-  if (dsms.dauSach != NULL) {
+  if (dsms.dmSach != NULL) {
     _CurrentDMSach = dsms.dmSach;
     _CurrentDauSach = dsms.dauSach;
     loadContentSach();
@@ -309,19 +319,22 @@ void runMuonSachPage()
   drawSeachString();
   if (clipboardNodeTDG != NULL) {
     _CurrentNodeTDG = clipboardNodeTDG;
+    clipboardNodeTDG = NULL;
     loadContentTDG();
     drawTable();
   }
-  else {
+  else if (_CurrentNodeTDG == NULL) {
     _TheDocGiaContentView = getEmptyView(_TheDocGiaContentView);
   }
 
   if (clipboardDMSach != NULL && clipboardDauSach != NULL) {
     _CurrentDMSach = clipboardDMSach;
     _CurrentDauSach = clipboardDauSach;
+    clipboardDMSach = NULL;
+    clipboardDauSach = NULL;
     loadContentSach();
   }
-  else {
+  else if (_CurrentDMSach == NULL) {
     _SachContentView = getEmptyView(_SachContentView);
   }
 
