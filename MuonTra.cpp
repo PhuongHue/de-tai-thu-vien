@@ -81,7 +81,7 @@ int countAll(ListMuonTra *first)
   return count;
 }
 
-ListMuonTra *findByMaSach(ListMuonTra *first, long long key)
+ListMuonTra *find_LMT_By_MaSach(ListMuonTra *first, long long key)
 {
   ListMuonTra *p = first;
   while (p != NULL) {
@@ -95,7 +95,7 @@ ListMuonTra *findByMaSach(ListMuonTra *first, long long key)
 
 bool deleteByMaSach(ListMuonTra *&first, long long key)
 {
-  ListMuonTra *p = findByMaSach(first, key);
+  ListMuonTra *p = find_LMT_By_MaSach(first, key);
   if (p == NULL)
     return false;
   else {

@@ -26,13 +26,6 @@ struct DMSach {
   DMSach *next = NULL;
 };
 
-DMSach *getNewDMSach()
-{
-  DMSach *dms = new DMSach;
-  dms->data = new Sach;
-  return dms;
-}
-
 long long getNewMaSach()
 {
   return time(0);
