@@ -75,7 +75,7 @@ void findAndDelete(ListDauSach &list, string ISBN)
   deleteByIndex(list, index);
 }
 
-void luuFile(ListDauSach &list)
+void luuFileDS(ListDauSach &list)
 {
   ofstream fout;
   fout.open("data/DauSach.data");
@@ -87,11 +87,11 @@ void luuFile(ListDauSach &list)
          << list.data[i]->tacGia << endl
          << list.data[i]->namXB << endl
          << list.data[i]->theLoai << endl;
-    luuFile((list.data[i]->dms), fout);
+    luuFileDMS((list.data[i]->dms), fout);
   }
 }
 
-bool docFile(ListDauSach &list)
+bool docFileDS(ListDauSach &list)
 {
   fstream fin("data/DauSach.data", fstream::in);
   if (!fin.is_open()) return false;
@@ -110,7 +110,7 @@ bool docFile(ListDauSach &list)
     fin >> ds->namXB;
     fin.ignore();
     getline(fin, ds->theLoai);
-    docFile(ds->dms, fin);
+    docFileDMS(ds->dms, fin);
     addLast(list, ds);
   }
   return true;

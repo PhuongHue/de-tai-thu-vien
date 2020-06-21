@@ -249,10 +249,10 @@ void inputText(string &str, int limit, int left, int top, bool isNumber = false)
       cout << (char)x;
       str += x;
     }
-    else if (x == 8) {
+    else if (x == BACKSPACE) {
       if (str.length() > 0) {
         str.pop_back();
-        cout << (char)8 << ' ' << (char)8;
+        cout << (char)BACKSPACE << ' ' << (char)BACKSPACE;
       }
       else
         cout << BELL; // keu thong bao

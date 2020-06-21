@@ -128,7 +128,7 @@ bool deleteByMaSach(DMSach *&first, long long key)
   }
   return false;
 }
-void luuFile(DMSach *first, ofstream &fout)
+void luuFileDMS(DMSach *first, ofstream &fout)
 {
   DMSach *p = first;
   fout << countAll(first) << endl;
@@ -140,7 +140,7 @@ void luuFile(DMSach *first, ofstream &fout)
   }
 }
 
-void docFile(DMSach *&list, fstream &fin)
+void docFileDMS(DMSach *&list, fstream &fin)
 {
   int n;
   fin >> n;

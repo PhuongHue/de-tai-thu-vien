@@ -5,7 +5,7 @@ using namespace std;
 int main()
 {
   fullScreen();
-  if (!(docFile(_ListDauSach_Root) && docFile(_ListTheDocGia_root))) {
+  if (!(docFileDS(_ListDauSach_Root) && docFileTDG(_ListTheDocGia_root))) {
     appPause("Load du lieu loi!");
     return 0;
   };

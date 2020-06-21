@@ -23,16 +23,6 @@ int find(string str1, string str2, int begin = 0)
   return -1;
 }
 
-template <class T>
-T convert(string str)
-{
-  stringstream ss;
-  ss << str;
-  T x;
-  ss >> x;
-  return x;
-}
-
 long long getDate()
 {
   // get time vd: 15931520

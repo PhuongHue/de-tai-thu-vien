@@ -39,8 +39,8 @@ void mainPageAction(MenuView &menu, int keyPressed, bool &ret)
     MUONSACHPAGE::runMuonSachPage();
     break;
   case 3:
-    luuFile(_ListDauSach_Root);
-    luuFile(_ListTheDocGia_root);
+    luuFileDS(_ListDauSach_Root);
+    luuFileTDG(_ListTheDocGia_root);
     clearMenu(menu);
     appPause("Da luu vao file!", _left, _top);
     break;

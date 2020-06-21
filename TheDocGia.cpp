@@ -151,26 +151,26 @@ void duyetLNR(TreeNode *node, int from, int to)
   }
 }
 
-void luuFileTDG(TheDocGia *tdg, fstream &fout)
+void luuFileNodeTDG(TheDocGia *tdg, fstream &fout)
 {
   fout << tdg->maThe << endl
        << tdg->ho << endl
        << tdg->ten << endl
        << (tdg->phai ? 1 : 0) << endl
        << tdg->trangThai << endl;
-  luuFile(tdg->lmt, fout);
+  luuFileLMT(tdg->lmt, fout);
 }
 
 void duyetNLRLuuFile(TreeNode *node, fstream &fout)
 {
   if (node != NULL) {
-    luuFileTDG(node->data, fout);
+    luuFileNodeTDG(node->data, fout);
     duyetNLRLuuFile(node->left, fout);
     duyetNLRLuuFile(node->right, fout);
   }
 }
 
-void luuFile(TreeNode *node)
+void luuFileTDG(TreeNode *node)
 {
   fstream fout;
   fout.open("data/TheDocGia.data");
@@ -179,7 +179,7 @@ void luuFile(TreeNode *node)
   fout.close();
 }
 
-void docFileTDG(TheDocGia *tdg, fstream &fin)
+void docFileNodeTDG(TheDocGia *tdg, fstream &fin)
 {
   fin >> tdg->maThe;
   fin.ignore();
@@ -196,10 +196,10 @@ void docFileTDG(TheDocGia *tdg, fstream &fin)
 
   fin >> tdg->trangThai;
   fin.ignore();
-  docFile(tdg->lmt, fin);
+  docFileLMT(tdg->lmt, fin);
 }
 
-bool docFile(TreeNode *&node)
+bool docFileTDG(TreeNode *&tree)
 {
   fstream fin("data/TheDocGia.data", fstream::in);
   if (!fin.is_open()) return false;
@@ -210,8 +210,8 @@ bool docFile(TreeNode *&node)
   fin.ignore();
   for (int i = 0; i < n; i++) {
     TheDocGia *tdg = new TheDocGia;
-    docFileTDG(tdg, fin);
-    insert(node, tdg);
+    docFileNodeTDG(tdg, fin);
+    insert(tree, tdg);
   }
   return true;
 }

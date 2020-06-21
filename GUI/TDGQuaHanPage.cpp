@@ -131,7 +131,7 @@ void loadTable()
   }
 }
 
-int getIndex(int lineNumber)
+int getSTT(int lineNumber)
 {
   return _QuaHanTable.pageIndex * _QuaHanTable.pageSize + lineNumber + 1;
 }
@@ -140,7 +140,7 @@ void drawTable()
 {
   for (int i = 0; i < _QuaHanTable.lineCount; i++) {
     gotoxy(_QuaHanTable.left + _QuaHanTable.columns[0], _QuaHanTable.top + i);
-    cout << right << setw(4) << getIndex(i);
+    cout << right << setw(4) << getSTT(i);
     gotoxy(_QuaHanTable.left + _QuaHanTable.columns[1], _QuaHanTable.top + i);
     cout << _QuaHanTable.rows[i].mathe;
     gotoxy(_QuaHanTable.left + _QuaHanTable.columns[2], _QuaHanTable.top + i);
