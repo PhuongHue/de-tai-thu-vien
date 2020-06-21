@@ -42,7 +42,9 @@ struct Row {
   ListMuonTra *lmtNode;
   DauSach *ds;
 };
+
 const int MAX_SachDangMuonTable = 3;
+
 struct SachDangMuonTable {
   Row rows[MAX_SachDangMuonTable];
   int left = 1, top = 16, right = 77, bottom = 26;
@@ -189,13 +191,13 @@ void loadContentSach()
   if (_CurrentDMSach == NULL) return;
   _SachContentView.lines[0] = to_string(_CurrentDMSach->data.maSach);
   switch (_CurrentDMSach->data.trangThai) {
-  case 0:
+  case SACH_TT_MUONDUOC:
     _SachContentView.lines[1] = "Muon duoc";
     break;
-  case 1:
+  case SACH_TT_DAMUON:
     _SachContentView.lines[1] = "Da duoc muon";
     break;
-  case 2:
+  case SACH_TT_THANHLY:
     _SachContentView.lines[1] = "Da thanh ly";
     break;
   }
@@ -263,7 +265,7 @@ void muonSach()
   // clear table view
   clearTable();
   // load data
-  loadContentTDG();
+  loadTableChuaTra();
   loadContentSach();
   // update view
   drawTable();
@@ -280,10 +282,10 @@ void traSach()
   // ket qua chon khong => return
   if (kq == true) {
     // set ngay tra, chuyen trang thai
-    ListMuonTra *currentTableLMT = _SachDaMuonTable.rows[_SachDaMuonTable.select].lmtNode;
+    Row currentRow = _SachDaMuonTable.rows[_SachDaMuonTable.select];
     ListMuonTra *node = find_LMT_by_MaSach_NgayMuon(
-        _CurrentNodeTDG->data.lmt, currentTableLMT->data.maSach,
-        currentTableLMT->data.ngayMuon);
+        _CurrentNodeTDG->data.lmt, currentRow.lmtNode->data.maSach,
+        currentRow.lmtNode->data.ngayMuon);
     node->data.ngayTra = getDate();
     node->data.trangThai = MT_TT_DATRA;
     // set trang thai sach
@@ -343,9 +345,7 @@ void runMuonSachPage()
     _CurrentNodeTDG = clipboardNodeTDG;
     clipboardNodeTDG = NULL;
   }
-  // else if (_CurrentNodeTDG == NULL) {
-  //   _TheDocGiaContentView = getEmptyView(_TheDocGiaContentView);
-  // }
+
   // da chon sach
   if (clipboardDMSach != NULL && clipboardDauSach != NULL) {
     _CurrentDMSach = clipboardDMSach;
@@ -353,9 +353,7 @@ void runMuonSachPage()
     clipboardDMSach = NULL;
     clipboardDauSach = NULL;
   }
-  // else if (_CurrentDMSach == NULL) {
-  //   _SachContentView = getEmptyView(_SachContentView);
-  // }
+
   loadContentTDG();
   loadContentSach();
   drawContentView(_TheDocGiaContentView);
