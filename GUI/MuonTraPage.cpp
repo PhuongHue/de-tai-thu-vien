@@ -12,7 +12,6 @@
 #include "components/ContentView.cpp"
 #include "components/YesNoMenu.cpp"
 
-
 using namespace std;
 
 namespace MUONTRAPAGE {
@@ -34,16 +33,20 @@ BookView _MuonTraBookView;
 
 ContentView _MuonTraContentView;
 
+int _SelectFooter;
+// 0
 const vector<string> _DauSachBookFooter = {
     "ESC: Tro ve",
     ">>: Trang sau",
     "<<: Trang truoc",
     "F4: Tra sach",
     "F5: Mat Sach"};
+// 1
 const vector<string> _DauSachBookFooter_DaTra = {
     "ESC: Tro ve",
     ">>: Trang sau",
     "<<: Trang truoc"};
+
 /* -------------------- _MuonTraContentView funtions -------------------- */
 void loadContent(BookView &book, ContentView &content)
 {
@@ -67,9 +70,9 @@ void loadContent(BookView &book, ContentView &content)
   }
 
   if (node->data.trangThai == MT_TT_DANGMUON)
-    setFooter(_DauSachBookFooter_DaTra);
+    _SelectFooter = 0;
   else
-    setFooter(_DauSachBookFooter);
+    _SelectFooter = 1;
 }
 
 /* -------------------- _DMSachBookView functions -------------------- */
@@ -114,6 +117,10 @@ void handleSelectChange(BookView &book)
   loadContent(book, _MuonTraContentView);
   clearContentView(_MuonTraContentView);
   drawContentView(_MuonTraContentView);
+  if (_SelectFooter == 0)
+    setFooter(_DauSachBookFooter);
+  else
+    setFooter(_DauSachBookFooter_DaTra);
 }
 
 void handleListAction(BookView &book, int keyPressed)
@@ -144,7 +151,10 @@ void handleListAction(BookView &book, int keyPressed)
     drawBookView(_MuonTraBookView);
     break;
   }
-  setFooter(_DauSachBookFooter);
+  if (_SelectFooter == 0)
+    setFooter(_DauSachBookFooter);
+  else
+    setFooter(_DauSachBookFooter_DaTra);
 }
 
 /* -------------------- DMSachPage functions -------------------- */
@@ -190,7 +200,12 @@ void runMuonTraPage()
 
   loadLayout(_PageLayout);
   setHeader(_HeaderText);
-  setFooter(_DauSachBookFooter);
+
+  if (_SelectFooter == 0)
+    setFooter(_DauSachBookFooter);
+  else
+    setFooter(_DauSachBookFooter_DaTra);
+
   drawContentView(_MuonTraContentView);
   runBookView(_MuonTraBookView, handleListAction, loadList, handleSelectChange);
   clearPage(_left, _top, _right, _bottom);
