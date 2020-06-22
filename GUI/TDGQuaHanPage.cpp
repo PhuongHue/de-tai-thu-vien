@@ -1,8 +1,7 @@
 #ifndef _TDGQUAHANPAGE_CPP_
 #define _TDGQUAHANPAGE_CPP_
 
-#include "../DauSach.cpp"
-#include "../TheDocGia.cpp"
+#include "../TheDocGiaQuaHan.cpp"
 #include "components/BookView.cpp"
 #include <vector>
 
@@ -23,83 +22,6 @@ const vector<string> _PageFooter = {
     ">>: Trang sau",
     "<<: Trang truoc"};
 
-/* ---------- thong ke data ----------------*/
-struct Row {
-  long long mathe;
-  string hoTen;
-  long long maSach;
-  string tenSach;
-  long long ngayMuon;
-  int ngayQuaHan;
-};
-
-const int MAX_QUAHAN_DATA_SIZE = 1000;
-
-struct TopData {
-  Row data[MAX_QUAHAN_DATA_SIZE];
-  int length = 0;
-} _QuaHanData_Root;
-
-void addLast(TheDocGia tdg, ListMuonTra *quaHan)
-{
-  ListMuonTra *p = quaHan;
-  while (p != NULL) {
-    if (_QuaHanData_Root.length == MAX_QUAHAN_DATA_SIZE) return;
-    _QuaHanData_Root.data[_QuaHanData_Root.length].mathe = tdg.maThe;
-    _QuaHanData_Root.data[_QuaHanData_Root.length].hoTen = tdg.ho + ' ' + tdg.ten;
-    _QuaHanData_Root.data[_QuaHanData_Root.length].maSach = p->data.maSach;
-    _QuaHanData_Root.data[_QuaHanData_Root.length].ngayMuon = p->data.ngayMuon;
-    DauSach *ds = tim_DauSach_theo_MaSach(_ListDauSach_Root, p->data.maSach);
-    _QuaHanData_Root.data[_QuaHanData_Root.length].tenSach = ds->tenSach;
-    if (p->data.trangThai == MT_TT_DANGMUON) {
-      _QuaHanData_Root.data[_QuaHanData_Root.length].ngayQuaHan = (getDate() - p->data.ngayMuon) / TIME_1_NGAY;
-    }
-    else {
-      _QuaHanData_Root.data[_QuaHanData_Root.length].ngayQuaHan = (p->data.ngayTra - p->data.ngayMuon) / TIME_1_NGAY;
-    }
-    _QuaHanData_Root.length++;
-    p = p->next;
-  }
-}
-
-void duyetTDG(NodeTheDocGia *node)
-{
-  if (node != NULL) {
-    ListMuonTra *quaHan = filterQuaHan(node->data.lmt);
-    if (quaHan != NULL) {
-      addLast(node->data, quaHan);
-    }
-    duyetTDG(node->left);
-    duyetTDG(node->right);
-  }
-}
-
-void sortTDGQuaHan()
-{
-  for (int i = 0; i < _QuaHanData_Root.length; i++) {
-    Row max = _QuaHanData_Root.data[i];
-    int maxIndex = i;
-    for (int j = i + 1; j < _QuaHanData_Root.length; j++) {
-      if (_QuaHanData_Root.data[j].ngayMuon > max.ngayMuon) {
-        max = _QuaHanData_Root.data[j];
-        maxIndex = j;
-      }
-    }
-    // swap
-    if (maxIndex != i) {
-      Row c = _QuaHanData_Root.data[i];
-      _QuaHanData_Root.data[i] = max;
-      _QuaHanData_Root.data[maxIndex] = c;
-    }
-  }
-}
-
-void thongKeQuaHan()
-{
-  _QuaHanData_Root.length = 0;
-  duyetTDG(_ListTheDocGia_root);
-  sortTDGQuaHan();
-}
 
 /* ---------- view table -------------------*/
 
@@ -108,7 +30,7 @@ const int MAX_PAGE_SIZE = 100;
 struct Table {
   int left, top, right, bottom;
   int columns[7] = {0, 8, 29, 60, 81, 112, 133};
-  Row rows[MAX_PAGE_SIZE];
+  QuaHan_Row rows[MAX_PAGE_SIZE];
   int pageIndex = 0;
   int pageSize = 20;
   int allPage = 0;
