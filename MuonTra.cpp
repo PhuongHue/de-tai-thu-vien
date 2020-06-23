@@ -74,16 +74,16 @@ int countAll(ListMuonTra *first)
   return count;
 }
 
-ListMuonTra *check_MaSach_DaTonTai(ListMuonTra *first, long long maSach)
+bool check_MaSach_DaTonTai(ListMuonTra *first, long long maSach)
 {
   ListMuonTra *p = first;
   while (p != NULL) {
     if (p->data.maSach == maSach) {
-      return p;
+      return true;
     }
     p = p->next;
   }
-  return NULL;
+  return false;
 }
 
 ListMuonTra *find_LMT_by_MaSach_NgayMuon(ListMuonTra *first, long long maSach, long long ngayMuon)

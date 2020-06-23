@@ -223,8 +223,8 @@ bool kiemTraXoaDMSach(NodeTheDocGia *node, long long maSach)
     return true;
   }
   else {
-    ListMuonTra *mt = check_MaSach_DaTonTai(node->data.lmt, maSach);
-    if (mt != NULL) return false;
+    bool mt = check_MaSach_DaTonTai(node->data.lmt, maSach);
+    if (mt == true) return false;
     return kiemTraXoaDMSach(node->left, maSach) && kiemTraXoaDMSach(node->right, maSach);
   }
 }

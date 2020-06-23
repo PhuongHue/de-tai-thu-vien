@@ -108,8 +108,8 @@ void addRow(ListMuonTra *lmt)
   Row row;
   DauSach *ds = tim_DauSach_theo_MaSach(_ListDauSach_Root, lmt->data.maSach);
   // gan data
-  row.lmtNode = lmt;
   row.ds = ds;
+  row.lmtNode = lmt;
   // them vao table
   _SachDaMuonTable.rows[_SachDaMuonTable.length] = row;
   _SachDaMuonTable.length++;
@@ -151,6 +151,8 @@ void loadContentTDG()
 void searchTDG()
 {
   setFooter(_EditStringFooter);
+  //clear data
+  _CurrentNodeTDG = NULL;
   // clear view
   clearContentView(_TheDocGiaContentView);
   _TheDocGiaContentView = getEmptyView(_TheDocGiaContentView);
