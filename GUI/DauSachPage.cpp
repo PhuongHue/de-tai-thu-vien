@@ -314,7 +314,7 @@ void initDauSachPage()
   _DauSachContentView.labels[1] = "Nam XB";
   _DauSachContentView.labels[2] = "So trang";
   _DauSachContentView.labels[3] = "Tac gia";
-  _DauSachContentView.labels[4] = "Ten";
+  _DauSachContentView.labels[4] = "Ten Sach";
   _DauSachContentView.labels[5] = "The loai";
   _DauSachContentView = getInitalView(_DauSachContentView);
   _DauSachContentView.isNumberType[1] = true;

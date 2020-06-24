@@ -52,7 +52,7 @@ void loadTable()
   }
 }
 
-int getIndex(int lineNumber){
+int getSTT(int lineNumber){
   return _TopDauSachTable.pageIndex * _TopDauSachTable.pageSize + lineNumber + 1;
 }
 
@@ -60,7 +60,7 @@ void drawTable()
 {
   for (int i = 0; i < _TopDauSachTable.lineCount; i++) {
     gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[0], _TopDauSachTable.top + i);
-    cout <<right <<setw(4) << getIndex(i);
+    cout <<right <<setw(4) << getSTT(i);
     gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[1], _TopDauSachTable.top + i);
     cout << _TopDauSachTable.rows[i].ds->ISBN;
     gotoxy(_TopDauSachTable.left + _TopDauSachTable.columns[2], _TopDauSachTable.top + i);
