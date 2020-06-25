@@ -75,9 +75,8 @@ void thongKeDauSach()
 
   if (_TopData_Root.length > 10) {
     int lastIndex = 9;
-    while (
-        lastIndex < _TopData_Root.length - 1 &&
-        _TopData_Root.data[9].count == _TopData_Root.data[lastIndex + 1].count) {
+    while (lastIndex < _TopData_Root.length - 1) {
+      if (_TopData_Root.data[9].count != _TopData_Root.data[lastIndex + 1].count) break;
       lastIndex++;
     }
     // dat lai gioi han ve last index ~ xoa nhung thang ngoai top 10
