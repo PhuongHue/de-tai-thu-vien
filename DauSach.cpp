@@ -25,7 +25,9 @@ DauSach *clipboardDauSach = NULL;
 struct ListDauSach {
   DauSach *data[MAX_LIST];
   int length = 0;
-} _ListDauSach_Root;
+};
+
+ListDauSach _ListDauSach_Root;
 
 void swapDauSach(DauSach *&a, DauSach *&b)
 {

@@ -45,6 +45,7 @@ void addFirst(ListMuonTra *&first, MuonTra info)
   p->data = info;
   p->next = first;
   first->prev = p;
+  first = p;
 }
 
 void addLast(ListMuonTra *&first, MuonTra info)
