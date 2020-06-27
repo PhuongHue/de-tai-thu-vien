@@ -7,6 +7,7 @@
 
 #include "../DauSach.cpp"
 #include "../MuonTra.cpp"
+#include "../TheDocGia.cpp"
 #include "../StringLib.cpp"
 #include "components/BookView.cpp"
 #include "components/ContentView.cpp"
@@ -24,6 +25,7 @@ int _bottom = 26;
 string _HeaderText = "Danh sach muon tra";
 string _PageLayout = "layout/MuonTra.layout";
 
+NodeTheDocGia *_CurrentTDG = NULL;
 ListMuonTra *_ListMuonTra = NULL;
 ListMuonTra *_CurrentNode = NULL;
 
@@ -106,6 +108,7 @@ void traSach()
 
 void matSach()
 {
+  _CurrentTDG->data.trangThai = TDG_TT_KHOA;
   _CurrentNode->data.trangThai = MT_TT_MATSACH;
   DMSach *dms = findMaSach(_ListDauSach_Root, _CurrentNode->data.maSach);
   dms->data.trangThai = SACH_TT_THANHLY;

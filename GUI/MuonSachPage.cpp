@@ -178,9 +178,15 @@ void searchTDG()
 
 bool checkTDG()
 {
+  if (_CurrentNodeTDG->data.trangThai == TDG_TT_KHOA) {
+    clearContentView(_TheDocGiaContentView);
+    appPause("The doc gia da bi khoa!", _TheDocGiaContentView.left, _TheDocGiaContentView.top);
+    drawContentView(_TheDocGiaContentView);
+    return false;
+  }
   if (!checkDieuKienMuonSach(_CurrentNodeTDG->data.lmt)) {
     clearContentView(_TheDocGiaContentView);
-    appPause("Doc gia khong du dieu kien muon", _TheDocGiaContentView.left, _TheDocGiaContentView.top);
+    appPause("Doc gia khong du dieu kien muon!", _TheDocGiaContentView.left, _TheDocGiaContentView.top);
     drawContentView(_TheDocGiaContentView);
     return false;
   }
