@@ -47,6 +47,7 @@ string getDateString(long long dateNumber)
   string dateString = to_string(t->tm_mday) + '/' + to_string(t->tm_mon + 1) + '/' + to_string(t->tm_year + 1900);
   return dateString;
 }
+
 //ko dung
 time_t getDateNumber(string dateString)
 {
