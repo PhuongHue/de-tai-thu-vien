@@ -106,7 +106,6 @@ void _gotoSelect(ContentView &content)
 void editLine(ContentView &content, int key)
 {
   int select = content.select;
-  // return neu khong duoc sua;
   if (content.isEditable[select] == false) {
     cout << BELL;
     return;
@@ -118,7 +117,7 @@ void editLine(ContentView &content, int key)
     if (content.cursor < content.lines[select].length()) {
       right = content.lines[select].substr(content.cursor);
     }
-    // di lui 1
+
     cout << (char)BACKSPACE << right << ' ';
     content.cursor--;
     _gotoSelect(content);
@@ -130,9 +129,9 @@ void editLine(ContentView &content, int key)
       cout << BELL;
       return;
     }
-    // quy dinh so nhung nhap chu
+    // nhap so
     if (content.isNumberType[select] && !(key >= '0' && key <= '9')) return;
-    // khong phai ky tu
+
     if (key < ' ' || key > 'z') return;
     // insert key vao chuoi
     content.lines[select].insert(content.lines[select].begin() + content.cursor, (char)key);
@@ -190,12 +189,10 @@ void runContentViewEditMode(ContentView &content, ContentAction onAction)
         ret = true;
       }
       else {
-        // a-z A-Z 0-9 pressed
         editLine(content, key);
       }
     }
     else if (padKey == 0) {
-      // f1 f2 f3 f4...
       if (onAction) onAction(content, key, ret);
     }
     else

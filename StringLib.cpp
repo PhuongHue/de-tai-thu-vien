@@ -25,15 +25,11 @@ int find(string str1, string str2, int begin = 0)
 
 long long getDate()
 {
-  // get time vd: 15931520
   time_t t = time(0);
-  // doi time => object ngay + gio vd: 20/6/2020 16h32p
   tm *timeTemp = localtime(&t);
-  // dua ve 00h 00m vd: 20/6/2020 0h0p
   timeTemp->tm_hour = 0;
   timeTemp->tm_min = 0;
   timeTemp->tm_sec = 0;
-  // doi lai thanh so time theo giay tinh tu 1990 vd: 15911000
   return mktime(timeTemp);
 }
 
@@ -48,18 +44,18 @@ string getDateString(long long dateNumber)
   return dateString;
 }
 
-//ko dung
-time_t getDateNumber(string dateString)
-{
-  if (dateString.empty()) return -1;
-  tm *t = new tm;
-  int day, month, year;
-  sscanf(dateString.data(), "%d/%d/%d", &day, &month, &year);
-  t->tm_mday = day;
-  t->tm_mon = month - 1;
-  t->tm_year = year - 1900;
-  return mktime(t);
-}
+
+// time_t getDateNumber(string dateString)
+// {
+//   if (dateString.empty()) return -1;
+//   tm *t = new tm;
+//   int day, month, year;
+//   sscanf(dateString.data(), "%d/%d/%d", &day, &month, &year);
+//   t->tm_mday = day;
+//   t->tm_mon = month - 1;
+//   t->tm_year = year - 1900;
+//   return mktime(t);
+// }
 
 void chuanHoa(string &str)
 {

@@ -176,23 +176,6 @@ void searchTDG()
   drawTable();
 }
 
-bool checkTDG()
-{
-  if (_CurrentNodeTDG->data.trangThai == TDG_TT_KHOA) {
-    clearContentView(_TheDocGiaContentView);
-    appPause("The doc gia da bi khoa!", _TheDocGiaContentView.left, _TheDocGiaContentView.top);
-    drawContentView(_TheDocGiaContentView);
-    return false;
-  }
-  if (!checkDieuKienMuonSach(_CurrentNodeTDG->data.lmt)) {
-    clearContentView(_TheDocGiaContentView);
-    appPause("Doc gia khong du dieu kien muon!", _TheDocGiaContentView.left, _TheDocGiaContentView.top);
-    drawContentView(_TheDocGiaContentView);
-    return false;
-  }
-  return true;
-}
-
 /* -------------------- _SachContentView functions -------------------- */
 void loadContentSach()
 {
@@ -240,6 +223,23 @@ void searchMS()
     drawContentView(_SachContentView);
   }
 }
+/* -------------------- MuonSachPage functions -------------------- */
+bool checkTDG()
+{
+  if (_CurrentNodeTDG->data.trangThai == TDG_TT_KHOA) {
+    clearContentView(_TheDocGiaContentView);
+    appPause("The doc gia da bi khoa!", _TheDocGiaContentView.left, _TheDocGiaContentView.top);
+    drawContentView(_TheDocGiaContentView);
+    return false;
+  }
+  if (!checkDieuKienMuonSach(_CurrentNodeTDG->data.lmt)) {
+    clearContentView(_TheDocGiaContentView);
+    appPause("Doc gia khong du dieu kien muon!", _TheDocGiaContentView.left, _TheDocGiaContentView.top);
+    drawContentView(_TheDocGiaContentView);
+    return false;
+  }
+  return true;
+}
 
 bool checkSach()
 {
@@ -258,10 +258,9 @@ bool checkSach()
   return true;
 }
 
-/* -------------------- MuonSachPage functions -------------------- */
 void muonSach()
 {
-  if (!_CurrentDMSach || !_CurrentNodeTDG || !checkSach() || !checkTDG()) return;
+  if (_CurrentDMSach == NULL || _CurrentNodeTDG == NULL || checkSach() == false || checkTDG() == false) return;
   MuonTra mt;
   mt.maSach = _CurrentDMSach->data.maSach;
   mt.ngayMuon = getDate();
@@ -287,19 +286,17 @@ void traSach()
   clearContentView(_TheDocGiaContentView);
   bool kq = YesNoMenu("Ban co chac chan muon tra sach?", _TheDocGiaContentView.left, _TheDocGiaContentView.top);
   drawContentView(_TheDocGiaContentView);
-  // ket qua chon khong => return
+
   if (kq == true) {
     // set ngay tra, chuyen trang thai
     Row currentRow = _SachDaMuonTable.rows[_SachDaMuonTable.select];
-    ListMuonTra *node = find_LMT_by_MaSach_NgayMuon(
-        _CurrentNodeTDG->data.lmt, currentRow.lmtNode->data.maSach,
-        currentRow.lmtNode->data.ngayMuon);
+    long long ngayMuon = currentRow.lmtNode->data.ngayMuon;
+    long long maSach = currentRow.lmtNode->data.maSach;
+    ListMuonTra *node = find_LMT_by_MaSach_NgayMuon(_CurrentNodeTDG->data.lmt, maSach, ngayMuon);
     node->data.ngayTra = getDate();
     node->data.trangThai = MT_TT_DATRA;
     // set trang thai sach
-    DMSach *sach = findByMaSach(
-        _SachDaMuonTable.rows[_SachDaMuonTable.select].ds->dms,
-        node->data.maSach);
+    DMSach *sach = findByMaSach(currentRow.ds->dms, maSach);
     sach->data.trangThai = SACH_TT_MUONDUOC;
     clearTable();
     loadTableChuaTra();

@@ -19,7 +19,6 @@ struct Sach {
   string viTri;
 };
 
-
 struct DMSach {
   Sach data;
   DMSach *next = NULL;
@@ -103,15 +102,10 @@ bool deleteByMaSach(DMSach *&first, long long key)
     if (p->data.maSach == key) {
       if (q == NULL) {
         // delete first
-        if (first->next == NULL) {
-          first = NULL;
-        }
-        else {
-          first = first->next;
-        }
+        first = first->next;
       }
       else {
-        q->next = p->next;
+        q->next = q->next->next;
       }
       if (p == clipboardDMSach) clipboardDMSach = NULL;
       delete p;

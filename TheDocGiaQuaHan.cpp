@@ -60,7 +60,7 @@ void sortTDGQuaHan()
     QuaHan_Row max = _QuaHanData_Root.data[i];
     int maxIndex = i;
     for (int j = i + 1; j < _QuaHanData_Root.length; j++) {
-      if (_QuaHanData_Root.data[j].ngayMuon > max.ngayMuon) {
+      if (_QuaHanData_Root.data[j].ngayQuaHan > max.ngayQuaHan) {
         max = _QuaHanData_Root.data[j];
         maxIndex = j;
       }

@@ -131,17 +131,13 @@ ListDauSach filterDauSach(ListDauSach list, string key)
 
 DMSach *findMaSach(ListDauSach &list, long long key)
 {
-  DMSach *ans = NULL;
   for (int i = 0; i < list.length; i++) {
-    ans = findByMaSach(list.data[i]->dms, key);
+    DMSach *ans = findByMaSach(list.data[i]->dms, key);
     if (ans != NULL) {
-      // copy DauSach vao clipboard toan cuc
-      clipboardDauSach = list.data[i];
-      break;
+      return ans;
     }
   }
-  return ans;
-}
+} 
 
 DauSach *tim_DauSach_theo_MaSach(ListDauSach &list, long long key)
 {

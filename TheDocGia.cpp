@@ -83,7 +83,6 @@ void findAndDelete(NodeTheDocGia *&node, long long maThe, bool &deleted)
       node = rp->right;
     }
     else {
-      // xoa bo nho copy tam
       if (node == clipboardNodeTDG)
         clipboardNodeTDG = NULL;
 
@@ -128,10 +127,6 @@ int _LNR_temp_index;
 
 void initDuyetLNR()
 {
-  for (int i = 0; i < MAX_TDG_ARRAY_LENGTH; i++) {
-    _TDGArray_temp.data[i] = NULL;
-  }
-
   _TDGArray_temp.length = 0;
   _LNR_temp_index = 0;
 }

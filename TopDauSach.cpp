@@ -22,7 +22,7 @@ void duyetTDG_TDS(NodeTheDocGia *node)
     // duyet list muon tra
     ListMuonTra *p = node->data.lmt;
     while (p != NULL) {
-      // duyet mang top data tang count
+      // duyet tang count
       for (int i = 0; i < _TopData_Root.length; i++) {
         DMSach *sach = findByMaSach(_TopData_Root.data[i].ds->dms, p->data.maSach);
         if (sach != NULL) _TopData_Root.data[i].count++;
@@ -30,7 +30,6 @@ void duyetTDG_TDS(NodeTheDocGia *node)
       // next
       p = p->next;
     }
-    // duyet tiep
     duyetTDG_TDS(node->left);
     duyetTDG_TDS(node->right);
   }
@@ -58,7 +57,6 @@ void thongKeDauSach()
       }
     }
     if (maxIndex != i) {
-      // swap
       TopDauSach_Row c = _TopData_Root.data[i];
       _TopData_Root.data[i] = _TopData_Root.data[maxIndex];
       _TopData_Root.data[maxIndex] = c;
@@ -79,9 +77,7 @@ void thongKeDauSach()
       if (_TopData_Root.data[9].count != _TopData_Root.data[lastIndex + 1].count) break;
       lastIndex++;
     }
-    // dat lai gioi han ve last index ~ xoa nhung thang ngoai top 10
     _TopData_Root.length = lastIndex + 1;
-    // kq: 1 2 3 4 5 6 7 8 9 10 10 10
   }
 }
 

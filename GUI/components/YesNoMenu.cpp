@@ -6,7 +6,7 @@
 
 namespace YESNOMENU {
 MenuView _Menu;
-bool _KetQua = true;
+bool _KetQua = false;
 void initYesNoMenu(int left, int top, int right)
 {
   _Menu.left = left;
